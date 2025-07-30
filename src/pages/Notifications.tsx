@@ -16,7 +16,14 @@ import {
 import { useApiCall } from "@/apis/globalCatchError";
 import LogoLoader from "@/components/LogoLoader";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Bell, UserPlus, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Bell,
+  UserPlus,
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/store";
@@ -28,7 +35,7 @@ import {
   clearAllStoredNotifications,
   revertNotificationDeletion,
   setUnseenCountOnly,
-  ApiNotification
+  ApiNotification,
 } from "@/store/notificationsSlice";
 
 // New interface to match the updated API response structure for notifications
@@ -48,9 +55,8 @@ interface UpdatedNotificationsResponse {
 
 const Notifications = () => {
   const dispatch: AppDispatch = useAppDispatch();
-  const { unseenNotifications, seenNotifications, unseenCount } = useAppSelector(
-    (state) => state.notifications
-  );
+  const { unseenNotifications, seenNotifications, unseenCount } =
+    useAppSelector((state) => state.notifications);
 
   // Local states for non-notification data
   const [friendRequests, setFriendRequests] = useState<FollowRequest[]>([]);
@@ -60,38 +66,45 @@ const Notifications = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [activeTab, setActiveTab] = useState("notifications");
-  
+
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const scrollPositionRef = useRef<number>(0);
 
-  const [executeNotificationsFetch, isLoadingNotifications] = useApiCall(fetchNotifications);
-  const [executeFollowRequestsFetch, isLoadingFollowRequests] = useApiCall(fetchFollowRequests);
-  const [executeSentRequestsFetch, isLoadingSentRequests] = useApiCall(fetchSentRequests);
+  const [executeNotificationsFetch, isLoadingNotifications] =
+    useApiCall(fetchNotifications);
+  const [executeFollowRequestsFetch, isLoadingFollowRequests] =
+    useApiCall(fetchFollowRequests);
+  const [executeSentRequestsFetch, isLoadingSentRequests] =
+    useApiCall(fetchSentRequests);
   const [executeMarkAsSeenAPI] = useApiCall(markNotificationAsSeen);
   const [executeClearAllAPI] = useApiCall(clearAllNotifications);
   const [executeDeleteAPI] = useApiCall(deleteNotification);
 
-  const isInitialLoading = isLoadingNotifications && page === 1 && !isFetchingMore;
-  const isLoading = isLoadingFollowRequests || isLoadingSentRequests || isInitialLoading;
+  const isInitialLoading =
+    isLoadingNotifications && page === 1 && !isFetchingMore;
+  const isLoading =
+    isLoadingFollowRequests || isLoadingSentRequests || isInitialLoading;
 
   const handleMarkAsSeen = async (notificationId: string) => {
     dispatch(markAsSeenInStore(notificationId));
-    
+
     const result = await executeMarkAsSeenAPI(notificationId);
-    
+
     if (!result.success) {
       toast.error("Failed to mark notification as seen. Please try again.");
     }
   };
 
-  const handleDeleteNotification = async (notificationToDelete: ApiNotification) => {
-    const { _id} = notificationToDelete;
-    
+  const handleDeleteNotification = async (
+    notificationToDelete: ApiNotification
+  ) => {
+    const { _id } = notificationToDelete;
+
     dispatch(deleteNotificationFromStore(_id));
-    
+
     const result = await executeDeleteAPI(_id);
-    
+
     if (!result.success) {
       dispatch(revertNotificationDeletion(notificationToDelete));
       toast.error("Failed to delete notification. Please try again.");
@@ -107,11 +120,13 @@ const Notifications = () => {
 
     const result = await executeClearAllAPI();
     if (!result.success || result.status === 404) {
-      dispatch(setInitialNotifications({ 
-        unseenItems: originalUnseen, 
-        seenItems: originalSeen, 
-        initialUnseenCount: originalUnseenCount 
-      }));
+      dispatch(
+        setInitialNotifications({
+          unseenItems: originalUnseen,
+          seenItems: originalSeen,
+          initialUnseenCount: originalUnseenCount,
+        })
+      );
       toast.error("Failed to Clear Notifications");
     }
   };
@@ -128,76 +143,119 @@ const Notifications = () => {
 
   const loadData = async (currentPage = 1, append = false) => {
     if (append) saveScrollPosition();
-    
+
     const notificationsResult = await executeNotificationsFetch({
       page: currentPage,
       limit: 10,
     });
-    
+
     if (notificationsResult.success && notificationsResult.data?.success) {
-      const response = notificationsResult.data as unknown as UpdatedNotificationsResponse;
-      
+      const response =
+        notificationsResult.data as unknown as UpdatedNotificationsResponse;
+
       if (response.data) {
-        const filteredUnseen = Array.isArray(response.data.unseen) 
-          ? response.data.unseen.filter(n => n.type !== "call") : [];
+        const filteredUnseen = Array.isArray(response.data.unseen)
+          ? response.data.unseen.filter((n) => n.type !== "call")
+          : [];
         const filteredSeen = Array.isArray(response.data.seen)
-          ? response.data.seen.filter(n => n.type !== "call") : [];
-        
+          ? response.data.seen.filter((n) => n.type !== "call")
+          : [];
+
         if (append) {
-          dispatch(setMoreNotifications({ unseenItems: filteredUnseen, seenItems: filteredSeen }));
+          dispatch(
+            setMoreNotifications({
+              unseenItems: filteredUnseen,
+              seenItems: filteredSeen,
+            })
+          );
         } else {
-          dispatch(setInitialNotifications({ 
-            unseenItems: filteredUnseen, 
-            seenItems: filteredSeen, 
-            initialUnseenCount: response.data.unseenCount 
-          }));
+          dispatch(
+            setInitialNotifications({
+              unseenItems: filteredUnseen,
+              seenItems: filteredSeen,
+              initialUnseenCount: response.data.unseenCount,
+            })
+          );
         }
-        
-        setHasMore(response.data.hasMore || response.data.currentPage < response.data.totalPages);
+
+        setHasMore(
+          response.data.hasMore ||
+            response.data.currentPage < response.data.totalPages
+        );
         if (!append) {
           dispatch(setUnseenCountOnly(response.data.unseenCount));
         }
-
       } else {
         if (!append) {
-          dispatch(setInitialNotifications({ unseenItems: [], seenItems: [], initialUnseenCount: 0 }));
+          dispatch(
+            setInitialNotifications({
+              unseenItems: [],
+              seenItems: [],
+              initialUnseenCount: 0,
+            })
+          );
         }
         setHasMore(false);
       }
       setError(null);
     } else {
       if (!append) {
-        dispatch(setInitialNotifications({ unseenItems: [], seenItems: [], initialUnseenCount: 0 }));
+        dispatch(
+          setInitialNotifications({
+            unseenItems: [],
+            seenItems: [],
+            initialUnseenCount: 0,
+          })
+        );
       }
       setHasMore(false);
-      setError(notificationsResult.data?.message || "Failed to load notifications");
+      setError(
+        notificationsResult.data?.message || "Failed to load notifications"
+      );
     }
 
     if (append) setTimeout(restoreScrollPosition, 0);
 
-    const followRequestsResult = await executeFollowRequestsFetch({ page: 1, limit: 10 });
+    const followRequestsResult = await executeFollowRequestsFetch({
+      page: 1,
+      limit: 10,
+    });
     if (followRequestsResult.success && followRequestsResult.data) {
-      setFriendRequests(followRequestsResult.data.result.filter((request: FollowRequest) => request) || []);
+      setFriendRequests(
+        followRequestsResult.data.result.filter(
+          (request: FollowRequest) => request
+        ) || []
+      );
     } else {
       setFriendRequests([]);
     }
 
     const sentRequestsResult = await executeSentRequestsFetch();
     if (sentRequestsResult.success && sentRequestsResult.data) {
-      setSentRequests(sentRequestsResult.data.result.filter((request: FollowRequest) => request) || []);
+      setSentRequests(
+        sentRequestsResult.data.result.filter(
+          (request: FollowRequest) => request
+        ) || []
+      );
     } else {
       setSentRequests([]);
     }
-    
+
     if (append) setTimeout(restoreScrollPosition, 50);
   };
 
   const loadMoreNotifications = useCallback(async () => {
-    if (!hasMore || isLoadingNotifications || isFetchingMore || activeTab !== "notifications") return;
-    
+    if (
+      !hasMore ||
+      isLoadingNotifications ||
+      isFetchingMore ||
+      activeTab !== "notifications"
+    )
+      return;
+
     setIsFetchingMore(true);
     saveScrollPosition();
-    
+
     try {
       const nextPage = page + 1;
       await loadData(nextPage, true);
@@ -208,19 +266,33 @@ const Notifications = () => {
       setIsFetchingMore(false);
       setTimeout(restoreScrollPosition, 100);
     }
-  }, [page, hasMore, isLoadingNotifications, isFetchingMore, activeTab, dispatch]);
+  }, [
+    page,
+    hasMore,
+    isLoadingNotifications,
+    isFetchingMore,
+    activeTab,
+    dispatch,
+  ]);
 
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
-    if (!hasMore || isLoading || isFetchingMore || !loadMoreRef.current || activeTab !== "notifications") return;
-    
+    if (
+      !hasMore ||
+      isLoading ||
+      isFetchingMore ||
+      !loadMoreRef.current ||
+      activeTab !== "notifications"
+    )
+      return;
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) loadMoreNotifications();
       },
       { threshold: 0.1, rootMargin: "100px" }
     );
-    
+
     observerRef.current.observe(loadMoreRef.current);
     return () => observerRef.current?.disconnect();
   }, [hasMore, isLoading, isFetchingMore, loadMoreNotifications, activeTab]);
@@ -263,12 +335,16 @@ const Notifications = () => {
     }
   };
 
-  const totalNotificationsCount = unseenNotifications.length + seenNotifications.length;
+  const totalNotificationsCount =
+    unseenNotifications.length + seenNotifications.length;
 
   return (
     <div className="w-full">
       <div className="flex items-center mb-5 relative">
-        <Link to="/" className="absolute left-0 flex items-center text-muted-foreground hover:text-foreground transition-colors">
+        <Link
+          to="/"
+          className="absolute left-0 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+        >
           <ArrowLeft className="h-5 w-5" />
         </Link>
       </div>
@@ -287,16 +363,22 @@ const Notifications = () => {
           className="my-8"
         />
       ) : (
-        <Tabs defaultValue="notifications" className="" onValueChange={handleTabChange}>
+        <Tabs
+          defaultValue="notifications"
+          className=""
+          onValueChange={handleTabChange}
+        >
           <TabsList className="grid grid-cols-3">
             <TabsTrigger value="notifications" className="cursor-pointer">
               Notifications {unseenCount > 0 && `(${unseenCount})`}
             </TabsTrigger>
             <TabsTrigger value="friend-requests" className="cursor-pointer">
-              Friend Requests {friendRequests.length > 0 && `(${friendRequests.length})`}
+              Friend Requests{" "}
+              {friendRequests.length > 0 && `(${friendRequests.length})`}
             </TabsTrigger>
             <TabsTrigger value="requests-sent" className="cursor-pointer">
-              Sent Requests {sentRequests.length > 0 && `(${sentRequests.length})`}
+              Sent Requests{" "}
+              {sentRequests.length > 0 && `(${sentRequests.length})`}
             </TabsTrigger>
           </TabsList>
 
@@ -314,29 +396,33 @@ const Notifications = () => {
                       Clear All
                     </Button>
                   </div>
-                  {[...unseenNotifications, ...seenNotifications].map((notification) => (
-                    <Notification
-                      key={notification._id}
-                      _id={notification._id}
-                      title={notification.sender.name}
-                      profilePic={notification.sender.profilePic}
-                      avatar={notification.sender.profilePic}
-                      timestamp={notification.timestamp}
-                      seen={notification.seen}
-                      onMarkAsSeen={() => handleMarkAsSeen(notification._id)}
-                      onDelete={() => handleDeleteNotification(notification)}
-                      entityDetails={notification.details}
-                      senderId={notification.sender.id}
-                      type={notification.type}
-                      content={notification.details.content || ""}
-                    />
-                  ))}
-                  
+                  {[...unseenNotifications, ...seenNotifications].map(
+                    (notification) => (
+                      <Notification
+                        key={notification._id}
+                        _id={notification._id}
+                        title={notification.sender.name}
+                        profilePic={notification.sender.profilePic}
+                        avatar={notification.sender.profilePic}
+                        timestamp={notification.timestamp}
+                        seen={notification.seen}
+                        onMarkAsSeen={() => handleMarkAsSeen(notification._id)}
+                        onDelete={() => handleDeleteNotification(notification)}
+                        entityDetails={notification.details}
+                        senderId={notification.sender.id}
+                        type={notification.type}
+                        content={notification.details.content || ""}
+                      />
+                    )
+                  )}
+
                   <div ref={loadMoreRef} className="flex justify-center py-4">
                     {isFetchingMore && (
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">Loading more notifications...</span>
+                        <span className="text-sm">
+                          Loading more notifications...
+                        </span>
                       </div>
                     )}
                   </div>

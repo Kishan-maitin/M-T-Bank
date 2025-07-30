@@ -83,7 +83,6 @@ formDataApiClient.interceptors.request.use(
   }
 );
 
-
 // Admin API client for admin panel API calls
 export const adminApiClient = axios.create({
   baseURL:

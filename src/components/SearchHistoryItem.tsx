@@ -13,7 +13,11 @@ interface SearchHistoryItemProps {
   onRevert: () => void;
 }
 
-export const SearchHistoryItem = ({ user, onRemove, onRevert }: SearchHistoryItemProps) => {
+export const SearchHistoryItem = ({
+  user,
+  onRemove,
+  onRevert,
+}: SearchHistoryItemProps) => {
   const navigate = useNavigate();
   const [executeRemoveFromHistory] = useApiCall(removeFromSearchHistory);
 
@@ -23,10 +27,10 @@ export const SearchHistoryItem = ({ user, onRemove, onRevert }: SearchHistoryIte
 
   const handleRemove = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     // Optimistically remove the item
     onRemove();
-    
+
     const { success } = await executeRemoveFromHistory(user.userId);
     if (!success) {
       // Revert the optimistic update if the API call fails
@@ -42,7 +46,11 @@ export const SearchHistoryItem = ({ user, onRemove, onRevert }: SearchHistoryIte
     >
       <div className="flex items-center gap-3">
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.profilePic} alt={user.name} className="h-8 w-8 rounded-full"/>
+          <AvatarImage
+            src={user.profilePic}
+            alt={user.name}
+            className="h-8 w-8 rounded-full"
+          />
           <AvatarFallback className="bg-primary/5 text-primary font-medium">
             {user.name?.charAt(0)?.toUpperCase() || "U"}
           </AvatarFallback>
@@ -59,4 +67,4 @@ export const SearchHistoryItem = ({ user, onRemove, onRevert }: SearchHistoryIte
       </Button>
     </div>
   );
-}; 
+};

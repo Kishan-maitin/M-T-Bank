@@ -43,7 +43,9 @@ const UserSearchDialog: React.FC<UserSearchDialogProps> = ({
   const [executeSearch, isSearching] = useApiCall(searchPeople);
   const [executeFetchFollowings, isLoadingFollowings] =
     useApiCall(fetchFollowings);
-  const [processingUsers, setProcessingUsers] = useState<Record<string, boolean>>({});
+  const [processingUsers, setProcessingUsers] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     const loadFollowings = async () => {
@@ -92,15 +94,15 @@ const UserSearchDialog: React.FC<UserSearchDialogProps> = ({
     if (e) {
       e.stopPropagation();
     }
-    
+
     // Set the user as processing
-    setProcessingUsers(prev => ({ ...prev, [user.id]: true }));
-    
+    setProcessingUsers((prev) => ({ ...prev, [user.id]: true }));
+
     // Call the parent component's onSelectUser callback
     onSelectUser(user);
-    
+
     // Reset processing state
-    setProcessingUsers(prev => ({ ...prev, [user.id]: false }));
+    setProcessingUsers((prev) => ({ ...prev, [user.id]: false }));
   };
 
   const displayUsers = searchQuery.trim() ? searchResults : followings;
@@ -138,7 +140,10 @@ const UserSearchDialog: React.FC<UserSearchDialogProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.profilePic || user.avatar} alt={user.name}/>
+                    <AvatarImage
+                      src={user.profilePic || user.avatar}
+                      alt={user.name}
+                    />
                     <AvatarFallback>
                       {user.name.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
@@ -176,7 +181,11 @@ const UserSearchDialog: React.FC<UserSearchDialogProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose} className="cursor-pointer">
+          <Button
+            variant="outline"
+            onClick={handleClose}
+            className="cursor-pointer"
+          >
             Cancel
           </Button>
         </DialogFooter>

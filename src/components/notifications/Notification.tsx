@@ -88,18 +88,18 @@ const Notification = ({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the notification click event from firing
-    
+
     // Optimistically remove from UI
     setIsDeleted(true);
-    
+
     // Call parent component's onDelete handler for optimistic UI update
     if (onDelete) {
       onDelete(_id);
     }
-    
+
     // Make the API call
     const { success } = await executeDelete(_id);
-    
+
     // If the API call fails, revert the UI change
     if (!success) {
       setIsDeleted(false);
@@ -115,9 +115,7 @@ const Notification = ({
   if (isDeleted) return null;
 
   return (
-    <div
-      className={`flex items-center gap-4 p-4 border-b hover:bg-muted`}
-    >
+    <div className={`flex items-center gap-4 p-4 border-b hover:bg-muted`}>
       <div className="w-12 h-12">
         <img
           src={profilePic || avatar}
@@ -127,7 +125,10 @@ const Notification = ({
         />
       </div>
       <div className="flex-1 cursor-pointer">
-        <h3 className="font-medium text-xl text-foreground" onClick={handleClick}>
+        <h3
+          className="font-medium text-xl text-foreground"
+          onClick={handleClick}
+        >
           {getNotificationMessage()}
         </h3>
       </div>

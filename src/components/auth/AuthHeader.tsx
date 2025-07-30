@@ -1,5 +1,5 @@
 // src/components/AuthHeader.tsx
-import React from 'react';
+import React from "react";
 
 interface AuthHeaderProps {
   title: string;

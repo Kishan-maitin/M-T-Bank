@@ -40,10 +40,13 @@ const LogoLoader: React.FC<LogoLoaderProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className="animate-pulse transform transition-all" style={{ animationDuration: `${pulseSpeed}s` }}>
-        <img 
+      <div
+        className="animate-pulse transform transition-all"
+        style={{ animationDuration: `${pulseSpeed}s` }}
+      >
+        <img
           src={logoPath}
-          alt="Logo" 
+          alt="Logo"
           className={`${sizeMap[size]} ${getOpacityClass(opacity)}`}
         />
       </div>

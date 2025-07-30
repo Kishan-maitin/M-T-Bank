@@ -56,22 +56,28 @@ declare global {
 let activeRecognitionInstances: SpeechRecognition[] = [];
 
 // Helper function to register an active recognition instance
-export const registerRecognitionInstance = (instance: SpeechRecognition): void => {
+export const registerRecognitionInstance = (
+  instance: SpeechRecognition
+): void => {
   activeRecognitionInstances.push(instance);
 };
 
 // Helper function to unregister a recognition instance
-export const unregisterRecognitionInstance = (instance: SpeechRecognition): void => {
-  activeRecognitionInstances = activeRecognitionInstances.filter(i => i !== instance);
+export const unregisterRecognitionInstance = (
+  instance: SpeechRecognition
+): void => {
+  activeRecognitionInstances = activeRecognitionInstances.filter(
+    (i) => i !== instance
+  );
 };
 
 // Helper function to stop all active recognition instances
 export const stopAllRecognitionInstances = (): void => {
-  activeRecognitionInstances.forEach(instance => {
+  activeRecognitionInstances.forEach((instance) => {
     try {
       instance.stop();
     } catch (error) {
-      console.error('Error stopping speech recognition instance:', error);
+      console.error("Error stopping speech recognition instance:", error);
     }
   });
   activeRecognitionInstances = [];
@@ -83,13 +89,13 @@ export const setupSpeechRecognitionCleanup = (): void => {
   const handleRouteChange = () => {
     stopAllRecognitionInstances();
   };
-  
+
   // For React Router, you would use a listener or hook
   // For Next.js, you would use router.events.on('routeChangeStart', handleRouteChange)
-  
+
   // For a general solution that works in most cases
-  window.addEventListener('beforeunload', handleRouteChange);
-  
+  window.addEventListener("beforeunload", handleRouteChange);
+
   // Some SPAs might use popstate for navigation
-  window.addEventListener('popstate', handleRouteChange);
-}; 
+  window.addEventListener("popstate", handleRouteChange);
+};

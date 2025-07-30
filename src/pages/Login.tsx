@@ -24,19 +24,19 @@ import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 //     border-color: var(--border);
 //     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 //   }
-  
+
 //   .intl-tel-input .country-list .country {
 //     color: var(--foreground);
 //   }
-  
+
 //   .intl-tel-input .country-list .country.highlight {
 //     background-color: var(--muted);
 //   }
-  
+
 //   .intl-tel-input .country-list .country .dial-code {
 //     color: var(--muted-foreground);
 //   }
-  
+
 //   .intl-tel-input .selected-flag {
 //     background-color: transparent;
 //   }
@@ -44,22 +44,22 @@ import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 //   .intl-tel-input.allow-dropdown .flag-container:hover .selected-flag {
 //     background-color: var(--muted);
 //   }
-  
+
 //   .intl-tel-input.allow-dropdown.separate-dial-code .selected-flag {
 //     background-color: var(--muted);
 //   }
-  
+
 //   .intl-tel-input .selected-dial-code {
 //     color: var(--foreground);
 //     padding-left: 10px; /* Add padding between flag and country code */
 //   }
-  
+
 //   .intl-tel-input input {
 //     background-color: var(--background);
 //     color: var(--foreground);
 //     border-color: var(--border);
 //   }
-  
+
 //   .intl-tel-input input:focus {
 //     border-color: var(--ring);
 //     box-shadow: 0 0 0 2px var(--ring);
@@ -68,12 +68,12 @@ import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 //   .intl-tel-input .country-list .divider {
 //     border-bottom-color: var(--border);
 //   }
-  
+
 //   /* Fix spacing between flag and dial code */
 //   .intl-tel-input.separate-dial-code .selected-flag {
 //     padding-right: 6px !important;
 //   }
-  
+
 //   .intl-tel-input.separate-dial-code .selected-dial-code {
 //     margin-left: 6px !important;
 //   }
@@ -298,7 +298,9 @@ const Login: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setPasswordType(passwordType === "password" ? "text" : "password");
+                  setPasswordType(
+                    passwordType === "password" ? "text" : "password"
+                  );
                 }}
               >
                 {passwordType === "password" ? <Eye /> : <EyeOff />}
@@ -320,6 +322,7 @@ const Login: React.FC = () => {
           </div>
 
           <Button
+            style={{ backgroundColor: "#007856" }}
             type="submit"
             className="w-full cursor-pointer"
             disabled={isLoggingIn}
@@ -330,14 +333,20 @@ const Login: React.FC = () => {
             <div className="flex justify-center pt-4">
               {/* <p className="text-md text-center text-muted-foreground">Get the app:</p> */}
               <div className="flex justify-center gap-4">
-                <Link to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162" className="">
+                <Link
+                  to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162"
+                  className=""
+                >
                   <img
                     src="/assets/stores/appstore.svg"
                     alt="Download on App Store"
                     className="w-40"
                   />
                 </Link>
-                <Link to="https://play.google.com/store/apps/details?id=com.bondbridge.bondbridgeonline" className="">
+                <Link
+                  to="https://play.google.com/store/apps/details?id=com.bondbridge.bondbridgeonline"
+                  className=""
+                >
                   <img
                     src="/assets/stores/googleplay.svg"
                     alt="Get it on Google Play"

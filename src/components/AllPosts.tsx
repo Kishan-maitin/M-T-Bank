@@ -44,33 +44,35 @@ interface AllPostsProps {
 
 const AllPosts: React.FC<AllPostsProps> = ({ posts, userId }) => {
   const navigate = useNavigate();
-  
+
   // Filter posts to only include those with media
-  const postsWithMedia = posts.filter(post => {
+  const postsWithMedia = posts.filter((post) => {
     const isProfilePost = "createdAt" in post;
-    
+
     const media = isProfilePost
       ? (post as ProfilePostData)?.media || []
       : (post as Post)?.media || [];
-      
+
     return media.length > 0;
   });
 
   // Sort the posts by date (newest first)
   const sortedPosts = [...postsWithMedia].sort((a, b) => {
     // Get timestamps for both posts
-    const aTimestamp = "createdAt" in a 
-      ? (a as ProfilePostData).createdAt 
-      : ("creationDate" in a && a.creationDate) 
-        ? new Date(a.creationDate).getTime() / 1000 
-        : 0;
-    
-    const bTimestamp = "createdAt" in b 
-      ? (b as ProfilePostData).createdAt 
-      : ("creationDate" in b && b.creationDate) 
-        ? new Date(b.creationDate).getTime() / 1000 
-        : 0;
-    
+    const aTimestamp =
+      "createdAt" in a
+        ? (a as ProfilePostData).createdAt
+        : "creationDate" in a && a.creationDate
+          ? new Date(a.creationDate).getTime() / 1000
+          : 0;
+
+    const bTimestamp =
+      "createdAt" in b
+        ? (b as ProfilePostData).createdAt
+        : "creationDate" in b && b.creationDate
+          ? new Date(b.creationDate).getTime() / 1000
+          : 0;
+
     // Sort in descending order (newest first)
     return bTimestamp - aTimestamp;
   });

@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-  setName, 
-  setEmail, 
+import {
+  setName,
+  setEmail,
   setDateOfBirth,
-  setPassword, 
-  setReferralCode
+  setPassword,
+  setReferralCode,
 } from "../../store/createProfileSlice";
 import { RootState } from "../../store";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 
@@ -23,7 +23,9 @@ interface PersonalInfoTabProps {
   onValidationChange?: (isValid: boolean) => void;
 }
 
-const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange }) => {
+const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({
+  onValidationChange,
+}) => {
   const dispatch = useDispatch();
   const { name, email, dateOfBirth, password, referralCode } = useSelector(
     (state: RootState) => state.createProfile
@@ -34,7 +36,7 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
 
   // Check for referral code in sessionStorage on component mount
   useEffect(() => {
-    const storedReferralCode = sessionStorage.getItem('referralCode');
+    const storedReferralCode = sessionStorage.getItem("referralCode");
     if (storedReferralCode) {
       dispatch(setReferralCode(storedReferralCode));
     }
@@ -45,8 +47,11 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       return age - 1 >= 18;
     }
     return age >= 18;
@@ -58,7 +63,7 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isDateOfBirthValid = dateOfBirth.trim().length > 0;
     const isPasswordValid = password.trim().length >= 6;
-    
+
     // Check age validation
     if (dateOfBirth) {
       if (!isAtLeast18YearsOld(dateOfBirth)) {
@@ -67,7 +72,7 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
         setAgeError(null);
       }
     }
-    
+
     // Check password validation
     if (password.trim()) {
       if (password.trim().length < 6) {
@@ -78,9 +83,14 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
     } else {
       setPasswordError(null);
     }
-    
-    const allValid = isNameValid && isEmailValid && isDateOfBirthValid && isPasswordValid && !ageError;
-    
+
+    const allValid =
+      isNameValid &&
+      isEmailValid &&
+      isDateOfBirthValid &&
+      isPasswordValid &&
+      !ageError;
+
     // Notify parent component of validation status
     if (onValidationChange) {
       onValidationChange(allValid);
@@ -89,7 +99,7 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    
+
     switch (id) {
       case "name": {
         const capitalizedName = value.charAt(0).toUpperCase() + value.slice(1);
@@ -123,28 +133,16 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
         <Label htmlFor="name">
           Name<span className="text-destructive -ml-1">*</span>
         </Label>
-        <Input
-          type="text"
-          id="name"
-          value={name}
-          onChange={handleChange}
-        />
+        <Input type="text" id="name" value={name} onChange={handleChange} />
       </div>
-      
+
       <div>
         <Label htmlFor="email">
           Email<span className="text-destructive -ml-1">*</span>
         </Label>
-        <Input
-          type="email"
-          id="email"
-          value={email}
-          onChange={handleChange}
-        />
+        <Input type="email" id="email" value={email} onChange={handleChange} />
       </div>
-      
 
-      
       <div>
         <Label htmlFor="password">
           Password<span className="text-destructive -ml-1">*</span>
@@ -191,7 +189,6 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 gap-6">
-
         <div>
           <Label htmlFor="dob">
             Date Of Birth<span className="text-destructive -ml-1">*</span>
@@ -210,19 +207,22 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
 
         <div>
           <div className="">
-            <Label htmlFor="referralCode" className="flex items-center space-x-1">
-              Referral Code <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Enter the code if someone referred you.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Label
+              htmlFor="referralCode"
+              className="flex items-center space-x-1"
+            >
+              Referral Code{" "}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Enter the code if someone referred you.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Label>
-            
           </div>
           <Input
             type="text"
@@ -230,11 +230,14 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ onValidationChange })
             value={referralCode}
             maxLength={6}
             onChange={handleChange}
-            readOnly={!!sessionStorage.getItem('referralCode')}
-            className={sessionStorage.getItem('referralCode') ? 'bg-muted cursor-not-allowed' : ''}
+            readOnly={!!sessionStorage.getItem("referralCode")}
+            className={
+              sessionStorage.getItem("referralCode")
+                ? "bg-muted cursor-not-allowed"
+                : ""
+            }
           />
         </div>
-
       </div>
     </div>
   );

@@ -19,4 +19,4 @@ export function StoryRowSkeleton() {
       </div>
     </div>
   );
-} 
+}

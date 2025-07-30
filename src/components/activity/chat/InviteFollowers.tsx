@@ -34,7 +34,7 @@ const InviteFollowers: React.FC<InviteFollowersProps> = ({
   onSearchChange,
   onFollowerClick,
   onInvite,
-  onClose
+  onClose,
 }) => {
   return (
     <div className="h-full flex flex-col bg-background text-foreground">
@@ -70,7 +70,10 @@ const InviteFollowers: React.FC<InviteFollowersProps> = ({
           // Loading state
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((_, i) => (
-              <div key={i} className="flex flex-col items-center justify-center py-2">
+              <div
+                key={i}
+                className="flex flex-col items-center justify-center py-2"
+              >
                 <Skeleton className="h-20 w-20 rounded-full mb-2" />
                 <Skeleton className="h-4 w-16" />
               </div>
@@ -95,7 +98,9 @@ const InviteFollowers: React.FC<InviteFollowersProps> = ({
                 onClick={() => onFollowerClick(follower._id)}
               >
                 <div className="relative mb-2">
-                  <div className={`rounded-full ${follower.selected ? 'p-[2px] bg-primary' : 'p-0'}`}>
+                  <div
+                    className={`rounded-full ${follower.selected ? "p-[2px] bg-primary" : "p-0"}`}
+                  >
                     <Avatar className="h-20 w-20">
                       <AvatarImage src={follower.avatar} alt={follower.name} />
                       <AvatarFallback className="bg-muted">
@@ -105,7 +110,10 @@ const InviteFollowers: React.FC<InviteFollowersProps> = ({
                   </div>
                   {follower.selected && (
                     <div className="absolute -bottom-1 -right-1 bg-primary rounded-full h-6 w-6 flex items-center justify-center border-2 border-background">
-                      <Check className="h-4 w-4 text-primary-foreground" strokeWidth={3} />
+                      <Check
+                        className="h-4 w-4 text-primary-foreground"
+                        strokeWidth={3}
+                      />
                     </div>
                   )}
                 </div>
@@ -125,11 +133,13 @@ const InviteFollowers: React.FC<InviteFollowersProps> = ({
           disabled={selectedFollowers.length === 0 || isInviting}
           onClick={onInvite}
         >
-          {isInviting ? "Adding..." : `Add ${selectedFollowers.length > 0 ? selectedFollowers.length : ""} to Group`}
+          {isInviting
+            ? "Adding..."
+            : `Add ${selectedFollowers.length > 0 ? selectedFollowers.length : ""} to Group`}
         </Button>
       </div>
     </div>
   );
 };
 
-export default InviteFollowers; 
+export default InviteFollowers;

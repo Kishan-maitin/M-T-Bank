@@ -25,14 +25,14 @@ const ChatList = ({ chats, isLoading, onSelectChat }: ChatListProps) => {
       if (isPostShare(message)) {
         return "Shared a post";
       }
-      
+
       // Check if message is a story reply
       if (isStoryReply(message)) {
         return "Replied to story";
       }
 
       // If message is a JSON string, try to parse it
-      if (typeof message === 'string' && message.startsWith('{')) {
+      if (typeof message === "string" && message.startsWith("{")) {
         const parsedMessage = JSON.parse(message);
         if (parsedMessage.content) {
           return parsedMessage.content;
@@ -41,8 +41,8 @@ const ChatList = ({ chats, isLoading, onSelectChat }: ChatListProps) => {
 
       // Return original message if none of the above conditions are met
       return message;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error : any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       // If any parsing fails, return the original message
       console.error("Error parsing message:", error);
       return message;

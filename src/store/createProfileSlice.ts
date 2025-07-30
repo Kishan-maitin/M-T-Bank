@@ -71,7 +71,10 @@ export const createProfile = createSlice({
     setCommunities: (state, action: PayloadAction<Community[]>) => {
       state.communitiesAvailable = action.payload;
     },
-    setAllCommunities: (state, action: PayloadAction<typeof INITIAL_PROFILE_STATE.communitiesSelected>) => {
+    setAllCommunities: (
+      state,
+      action: PayloadAction<typeof INITIAL_PROFILE_STATE.communitiesSelected>
+    ) => {
       state.communitiesSelected = action.payload;
     },
   },

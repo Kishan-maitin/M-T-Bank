@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { fetchCommunities, fetchCommunityById, fetchCommunityPosts } from "@/apis/commonApiCalls/communitiesApi";
+import {
+  fetchCommunities,
+  fetchCommunityById,
+  fetchCommunityPosts,
+} from "@/apis/commonApiCalls/communitiesApi";
 import { useApiCall } from "@/apis/globalCatchError";
 import { CommunityResponse } from "@/apis/apiTypes/communitiesTypes";
 import { ChatItem } from "@/store/chatSlice";
@@ -24,12 +28,12 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
   const [posts, setPosts] = useState<TransformedCommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use the useApiCall hook for all API calls
   const [executeFetchCommunities] = useApiCall(fetchCommunities);
   const [executeFetchCommunityById] = useApiCall(fetchCommunityById);
   const [executeFetchCommunityPosts] = useApiCall(fetchCommunityPosts);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,14 +43,18 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
       setLoading(true);
       try {
         // First, fetch the community details
-        const communityResult = await executeFetchCommunityById(activeCommunityChatItem.id);
-        
+        const communityResult = await executeFetchCommunityById(
+          activeCommunityChatItem.id
+        );
+
         if (communityResult.success && communityResult.data) {
           setCommunity(communityResult.data);
-          
+
           // Then fetch the community posts
-          const postsResult = await executeFetchCommunityPosts(activeCommunityChatItem.id);
-          
+          const postsResult = await executeFetchCommunityPosts(
+            activeCommunityChatItem.id
+          );
+
           if (postsResult.success && postsResult.data) {
             // Sort posts by creation time (newest first)
             const sortedPosts = postsResult.data.sort((a, b) => {
@@ -54,7 +62,7 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
               const dateB = new Date(b.createdAt).getTime();
               return dateB - dateA;
             });
-            
+
             setPosts(sortedPosts);
           } else {
             setPosts([]);
@@ -69,10 +77,12 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
 
             if (foundCommunity) {
               setCommunity(foundCommunity);
-              
+
               // After finding the community, fetch its posts
-              const postsResult = await executeFetchCommunityPosts(foundCommunity._id);
-              
+              const postsResult = await executeFetchCommunityPosts(
+                foundCommunity._id
+              );
+
               if (postsResult.success && postsResult.data) {
                 // Sort posts by creation time (newest first)
                 const sortedPosts = postsResult.data.sort((a, b) => {
@@ -80,7 +90,7 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
                   const dateB = new Date(b.createdAt).getTime();
                   return dateB - dateA;
                 });
-                
+
                 setPosts(sortedPosts);
               } else {
                 setPosts([]);
@@ -199,27 +209,33 @@ const CommunityPostFeed: React.FC<CommunityPostFeedProps> = ({
                 >
                   {/* Post Header */}
                   <Link to={`/community/${community._id}/${post.id}`}>
-                  <div className="p-3 flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={post.author.profilePic}
-                        alt={post.author.name}
-                      />
-                      <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="font-medium text-sm">
-                        {post.author.name}
-                      </h4>
-                      <p className="text-xs text-muted-foreground">
-                        {formatPostDate(post.createdAt)}
-                      </p>
+                    <div className="p-3 flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={post.author.profilePic}
+                          alt={post.author.name}
+                        />
+                        <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-medium text-sm">
+                          {post.author.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          {formatPostDate(post.createdAt)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  </Link> 
+                  </Link>
                   {/* Post Content */}
                   <div className="px-3 pb-2">
-                    <TruncatedText className="text-sm mb-3" text={post.content} limit={300} showToggle={true} align="left"/>
+                    <TruncatedText
+                      className="text-sm mb-3"
+                      text={post.content}
+                      limit={300}
+                      showToggle={true}
+                      align="left"
+                    />
 
                     {post.media && post.media.length > 0 && (
                       <div className="rounded-md overflow-hidden mb-3">

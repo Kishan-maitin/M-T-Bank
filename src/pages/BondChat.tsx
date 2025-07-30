@@ -154,8 +154,8 @@ const BotMessage = ({
   const messageText = hasUserRecommendations
     ? (message.text as MessageContent).message
     : typeof message.text === "string"
-    ? message.text
-    : "";
+      ? message.text
+      : "";
 
   const users = hasUserRecommendations
     ? (message.text as MessageContent).users || []
@@ -205,7 +205,10 @@ const UserMessage = ({ message }: { message: ExtendedMessage }) => {
 };
 
 // Helper function to get current location
-const getCurrentLocation = (): Promise<{ latitude: number; longitude: number } | null> => {
+const getCurrentLocation = (): Promise<{
+  latitude: number;
+  longitude: number;
+} | null> => {
   return new Promise((resolve) => {
     if (!navigator.geolocation) {
       console.warn("Geolocation is not supported by this browser.");
@@ -461,7 +464,7 @@ export default function BondChat() {
 
       // Hide typing indicator when bot message is received
       setIsBotTyping(false);
-      
+
       // Allow sending new messages now that we've received a response
       setIsWaitingForResponse(false);
 
@@ -599,18 +602,22 @@ export default function BondChat() {
 
     // Send message through socket
     if (socket && isConnected) {
-        socket.emit("sendMessage", messageData, (response: SendMessageResponse) => {
+      socket.emit(
+        "sendMessage",
+        messageData,
+        (response: SendMessageResponse) => {
           if (!response.success) {
             toast.error("Failed to send message");
           }
-        });
+        }
+      );
     } else {
-        console.error("Socket not connected, cannot send message.");
-        toast.error("Cannot connect to chat. Please try again later.");
-        // Optionally revert the optimistic message addition
-        setMessages((prev) => prev.filter(msg => msg.id !== tempMessage.id));
-        setIsWaitingForResponse(false); // Allow user to try again if socket disconnected
-        setIsBotTyping(false);
+      console.error("Socket not connected, cannot send message.");
+      toast.error("Cannot connect to chat. Please try again later.");
+      // Optionally revert the optimistic message addition
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
+      setIsWaitingForResponse(false); // Allow user to try again if socket disconnected
+      setIsBotTyping(false);
     }
   };
 
@@ -745,7 +752,7 @@ export default function BondChat() {
         </Button>
         <div className="flex items-center gap-2">
           <img src="/bondchat.svg" alt="Bond Chat" className="w-8 h-8" />
-          <span className="font-medium grad">BondChat</span>
+          <span className="font-medium grad">M&T AI Assistant</span>
           <div className="bg-muted rounded-full border-1 pb-1 border-primary">
             <span className="text-xs px-2 text-foreground">Basic</span>
           </div>

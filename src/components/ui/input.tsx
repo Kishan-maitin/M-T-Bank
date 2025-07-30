@@ -1,7 +1,8 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   enableEmoji?: boolean;
   onEmojiSelect?: (emoji: string) => void;
 }
@@ -9,9 +10,8 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
-    
-    React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
+    React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
     return (
       <div className="relative flex items-center w-full">
@@ -34,4 +34,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = "Input";
 
-export { Input }
+export { Input };

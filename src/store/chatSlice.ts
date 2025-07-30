@@ -253,7 +253,7 @@ const chatSlice = createSlice({
               bio: chatRoom.bio,
               participants,
             };
-          } else {            
+          } else {
             return {
               id: chatRoom.chatRoomId,
               name: chatRoom.groupName || "Group Chat",

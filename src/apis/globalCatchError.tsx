@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { useState } from "react";
+import axios, { AxiosError } from "axios";
 // import { toast } from "sonner";
 
 // Define error types
@@ -24,19 +24,22 @@ export const handleApiError = (error: unknown): ApiError => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<{ message: string }>;
     apiError = {
-      message: axiosError.response?.data?.message || axiosError.message || 'An error occurred',
+      message:
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        "An error occurred",
       status: axiosError.response?.status,
-      code: axiosError.code
+      code: axiosError.code,
     };
   } else if (error instanceof Error) {
     apiError = {
       message: error.message,
-      code: 'UNKNOWN_ERROR'
+      code: "UNKNOWN_ERROR",
     };
   } else {
     apiError = {
-      message: 'An unknown error occurred',
-      code: 'UNKNOWN_ERROR'
+      message: "An unknown error occurred",
+      code: "UNKNOWN_ERROR",
     };
   }
 
@@ -46,7 +49,7 @@ export const handleApiError = (error: unknown): ApiError => {
   // }
 
   // Add console log to debug
-  console.log('Showing error toast:', apiError);
+  console.log("Showing error toast:", apiError);
 
   // Show toast notification with a unique ID and custom styling
   // toast.error(apiError.message, {
@@ -59,7 +62,7 @@ export const handleApiError = (error: unknown): ApiError => {
   if (globalErrorHandler) {
     globalErrorHandler(apiError);
   }
-  
+
   return apiError;
 };
 
@@ -67,8 +70,13 @@ export const handleApiError = (error: unknown): ApiError => {
 export const useApiCall = <T, Args extends unknown[]>(
   apiFunction: (...args: Args) => Promise<T>
 ): [
-  (...args: Args) => Promise<{ data: T | null; success: boolean; status?: number; message?: string }>,
-  boolean
+  (...args: Args) => Promise<{
+    data: T | null;
+    success: boolean;
+    status?: number;
+    message?: string;
+  }>,
+  boolean,
 ] => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,8 +88,13 @@ export const useApiCall = <T, Args extends unknown[]>(
       return { data: result, success: true };
     } catch (error: unknown) {
       handleApiError(error);
-      const errorWithStatus = error as { status?: number, message?: string };
-      return { data: null, success: false, status: errorWithStatus.status, message: errorWithStatus.message };
+      const errorWithStatus = error as { status?: number; message?: string };
+      return {
+        data: null,
+        success: false,
+        status: errorWithStatus.status,
+        message: errorWithStatus.message,
+      };
     } finally {
       setIsLoading(false);
     }

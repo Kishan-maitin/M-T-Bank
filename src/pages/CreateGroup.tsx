@@ -47,18 +47,18 @@ const CreateGroup: React.FC = () => {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     []
   );
-  
+
   // Validation states
   const [groupInfoValid, setGroupInfoValid] = useState(false);
   const [skillsInterestsValid, setSkillsInterestsValid] = useState(false);
-  
+
   // Track validated tabs
   const [validatedTabs, setValidatedTabs] = useState<string[]>([]);
-  
+
   // Update validated tabs when validation status changes
   useEffect(() => {
     const newValidatedTabs = [...validatedTabs];
-    
+
     // Handle "info" tab validation
     if (groupInfoValid) {
       if (!newValidatedTabs.includes("info")) {
@@ -70,7 +70,7 @@ const CreateGroup: React.FC = () => {
         newValidatedTabs.splice(infoIndex, 1);
       }
     }
-    
+
     // Handle "skills" tab validation
     if (skillsInterestsValid) {
       if (!newValidatedTabs.includes("skills")) {
@@ -82,7 +82,7 @@ const CreateGroup: React.FC = () => {
         newValidatedTabs.splice(skillsIndex, 1);
       }
     }
-    
+
     setValidatedTabs(newValidatedTabs);
   }, [groupInfoValid, skillsInterestsValid]);
 
@@ -183,12 +183,16 @@ const CreateGroup: React.FC = () => {
 
     // Check if all tabs up to the current one are validated
     const nextTabIndex = currentIndex + 1;
-    const tabsToCheck = tabs.slice(0, currentIndex + 1).map(tab => tab.id);
-    
-    const allPreviousTabsValid = tabsToCheck.every(tabId => validatedTabs.includes(tabId));
-    
+    const tabsToCheck = tabs.slice(0, currentIndex + 1).map((tab) => tab.id);
+
+    const allPreviousTabsValid = tabsToCheck.every((tabId) =>
+      validatedTabs.includes(tabId)
+    );
+
     if (!allPreviousTabsValid) {
-      toast.error("Please complete all required fields in the current and previous tabs before proceeding.");
+      toast.error(
+        "Please complete all required fields in the current and previous tabs before proceeding."
+      );
       // Find the first invalid tab and navigate to it
       for (let i = 0; i <= currentIndex; i++) {
         if (!validatedTabs.includes(tabs[i].id)) {
@@ -198,7 +202,7 @@ const CreateGroup: React.FC = () => {
       }
       return;
     }
-    
+
     // Otherwise, proceed to next tab
     navigate(`#${tabs[nextTabIndex].id}`);
   };
@@ -211,23 +215,26 @@ const CreateGroup: React.FC = () => {
       navigate(-1);
     }
   };
-  
+
   // Handle tab change attempts
   const handleTabChange = (tabId: string) => {
     navigate(`#${tabId}`);
   };
 
   const isLastTab = currentTab === tabs[tabs.length - 1].id;
-  
+
   // Determine if the Next button should be disabled based on the current tab
-  const isNextDisabled = 
-    (currentTab === "info" && !groupInfoValid) || 
+  const isNextDisabled =
+    (currentTab === "info" && !groupInfoValid) ||
     (currentTab === "skills" && !skillsInterestsValid);
 
   return (
     <div className="w-full">
       <div className="flex items-center mb-5 relative">
-        <Link to="/activity" className="absolute top-5 left-4 flex items-center text-muted-foreground hover:text-foreground transition-colors">
+        <Link
+          to="/activity"
+          className="absolute top-5 left-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+        >
           <ArrowLeft className="h-full w-full" />
         </Link>
       </div>
@@ -249,23 +256,23 @@ const CreateGroup: React.FC = () => {
         }}
       >
         {currentTab === "info" && (
-          <GroupInfoTab 
-            groupInfo={groupInfo} 
-            onChange={setGroupInfo} 
+          <GroupInfoTab
+            groupInfo={groupInfo}
+            onChange={setGroupInfo}
             onValidationChange={setGroupInfoValid}
           />
         )}
         {currentTab === "skills" && (
           <SkillsInterestsTab
             onValidationChange={setSkillsInterestsValid}
-          // skills={groupSkills.skills}
-          // interests={groupSkills.interests}
-          // onSkillsChange={(skills: string[]) =>
-          //   setGroupSkills((prev) => ({ ...prev, skills }))
-          // }
-          // onInterestsChange={(interests: string[]) =>
-          //   setGroupSkills((prev) => ({ ...prev, interests }))
-          // }
+            // skills={groupSkills.skills}
+            // interests={groupSkills.interests}
+            // onSkillsChange={(skills: string[]) =>
+            //   setGroupSkills((prev) => ({ ...prev, skills }))
+            // }
+            // onInterestsChange={(interests: string[]) =>
+            //   setGroupSkills((prev) => ({ ...prev, interests }))
+            // }
           />
         )}
         {currentTab === "friends" && (

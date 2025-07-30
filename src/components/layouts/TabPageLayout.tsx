@@ -46,24 +46,24 @@ const TabPageLayout: React.FC<TabPageLayoutProps> = ({
   decorativeImages,
 }) => {
   const navigate = useNavigate();
-  
+
   // Check if a tab is accessible
   const isTabAccessible = (tabId: string) => {
     // If custom function is provided, use it
     if (customIsTabAccessible) {
       return customIsTabAccessible(tabId);
     }
-    
+
     // Default accessibility logic
     const currentIndex = tabs.findIndex((tab) => tab.id === currentTab);
     const targetIndex = tabs.findIndex((tab) => tab.id === tabId);
-    
+
     // Current tab is always accessible
     if (tabId === currentTab) return true;
-    
+
     // Previous tabs are always accessible
     if (targetIndex < currentIndex) return true;
-    
+
     // For any forward navigation (future tabs), check that ALL previous tabs are validated
     if (targetIndex > currentIndex) {
       // Check if all tabs before the target tab are validated
@@ -74,16 +74,19 @@ const TabPageLayout: React.FC<TabPageLayoutProps> = ({
       }
       return true;
     }
-    
+
     return false;
   };
-  
-  const handleTabClick = (e: React.MouseEvent<HTMLAnchorElement>, tabId: string) => {
+
+  const handleTabClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    tabId: string
+  ) => {
     if (!isTabAccessible(tabId)) {
       e.preventDefault();
       return;
     }
-    
+
     if (onTabChange) {
       onTabChange(tabId);
     }
@@ -138,20 +141,22 @@ const TabPageLayout: React.FC<TabPageLayoutProps> = ({
 
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-6">
-            <Button 
-              variant="outline" 
-              onClick={handleBack} 
+            <Button
+              variant="outline"
+              onClick={handleBack}
               className={cn(
                 "cursor-pointer",
-                currentTab === tabs[0]?.id && tabs[0]?.id === "personal" && "opacity-50 cursor-not-allowed"
+                currentTab === tabs[0]?.id &&
+                  tabs[0]?.id === "personal" &&
+                  "opacity-50 cursor-not-allowed"
               )}
               // disabled={currentTab === tabs[0]?.id && tabs[0]?.id === "personal"}
             >
               Back
             </Button>
-            <Button 
-              onClick={onNext} 
-              disabled={isNextLoading || isNextDisabled} 
+            <Button
+              onClick={onNext}
+              disabled={isNextLoading || isNextDisabled}
               className="cursor-pointer"
             >
               {isNextLoading && (

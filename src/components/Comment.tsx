@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ThreeDotsMenu, {
   DeleteMenuItem,
-  ReportMenuItem
+  ReportMenuItem,
 } from "@/components/global/ThreeDotsMenu";
 import { useApiCall } from "@/apis/globalCatchError";
 import { CommentData } from "../apis/apiTypes/response";
@@ -14,28 +14,58 @@ import { deleteComment } from "@/apis/commonApiCalls/commentsApi";
 import { deleteComment as deleteCommunityComment } from "@/apis/commonApiCalls/communitiesApi";
 import { Link } from "react-router-dom";
 import { getAllReactions } from "@/apis/commonApiCalls/reactionApi";
-import { ReportModal } from './ReportModal';
+import { ReportModal } from "./ReportModal";
 
 // Memoized reply component to prevent unnecessary re-renders
-const ReplyComment = memo(({ comment, postId, currentUserId, postAuthorId, onCommentDeleted, isPending }:
-  { comment: CommentData & { likes?: number; hasReplies?: boolean; reaction?: { hasReacted: boolean; reactionType: string | null } }; postId?: string; currentUserId?: string; postAuthorId?: string; onCommentDeleted?: (commentId: string) => void; isPending?: boolean }) => (
-  <Comment
-    comment={comment}
-    isReply={true}
-    postId={postId}
-    currentUserId={currentUserId}
-    postAuthorId={postAuthorId}
-    onCommentDeleted={onCommentDeleted}
-    isPending={isPending}
-    isCommunity={false}
-    communityId=""
-  />
-));
-ReplyComment.displayName = 'ReplyComment';
+const ReplyComment = memo(
+  ({
+    comment,
+    postId,
+    currentUserId,
+    postAuthorId,
+    onCommentDeleted,
+    isPending,
+  }: {
+    comment: CommentData & {
+      likes?: number;
+      hasReplies?: boolean;
+      reaction?: { hasReacted: boolean; reactionType: string | null };
+    };
+    postId?: string;
+    currentUserId?: string;
+    postAuthorId?: string;
+    onCommentDeleted?: (commentId: string) => void;
+    isPending?: boolean;
+  }) => (
+    <Comment
+      comment={comment}
+      isReply={true}
+      postId={postId}
+      currentUserId={currentUserId}
+      postAuthorId={postAuthorId}
+      onCommentDeleted={onCommentDeleted}
+      isPending={isPending}
+      isCommunity={false}
+      communityId=""
+    />
+  )
+);
+ReplyComment.displayName = "ReplyComment";
 
-export function Comment({ comment, isAdmin = false, isReply = false, postId, currentUserId, postAuthorId, onCommentDeleted, isPending = false, isCommunity = false, communityId = "" }: CommentProps) {
+export function Comment({
+  comment,
+  isAdmin = false,
+  isReply = false,
+  postId,
+  currentUserId,
+  postAuthorId,
+  onCommentDeleted,
+  isPending = false,
+  isCommunity = false,
+  communityId = "",
+}: CommentProps) {
   // Check if the comment is pending based on its ID (starts with 'temp-')
-  const isCommentPending = isPending || comment.commentId.startsWith('temp-');
+  const isCommentPending = isPending || comment.commentId.startsWith("temp-");
 
   const [showReplies, setShowReplies] = useState(false);
   const [, setLiked] = useState(comment.reaction?.hasReacted || false);
@@ -44,10 +74,11 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
   const [replies, setReplies] = useState<CommentData[]>([]);
 
   // Check if current user is the comment owner
-  const isCommentOwner = (currentUserId && comment.user.userId === currentUserId);
+  const isCommentOwner = currentUserId && comment.user.userId === currentUserId;
 
   // Check if current user is the post owner
-  const isPostOwner = (currentUserId && postAuthorId && currentUserId === postAuthorId);
+  const isPostOwner =
+    currentUserId && postAuthorId && currentUserId === postAuthorId;
 
   // Show delete option if user is either comment owner or post owner
   // const canDelete = isCommentOwner || isPostOwner;
@@ -55,7 +86,7 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
   // Use the useApiCall hook for API calls
   const [executeDeleteComment] = useApiCall(deleteComment);
   const [executeDeleteCommunityComment] = useApiCall(deleteCommunityComment);
-  const [executeGetAllReactions,] = useApiCall(getAllReactions);
+  const [executeGetAllReactions] = useApiCall(getAllReactions);
 
   // Default likes to 0 if not provided
   const likes = comment.likes || 0;
@@ -69,23 +100,30 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
       if (isCommentPending || !currentUserId || !comment.commentId) return;
 
       try {
-        const result = await executeGetAllReactions(comment.commentId, 'comment');
+        const result = await executeGetAllReactions(
+          comment.commentId,
+          "comment"
+        );
 
         if (result.success && result.data) {
           // Find like reactions
-          const likeReaction = result.data.reactions.find((r: { reactionType: string }) => r.reactionType === 'like');
+          const likeReaction = result.data.reactions.find(
+            (r: { reactionType: string }) => r.reactionType === "like"
+          );
 
           if (likeReaction) {
             // Update like count from the API response
             setLikeCount(likeReaction.count);
 
             // Check if current user has reacted
-            const hasUserReacted = likeReaction.users.some((user: { userId: string }) => user.userId === currentUserId);
+            const hasUserReacted = likeReaction.users.some(
+              (user: { userId: string }) => user.userId === currentUserId
+            );
             setLiked(hasUserReacted);
           }
         }
       } catch (error) {
-        console.error('Error checking reactions:', error);
+        console.error("Error checking reactions:", error);
       }
     };
 
@@ -107,11 +145,14 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
   }, [comment.reaction?.hasReacted, comment.likes]);
 
   // Memoize handlers to prevent recreation on each render
-  const toggleReplies = useCallback(() => setShowReplies(prev => !prev), []);
+  const toggleReplies = useCallback(() => setShowReplies((prev) => !prev), []);
 
-  const handleReplyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setReplyText(e.target.value);
-  }, []);
+  const handleReplyChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setReplyText(e.target.value);
+    },
+    []
+  );
 
   const handleAddReply = useCallback(() => {
     if (replyText.trim()) {
@@ -125,18 +166,18 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
         user: {
           userId: currentUserId || "anonymous",
           name: "Anonymous one",
-          profilePic: "/profile/anonymous.png"
+          profilePic: "/profile/anonymous.png",
         },
         likes: 0,
         hasReplies: false,
         reaction: {
           hasReacted: false,
-          reactionType: null
-        }
+          reactionType: null,
+        },
       };
 
       // Optimistically add the reply
-      setReplies(prev => [...prev, newReply]);
+      setReplies((prev) => [...prev, newReply]);
       setReplyText("");
       setShowReplyInput(false);
       setShowReplies(true);
@@ -172,7 +213,7 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
 
       const result = await executeDeleteCommunityComment(communityId, {
         postId: postId,
-        commentId: comment.commentId
+        commentId: comment.commentId,
       });
       success = result.success;
     } else {
@@ -187,10 +228,19 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
         onCommentDeleted(comment.commentId);
       }
     }
-  }, [comment.commentId, postId, communityId, isCommunity, onCommentDeleted, executeDeleteComment, executeDeleteCommunityComment, isCommentPending]);
+  }, [
+    comment.commentId,
+    postId,
+    communityId,
+    isCommunity,
+    onCommentDeleted,
+    executeDeleteComment,
+    executeDeleteCommunityComment,
+    isCommentPending,
+  ]);
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const reporterId = localStorage.getItem('userId') || '';
+  const reporterId = localStorage.getItem("userId") || "";
 
   const handleReportClick = () => {
     setIsReportModalOpen(true);
@@ -206,35 +256,40 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
   if (isCommentOwner) {
     menuItems.push({
       ...DeleteMenuItem,
-      onClick: handleDeleteComment
+      onClick: handleDeleteComment,
     });
   }
   // For other comments in my post -> delete, report
   else if (isPostOwner) {
     menuItems.push({
       ...DeleteMenuItem,
-      onClick: handleDeleteComment
+      onClick: handleDeleteComment,
     });
     menuItems.push({
       ...ReportMenuItem,
-      onClick: handleReportClick
+      onClick: handleReportClick,
     });
   }
   // For other comments in others' post -> report
   else {
     menuItems.push({
       ...ReportMenuItem,
-      onClick: handleReportClick
+      onClick: handleReportClick,
     });
   }
 
   return (
-    <div className={`p-4 ${isReply ? "pl-12" : ""} ${isCommentPending ? "opacity-70" : ""}`}>
+    <div
+      className={`p-4 ${isReply ? "pl-12" : ""} ${isCommentPending ? "opacity-70" : ""}`}
+    >
       <div className="flex gap-2">
         <Link to={`/profile/${comment.user.userId}`}>
           <Avatar className="h-8 w-8 cursor-pointer">
-            <AvatarImage src={comment.user.profilePic} alt={comment.user.name} />
-            <AvatarFallback>{comment.user.name[0] || 'U'}</AvatarFallback>
+            <AvatarImage
+              src={comment.user.profilePic}
+              alt={comment.user.name}
+            />
+            <AvatarFallback>{comment.user.name[0] || "U"}</AvatarFallback>
           </Avatar>
         </Link>
         <div className="flex-1">
@@ -245,16 +300,30 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
                   to={`/profile/${comment.user.userId}`}
                   className="font-medium text-sm cursor-pointer flex gap-2 items-center"
                 >
-                  {comment.user.name} {isAdmin && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#4f9dc7]">
-                                        <path d="M9 12l2 2 4-4"></path>
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                    </svg>
-                                )}
+                  {comment.user.name}{" "}
+                  {isAdmin && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4 text-[#4f9dc7]"
+                    >
+                      <path d="M9 12l2 2 4-4"></path>
+                      <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                  )}
                 </Link>
-                <span className="text-xs text-muted-foreground">{comment.agoTime}</span>
+                <span className="text-xs text-muted-foreground">
+                  {comment.agoTime}
+                </span>
                 {isCommentPending && (
-                  <span className="text-xs text-muted-foreground italic">Sending...</span>
+                  <span className="text-xs text-muted-foreground italic">
+                    Sending...
+                  </span>
                 )}
               </div>
               <p className="text-sm mt-1">{comment.comment}</p>
@@ -269,7 +338,9 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
                     className="text-xs text-muted-foreground"
                     onClick={toggleReplies}
                   >
-                    {showReplies ? "Hide Replies" : `${replies.length || '0'} Replies`}
+                    {showReplies
+                      ? "Hide Replies"
+                      : `${replies.length || "0"} Replies`}
                   </button>
                 )}
               </div>
@@ -337,7 +408,7 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
           {/* Optimized replies rendering with memoized component */}
           {showReplies && replies.length > 0 && (
             <div className="mt-2">
-              {replies.map(reply => (
+              {replies.map((reply) => (
                 <ReplyComment
                   key={reply.commentId}
                   comment={reply}
@@ -345,9 +416,11 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
                   currentUserId={currentUserId}
                   postAuthorId={postAuthorId}
                   onCommentDeleted={(replyId) => {
-                    setReplies(prev => prev.filter(r => r.commentId !== replyId));
+                    setReplies((prev) =>
+                      prev.filter((r) => r.commentId !== replyId)
+                    );
                   }}
-                  isPending={reply.commentId.startsWith('temp-')}
+                  isPending={reply.commentId.startsWith("temp-")}
                 />
               ))}
             </div>
@@ -357,7 +430,7 @@ export function Comment({ comment, isAdmin = false, isReply = false, postId, cur
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
-        postId={postId ?? ''}
+        postId={postId ?? ""}
         reporterId={reporterId}
       />
     </div>

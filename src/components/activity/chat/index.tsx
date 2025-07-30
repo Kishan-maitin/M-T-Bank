@@ -118,7 +118,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     isTyping,
     activeChat: chat,
   } = useAppSelector((state) => state.chat);
-  console.log(chat)
+  console.log(chat);
 
   // API calls
   const [executeGetMessages] = useApiCall(getMessages);
@@ -245,7 +245,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     if (socket && chatId) {
       // Join the chat room
       socket.emit("join", chatId);
-      
+
       // Check if user has left the group before fetching messages
       if (hasLeftGroup) {
         dispatch(setLoadingMessages(false));
@@ -327,7 +327,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         }
 
         // If it's not a post share and it's from the current user, we've probably already added it
-        if (!isPost && !isStoryReplyMessage && isFromCurrentUser && isFromSameDevice) {
+        if (
+          !isPost &&
+          !isStoryReplyMessage &&
+          isFromCurrentUser &&
+          isFromSameDevice
+        ) {
           return;
         }
 
@@ -364,7 +369,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
             isOwnPost: isFromCurrentUser,
           });
         }
-        if(isStoryReplyMessage) {
+        if (isStoryReplyMessage) {
           console.log("Received a story reply:", {
             from: data.senderId,
             isOwnPost: isFromCurrentUser,
@@ -824,7 +829,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div className="flex items-center justify-center h-full">
             <div className="bg-secondary/20 rounded-lg p-6 text-center">
               <h3 className="text-xl font-semibold">You have Left the Group</h3>
-              <p className="text-muted-foreground text-sm mt-2">You can no longer send or receive messages in this group</p>
+              <p className="text-muted-foreground text-sm mt-2">
+                You can no longer send or receive messages in this group
+              </p>
             </div>
           </div>
         ) : (

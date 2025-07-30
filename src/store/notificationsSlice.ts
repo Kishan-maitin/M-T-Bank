@@ -105,21 +105,32 @@ const notificationsSlice = createSlice({
       state.unseenCount = 0;
     },
     // For optimistic update rollbacks
-    revertNotificationDeletion: (state, action: PayloadAction<ApiNotification>) => {
+    revertNotificationDeletion: (
+      state,
+      action: PayloadAction<ApiNotification>
+    ) => {
       const notification = action.payload;
       if (notification.seen) {
         // Avoid duplicates if it was already restored or never removed
-        if (!state.seenNotifications.find(n => n._id === notification._id)) {
+        if (!state.seenNotifications.find((n) => n._id === notification._id)) {
           state.seenNotifications.push(notification);
           // Optional: sort seenNotifications by timestamp if needed upon rollback
-          state.seenNotifications.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          state.seenNotifications.sort(
+            (a, b) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
         }
       } else {
-        if (!state.unseenNotifications.find(n => n._id === notification._id)) {
+        if (
+          !state.unseenNotifications.find((n) => n._id === notification._id)
+        ) {
           state.unseenNotifications.push(notification);
           state.unseenCount += 1;
           // Optional: sort unseenNotifications by timestamp if needed upon rollback
-          state.unseenNotifications.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          state.unseenNotifications.sort(
+            (a, b) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
         }
       }
     },
@@ -128,13 +139,20 @@ const notificationsSlice = createSlice({
     },
     // If a notification is deleted from unseen, but API call fails, we only need to adjust count if it wasn't re-added
     decrementUnseenCountInternal: (state) => {
-        state.unseenCount = Math.max(0, state.unseenCount - 1);
+      state.unseenCount = Math.max(0, state.unseenCount - 1);
     },
-    addNewUnseenNotification: (state, action: PayloadAction<ApiNotification>) => {
+    addNewUnseenNotification: (
+      state,
+      action: PayloadAction<ApiNotification>
+    ) => {
       const newNotification = action.payload;
       // Check if the notification already exists in unseen or seen to prevent duplicates
-      const existsInUnseen = state.unseenNotifications.some(n => n._id === newNotification._id);
-      const existsInSeen = state.seenNotifications.some(n => n._id === newNotification._id);
+      const existsInUnseen = state.unseenNotifications.some(
+        (n) => n._id === newNotification._id
+      );
+      const existsInSeen = state.seenNotifications.some(
+        (n) => n._id === newNotification._id
+      );
 
       if (!existsInUnseen && !existsInSeen) {
         // Add to the beginning of unseen notifications for newest first UX
@@ -143,12 +161,16 @@ const notificationsSlice = createSlice({
       } else if (existsInSeen && !newNotification.seen) {
         // Edge case: if a notification marked as seen somehow comes as new & unseen again
         // Move it from seen to unseen
-        state.seenNotifications = state.seenNotifications.filter(n => n._id !== newNotification._id);
+        state.seenNotifications = state.seenNotifications.filter(
+          (n) => n._id !== newNotification._id
+        );
         state.unseenNotifications.unshift(newNotification);
         state.unseenCount += 1;
       } else if (existsInUnseen && newNotification.seen) {
         // Edge case: if a notification already in unseen is updated to be seen via socket (less likely for 'newNotification' event)
-        state.unseenNotifications = state.unseenNotifications.filter(n => n._id !== newNotification._id);
+        state.unseenNotifications = state.unseenNotifications.filter(
+          (n) => n._id !== newNotification._id
+        );
         state.seenNotifications.unshift(newNotification); // It's now seen, so no unseenCount change
       }
       // If it existsInUnseen and is still unseen, or existsInSeen and is still seen, do nothing.
@@ -168,4 +190,4 @@ export const {
   addNewUnseenNotification,
 } = notificationsSlice.actions;
 
-export default notificationsSlice.reducer; 
+export default notificationsSlice.reducer;

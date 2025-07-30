@@ -28,16 +28,19 @@ export const createPost = async (
         formData.append(`image`, file);
       } else if (file.type.startsWith("video/")) {
         formData.append(`video`, file);
-        
+
         // Check if this is a video with thumbnail
-        if ('thumbnail' in file && file.thumbnail instanceof File) {
+        if ("thumbnail" in file && file.thumbnail instanceof File) {
           const videoFile = file as VideoFileWithThumbnail;
-          
+
           // Add the thumbnail for the video
           formData.append(`thumbnail`, videoFile.thumbnail);
-          
+
           // Add crop data as JSON string
-          formData.append(`videoCropData_${index}`, JSON.stringify(videoFile.cropData));
+          formData.append(
+            `videoCropData_${index}`,
+            JSON.stringify(videoFile.cropData)
+          );
         }
       }
     }
@@ -47,13 +50,11 @@ export const createPost = async (
   console.log("Sending post data:", Object.fromEntries(formData.entries()));
 
   const response = await formDataApiClient.post<CreatePostResponse>(
-      "/post",
-      formData
-    );
+    "/post",
+    formData
+  );
   return response.data;
 };
-
-
 
 /**
  * Creates a new post with optional media attachments
@@ -63,8 +64,7 @@ export const createPost = async (
 export const createCommunityPost = async (
   postData: CreatePostRequest
 ): Promise<CreatePostResponse> => {
-
-  const communityMediaLinks : {type:string,url:string}[] = [];
+  const communityMediaLinks: { type: string; url: string }[] = [];
   // Handle media files while maintaining sequence
   if (postData.image && postData.image.length > 0) {
     for (let index = 0; index < postData.image.length; index++) {
@@ -84,14 +84,14 @@ export const createCommunityPost = async (
   }
 
   const response = await adminApiClient.post<CreatePostResponse>(
-      `/communities/${postData.communityId}/post`,
-      {
-        content: postData.content,
-        communityId: postData.communityId,
-        isAnonymous: postData.isAnonymous,
-        mediaUrls: communityMediaLinks,
-      }
-    );
+    `/communities/${postData.communityId}/post`,
+    {
+      content: postData.content,
+      communityId: postData.communityId,
+      isAnonymous: postData.isAnonymous,
+      mediaUrls: communityMediaLinks,
+    }
+  );
 
   return response.data;
 };

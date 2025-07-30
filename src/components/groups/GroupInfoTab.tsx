@@ -18,7 +18,11 @@ interface GroupInfoTabProps {
   onValidationChange?: (isValid: boolean) => void;
 }
 
-const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onValidationChange }) => {
+const GroupInfoTab: React.FC<GroupInfoTabProps> = ({
+  groupInfo,
+  onChange,
+  onValidationChange,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -49,7 +53,7 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
   const handleEmojiSelect = (emojiData: any) => {
     onChange({
       ...groupInfo,
-      description: groupInfo.description + emojiData.emoji
+      description: groupInfo.description + emojiData.emoji,
     });
   };
 
@@ -58,7 +62,7 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
     const isNameValid = groupInfo.name.trim().length > 0;
     const isDescriptionValid = groupInfo.description.trim().length > 0;
     const isValid = isNameValid && isDescriptionValid;
-    
+
     if (onValidationChange) {
       onValidationChange(isValid);
     }
@@ -69,8 +73,8 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
     if (!file) return;
 
     // Check if file is an image
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
       return;
     }
 
@@ -95,9 +99,9 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
         <div className="flex justify-center mb-4">
           <div className="relative w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden">
             {previewUrl && (
-              <img 
-                src={previewUrl} 
-                alt="Group image" 
+              <img
+                src={previewUrl}
+                alt="Group image"
                 className="h-full w-full object-cover"
               />
             )}
@@ -109,7 +113,7 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
               className="hidden"
               id="group-image-upload"
             />
-            <button 
+            <button
               className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer"
               onClick={handleButtonClick}
               type="button"
@@ -173,7 +177,7 @@ const GroupInfoTab: React.FC<GroupInfoTabProps> = ({ groupInfo, onChange, onVali
             <Smile className="h-5 w-5" />
           </Button>
           {showEmojiPicker && (
-            <div 
+            <div
               ref={emojiPickerRef}
               className="absolute right-0 bottom-14 z-50"
             >

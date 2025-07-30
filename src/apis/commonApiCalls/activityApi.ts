@@ -1,10 +1,13 @@
 import apiClient, { formDataApiClient } from "@/apis/apiClient";
-import { SearchResponse, ApiResponse, ChatRoomsResponse, FollowingsResponse } from "../apiTypes/response";
+import {
+  SearchResponse,
+  ApiResponse,
+  ChatRoomsResponse,
+  FollowingsResponse,
+} from "../apiTypes/response";
 import { CreateGroupRequest, EditGroupRequest } from "../apiTypes/request";
 
-
 export const fetchChatRooms = async (): Promise<ChatRoomsResponse> => {
-
   const response = await apiClient.get<ChatRoomsResponse>(
     "/get-all-chat-rooms"
   );
@@ -44,7 +47,7 @@ export const createGroup = async (
     // Return the full response structure including the chatRoom object
     return {
       ...response.data,
-      success: true
+      success: true,
     };
   } else {
     throw new Error(response.data.message || "Failed to create group");
@@ -68,36 +71,43 @@ export const editGroup = async (
     formData.append("groupName", data.groupName);
   }
 
-  const response = await formDataApiClient.put<ApiResponse>("/edit-group", formData);
+  const response = await formDataApiClient.put<ApiResponse>(
+    "/edit-group",
+    formData
+  );
 
   console.log("Response from edit group:", response);
 
   if (response.status === 200 || response.status === 201) {
     return {
       ...response.data,
-      success: true
+      success: true,
     };
   } else {
     throw new Error(response.data.message || "Failed to edit group");
   }
 };
 
-export const blockUser = async (blockedUserId: string): Promise<ApiResponse> => {
-  const response = await apiClient.post<ApiResponse>('/block-user',{
-    blocked: blockedUserId
+export const blockUser = async (
+  blockedUserId: string
+): Promise<ApiResponse> => {
+  const response = await apiClient.post<ApiResponse>("/block-user", {
+    blocked: blockedUserId,
   });
   return response.data;
 };
 
-export const unblockUser = async (blockedUserId: string): Promise<ApiResponse> => {
+export const unblockUser = async (
+  blockedUserId: string
+): Promise<ApiResponse> => {
   if (!blockedUserId) {
-    throw new Error('User ID is required');
+    throw new Error("User ID is required");
   }
 
   console.log("unblockUser API called with ID:", blockedUserId);
 
-  const response = await apiClient.post<ApiResponse>('/unblock-user', {
-    blocked: blockedUserId
+  const response = await apiClient.post<ApiResponse>("/unblock-user", {
+    blocked: blockedUserId,
   });
 
   console.log("Unblock user API response:", response);
@@ -105,7 +115,7 @@ export const unblockUser = async (blockedUserId: string): Promise<ApiResponse> =
   if (response.status === 200) {
     return response.data;
   } else {
-    throw new Error(response.data.message || 'Failed to unblock user');
+    throw new Error(response.data.message || "Failed to unblock user");
   }
 };
 
@@ -121,42 +131,46 @@ export interface GetBlockedUsersResponse {
 }
 
 export const getBlockedUsers = async (): Promise<GetBlockedUsersResponse> => {
-  const response = await apiClient.get<GetBlockedUsersResponse>('/get-blocked-users');
+  const response =
+    await apiClient.get<GetBlockedUsersResponse>("/get-blocked-users");
 
   console.log("Get blocked users API response:", response);
 
   if (response.status === 200) {
     return response.data;
   } else {
-    throw new Error(response.data.message || 'Failed to fetch blocked users');
+    throw new Error(response.data.message || "Failed to fetch blocked users");
   }
 };
 
 export const leaveGroup = async (groupId: string): Promise<ApiResponse> => {
-  const response = await apiClient.post<ApiResponse>('/leave-chatroom', {
-    chatRoomId: groupId
+  const response = await apiClient.post<ApiResponse>("/leave-chatroom", {
+    chatRoomId: groupId,
   });
-  
+
   if (response.status === 200) {
     return {
       ...response.data,
-      success: true
+      success: true,
     };
   } else {
     throw new Error(response.data.message || "Failed to leave group");
   }
 };
 
-export const inviteToGroup = async (groupId: string, userIds: string[]): Promise<ApiResponse> => {
-  const response = await apiClient.put<ApiResponse>('/add-participants', {
+export const inviteToGroup = async (
+  groupId: string,
+  userIds: string[]
+): Promise<ApiResponse> => {
+  const response = await apiClient.put<ApiResponse>("/add-participants", {
     chatRoomId: groupId,
-    participants: userIds
+    participants: userIds,
   });
-  
+
   if (response.status === 200) {
     return {
       ...response.data,
-      success: true
+      success: true,
     };
   } else {
     throw new Error(response.data.message || "Failed to invite users to group");
@@ -164,14 +178,14 @@ export const inviteToGroup = async (groupId: string, userIds: string[]): Promise
 };
 
 export const deleteGroup = async (chatId: string): Promise<ApiResponse> => {
-  const response = await apiClient.delete<ApiResponse>('/delete-group', {
-    data: { chatId }
+  const response = await apiClient.delete<ApiResponse>("/delete-group", {
+    data: { chatId },
   });
-  
+
   if (response.status === 200) {
     return {
       ...response.data,
-      success: true
+      success: true,
     };
   } else {
     throw new Error(response.data.message || "Failed to delete group");

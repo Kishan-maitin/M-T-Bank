@@ -111,8 +111,12 @@ const ReferralsPage: React.FC = () => {
         <div className="p-5 border border-border rounded-lg shadow-sm bg-card">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <h4 className="text-md font-semibold text-foreground mb-1 sm:mb-0">Your Referral Code</h4>
-              <p className="text-sm text-muted-foreground hidden sm:block">Share this code with your friends.</p>
+              <h4 className="text-md font-semibold text-foreground mb-1 sm:mb-0">
+                Your Referral Code
+              </h4>
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                Share this code with your friends.
+              </p>
             </div>
             {referralCode ? (
               <div className="flex items-center gap-2 mt-2 sm:mt-0">
@@ -130,7 +134,9 @@ const ReferralsPage: React.FC = () => {
                 </Button>
               </div>
             ) : (
-              <p className="text-muted-foreground mt-2 sm:mt-0">No code available.</p>
+              <p className="text-muted-foreground mt-2 sm:mt-0">
+                No code available.
+              </p>
             )}
           </div>
         </div>
@@ -138,8 +144,12 @@ const ReferralsPage: React.FC = () => {
         <div className="p-5 border border-border rounded-lg shadow-sm bg-card">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h4 className="text-md font-semibold text-foreground mb-1 sm:mb-0">Share Your Link</h4>
-              <p className="text-sm text-muted-foreground hidden sm:block">Copy and share your unique referral link.</p>
+              <h4 className="text-md font-semibold text-foreground mb-1 sm:mb-0">
+                Share Your Link
+              </h4>
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                Copy and share your unique referral link.
+              </p>
             </div>
             {referralCode ? (
               <Button
@@ -150,17 +160,21 @@ const ReferralsPage: React.FC = () => {
                 className="mt-2 sm:mt-0 w-full sm:w-auto"
               >
                 <Link2 className="h-4 w-4 mr-2" />
-                Copy Link 
+                Copy Link
               </Button>
             ) : (
-              <p className="text-muted-foreground mt-2 sm:mt-0">Link not available.</p>
+              <p className="text-muted-foreground mt-2 sm:mt-0">
+                Link not available.
+              </p>
             )}
           </div>
         </div>
 
         <div className="p-5 border border-border rounded-lg shadow-sm bg-card">
           <div className="flex items-center justify-between">
-            <h4 className="text-md font-semibold text-foreground">Friends Joined</h4>
+            <h4 className="text-md font-semibold text-foreground">
+              Friends Joined
+            </h4>
             <p className="text-2xl font-bold text-foreground">
               {referralCount || 0}
             </p>
@@ -170,9 +184,8 @@ const ReferralsPage: React.FC = () => {
           </p>
         </div>
       </div>
-
     </div>
   );
 };
 
-export default ReferralsPage; 
+export default ReferralsPage;

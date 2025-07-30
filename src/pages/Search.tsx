@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Search as SearchIcon, Loader2, Users, AlertCircle, ArrowLeft } from "lucide-react";
+import {
+  Search as SearchIcon,
+  Loader2,
+  Users,
+  AlertCircle,
+  ArrowLeft,
+} from "lucide-react";
 import SearchResults from "@/components/SearchResults";
 import { Link } from "react-router-dom";
 import { Person, searchPeople } from "@/apis/commonApiCalls/searchApi";
@@ -9,7 +15,10 @@ import { SearchResultsListSkeleton } from "@/components/skeletons/SearchSkeleton
 import { EmptyState } from "@/components/ui/empty-state";
 import { SearchHistoryItem } from "@/components/SearchHistoryItem";
 import { SearchHistoryUser } from "@/apis/apiTypes/searchHistory";
-import { getSearchHistory, clearSearchHistory } from "@/apis/commonApiCalls/searchHistoryApi";
+import {
+  getSearchHistory,
+  clearSearchHistory,
+} from "@/apis/commonApiCalls/searchHistoryApi";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -19,12 +28,16 @@ export default function Search() {
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryUser[]>([]);
-  const [prevSearchHistory, setPrevSearchHistory] = useState<SearchHistoryUser[]>([]);
+  const [prevSearchHistory, setPrevSearchHistory] = useState<
+    SearchHistoryUser[]
+  >([]);
 
   // Using useApiCall for all API operations
   const [executeSearch, isLoading] = useApiCall(searchPeople);
-  const [executeGetSearchHistory, isLoadingHistory] = useApiCall(getSearchHistory);
-  const [executeClearHistory, isClearingHistory] = useApiCall(clearSearchHistory);
+  const [executeGetSearchHistory, isLoadingHistory] =
+    useApiCall(getSearchHistory);
+  const [executeClearHistory, isClearingHistory] =
+    useApiCall(clearSearchHistory);
 
   // Fetch search history when component mounts
   useEffect(() => {
@@ -41,12 +54,12 @@ export default function Search() {
 
   const handleClearAllHistory = async () => {
     if (isClearingHistory) return;
-    
+
     // Store current history for potential revert
     setPrevSearchHistory(searchHistory);
     // Optimistically clear the history
     setSearchHistory([]);
-    
+
     const { success } = await executeClearHistory();
     if (!success) {
       // Revert to previous state if the API call fails
@@ -56,13 +69,13 @@ export default function Search() {
   };
 
   const handleRemoveHistoryItem = (userId: string) => {
-    setSearchHistory(prev => prev.filter(user => user.userId !== userId));
+    setSearchHistory((prev) => prev.filter((user) => user.userId !== userId));
   };
 
   const handleRevertHistoryItem = (userId: string) => {
     // Find the removed user in the previous state and add it back
-    setSearchHistory(prev => {
-      const removedUser = searchHistory.find(user => user.userId === userId);
+    setSearchHistory((prev) => {
+      const removedUser = searchHistory.find((user) => user.userId === userId);
       if (removedUser) {
         return [...prev, removedUser];
       }
@@ -102,10 +115,13 @@ export default function Search() {
     <>
       <div className="max-w-2xl mx-auto bg-background px-4 pb-4">
         <div className="sticky bg-background py-4 z-10 -top-10 flex items-center relative">
-          <Link to="/" className="absolute left-0 flex items-center text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            to="/"
+            className="absolute left-0 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          >
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          
+
           {/* Search Bar */}
           <div className="relative w-full ml-6">
             <Input
@@ -121,16 +137,18 @@ export default function Search() {
             )}
           </div>
         </div>
-        
+
         {/* Recent Searches */}
         {searchQuery === "" && !hasSearched && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm text-muted-foreground">Recent Searches</div>
+              <div className="text-sm text-muted-foreground">
+                Recent Searches
+              </div>
               {searchHistory.length > 0 && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="text-xs text-muted-foreground h-7 cursor-pointer"
                   onClick={handleClearAllHistory}
                   disabled={isClearingHistory}
@@ -139,7 +157,7 @@ export default function Search() {
                 </Button>
               )}
             </div>
-            
+
             {isLoadingHistory ? (
               <div className="flex justify-center py-4">
                 <Loader2 className="animate-spin text-muted-foreground" />
@@ -147,9 +165,9 @@ export default function Search() {
             ) : searchHistory.length > 0 ? (
               <div className="space-y-2">
                 {searchHistory.map((user) => (
-                  <SearchHistoryItem 
-                    key={user.userId} 
-                    user={user} 
+                  <SearchHistoryItem
+                    key={user.userId}
+                    user={user}
                     onRemove={() => handleRemoveHistoryItem(user.userId)}
                     onRevert={() => handleRevertHistoryItem(user.userId)}
                   />
@@ -165,12 +183,10 @@ export default function Search() {
             )}
           </div>
         )}
-        
+
         {/* Loading State */}
-        {isLoading && searchQuery !== "" && (
-          <SearchResultsListSkeleton />
-        )}
-        
+        {isLoading && searchQuery !== "" && <SearchResultsListSkeleton />}
+
         {/* Error State */}
         {error && !isLoading && (
           <EmptyState
@@ -180,7 +196,7 @@ export default function Search() {
             className="my-8"
           />
         )}
-        
+
         {/* Empty Results State */}
         {!isLoading && hasSearched && people.length === 0 && !error && (
           <EmptyState
@@ -190,7 +206,7 @@ export default function Search() {
             className="my-8"
           />
         )}
-        
+
         {/* People List */}
         {!isLoading && people.length > 0 && (
           <div className="space-y-4">

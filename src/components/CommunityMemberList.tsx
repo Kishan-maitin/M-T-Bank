@@ -11,30 +11,33 @@ interface CommunityMemberListProps {
   memberDetails?: MemberDetail[];
 }
 
-const CommunityMemberList = ({ memberIds, memberDetails }: CommunityMemberListProps) => {
+const CommunityMemberList = ({
+  memberIds,
+  memberDetails,
+}: CommunityMemberListProps) => {
   const [members, setMembers] = useState<ExtendedMember[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [fetchProfile] = useApiCall(fetchProfileById);
 
   useEffect(() => {
     // If memberDetails are provided, use them directly
     if (memberDetails && memberDetails.length > 0) {
       // Format members, ensuring they all have at least default values
-      const formattedMembers = memberDetails.map(member => ({
+      const formattedMembers = memberDetails.map((member) => ({
         _id: member._id,
         name: member.name || "Anonymous User",
         profilePic: member.profilePic || "",
         avatar: member.avatar || "",
         nickName: "Member",
       }));
-      
+
       setMembers(formattedMembers);
       setLoading(false);
       return;
     }
-    
+
     // Otherwise fetch using memberIds
     const fetchMembers = async () => {
       if (!memberIds || !memberIds.length) {
@@ -57,13 +60,15 @@ const CommunityMemberList = ({ memberIds, memberDetails }: CommunityMemberListPr
               avatar: response.data.avatar || "",
               bio: response.data.bio || "",
               email: response.data.email || "",
-              interests: response.data.interests || []
+              interests: response.data.interests || [],
             };
           }
           return null;
         });
-        
-        const memberProfiles = (await Promise.all(memberPromises)).filter(Boolean) as ExtendedMember[];
+
+        const memberProfiles = (await Promise.all(memberPromises)).filter(
+          Boolean
+        ) as ExtendedMember[];
         setMembers(memberProfiles);
       } catch (err) {
         console.error("Error fetching community members:", err);
@@ -93,7 +98,9 @@ const CommunityMemberList = ({ memberIds, memberDetails }: CommunityMemberListPr
   }
 
   if (error) {
-    return <div className="text-center py-6 text-muted-foreground">{error}</div>;
+    return (
+      <div className="text-center py-6 text-muted-foreground">{error}</div>
+    );
   }
 
   if (members.length === 0) {
@@ -113,20 +120,25 @@ const CommunityMemberList = ({ memberIds, memberDetails }: CommunityMemberListPr
           className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/30 transition-colors"
         >
           <Avatar className="h-10 w-10 bg-purple-900/40 border-2 border-purple-500/30">
-            <AvatarImage src={member.profilePic || member.avatar} alt={member.name} />
+            <AvatarImage
+              src={member.profilePic || member.avatar}
+              alt={member.name}
+            />
             <AvatarFallback className="bg-purple-900/50 text-white">
               {member.name ? member.name.charAt(0).toUpperCase() : "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-medium text-foreground">{member.name || "Anonymous User"}</span>
+            <span className="font-medium text-foreground">
+              {member.name || "Anonymous User"}
+            </span>
             <span className="text-xs text-muted-foreground">
               {member.nickName || "Member"}
             </span>
           </div>
         </Link>
       ))}
-      
+
       {/* {memberIds && memberIds.length > members.length && (
         <div className="text-center py-2 text-sm text-muted-foreground">
           + {memberIds.length - members.length} More members
@@ -136,4 +148,4 @@ const CommunityMemberList = ({ memberIds, memberDetails }: CommunityMemberListPr
   );
 };
 
-export default CommunityMemberList; 
+export default CommunityMemberList;

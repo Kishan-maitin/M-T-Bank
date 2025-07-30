@@ -125,7 +125,11 @@ const PrivacySettingsPage: React.FC = () => {
         </div> */}
 
         {/* Show current state with disabled button */}
-        <Button variant="outline" className="w-full text-foreground" disabled={true}>
+        <Button
+          variant="outline"
+          className="w-full text-foreground"
+          disabled={true}
+        >
           {isUpdatingProfile
             ? "Updating..."
             : `Your Account is Currently ${

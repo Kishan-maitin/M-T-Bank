@@ -1,2 +1,2 @@
-import ChatInterface from './chat';
+import ChatInterface from "./chat";
 export default ChatInterface;

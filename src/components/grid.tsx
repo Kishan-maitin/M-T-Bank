@@ -11,7 +11,7 @@ interface GridProps {
 
 /**
  * A reusable grid component with customizable styling
- * 
+ *
  * @param children - Content to render inside the grid
  * @param className - Additional CSS classes
  * @param padding - Custom padding (defaults to "p-8")
@@ -26,15 +26,7 @@ const Grid: React.FC<GridProps> = ({
   bgColor,
 }) => {
   return (
-    <div
-      className={cn(
-        "grid",
-        padding,
-        columns,
-        bgColor,
-        className
-      )}
-    >
+    <div className={cn("grid", padding, columns, bgColor, className)}>
       {children}
     </div>
   );

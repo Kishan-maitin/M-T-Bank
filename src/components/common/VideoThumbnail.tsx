@@ -83,4 +83,4 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ videoUrl }) => {
   );
 };
 
-export default VideoThumbnail; 
+export default VideoThumbnail;

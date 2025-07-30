@@ -4,9 +4,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Comment } from "@/components/Comment";
 import { Input } from "@/components/ui/input";
-import ThreeDotsMenu, { 
-  ShareMenuItem, 
-  ReportMenuItem 
+import ThreeDotsMenu, {
+  ShareMenuItem,
+  ReportMenuItem,
 } from "@/components/global/ThreeDotsMenu";
 import { CommentsProps } from "@/types/home";
 
@@ -18,7 +18,7 @@ export function Comments({
   postComments,
   postDate,
   comments,
-  postAuthorId
+  postAuthorId,
 }: CommentsProps) {
   const [newComment, setNewMessage] = useState("");
 
@@ -26,12 +26,12 @@ export function Comments({
   const menuItems = [
     {
       ...ShareMenuItem,
-      onClick: () => console.log('Share clicked')
+      onClick: () => console.log("Share clicked"),
     },
     {
       ...ReportMenuItem,
-      onClick: () => console.log('Report clicked')
-    }
+      onClick: () => console.log("Report clicked"),
+    },
   ];
 
   return (
@@ -95,15 +95,15 @@ export function Comments({
           <Comment
             key={comment.commentId}
             comment={comment}
-            currentUserId={localStorage.getItem('userId') || undefined}
+            currentUserId={localStorage.getItem("userId") || undefined}
             postAuthorId={postAuthorId}
             onCommentDeleted={(commentId) => {
               // This is just a UI component, so we don't handle actual deletion here
-              console.log('Comment deleted:', commentId);
+              console.log("Comment deleted:", commentId);
             }}
           />
         ))}
       </div>
     </div>
   );
-} 
+}

@@ -94,27 +94,28 @@ const CreateStory = () => {
   const [rewriteError, setRewriteError] = useState<string>("");
 
   const [executeUploadStory, isUploading] = useApiCall(uploadStory);
-  const [executeRewriteWithBondChat, isRewritingWithBondChat] = useApiCall(rewriteWithBondChat);
+  const [executeRewriteWithBondChat, isRewritingWithBondChat] =
+    useApiCall(rewriteWithBondChat);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleTextChange = (newText: string) => {
     if (textareaRef.current) {
       const textarea = textareaRef.current;
-      
+
       // Temporarily update value to check if it would cause overflow
       textarea.value = newText;
-      
+
       // If adding this text would exceed 5 lines (5 × line height)
       const lineHeight = 24; // Line height as set in the textarea style
       const maxHeight = lineHeight * 5;
-      
+
       if (textarea.scrollHeight > maxHeight) {
         // Revert to previous text
         textarea.value = currentContentText;
         return;
       }
-      
+
       // If no overflow, update the state
       setStories((prev) =>
         prev.map((story, idx) =>
@@ -198,7 +199,7 @@ const CreateStory = () => {
         toast.error(`File ${file.name} exceeds maximum size of 50MB`);
         return;
       }
-      
+
       const newStories = [...stories];
 
       const reader = new FileReader();
@@ -579,7 +580,7 @@ const CreateStory = () => {
   const handleRewriteWithBondChat = async () => {
     // Clear any previous error
     setRewriteError("");
-    
+
     // Only proceed if there's content to rewrite
     if (!currentContentText.trim()) {
       setRewriteError("Please add some text to rewrite");
@@ -587,7 +588,8 @@ const CreateStory = () => {
     }
 
     // Execute the API call with error handling
-    const { data, success } = await executeRewriteWithBondChat(currentContentText);
+    const { data, success } =
+      await executeRewriteWithBondChat(currentContentText);
 
     if (success && data) {
       // Update the content with the rewritten text
@@ -736,7 +738,7 @@ const CreateStory = () => {
         </div>
 
         {/* Story Content Area */}
-        <div className="flex-1 p-4 relative z-50">         
+        <div className="flex-1 p-4 relative z-50">
           <div className="flex justify-center  absolute -bottom-1.5 left-1/2 -translate-x-1/2">
             <span
               className="text-xs"
@@ -760,38 +762,49 @@ const CreateStory = () => {
             )}
 
             {/* Story Content - Incorporating improved media handling from first file */}
-            <div className="h-full w-full flex items-center justify-center relative z-10">
-            {currentStory.type === "text" && (
-            <div className="absolute top-4 right-4 z-50">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs flex items-center gap-1 cursor-pointer border-2 border-primary bg-background"
-                onClick={handleRewriteWithBondChat}
-                disabled={isRewritingWithBondChat}
-              >
-                {isRewritingWithBondChat ? (
-                  <div className="flex items-center gap-1">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent"></div>
-                    <span className="text-foreground border-primary">
-                      Rewriting...
-                    </span>
-                  </div>
-                ) : (
-                  <>
-                    <img src="/bondchat.svg" alt="BondChat" className="w-4 h-4" />
-                    <div className="text-foreground">
-                      Re-write with{" "}
-                      <span className="grad font-bold">BondChat </span>
-                    </div>
-                  </>
-                )}
-              </Button>
-              {rewriteError && (
-                <p className="text-white font-bold text-xs mt-1">{rewriteError}</p>
+            <div
+              className="h-full w-full flex items-center justify-center relative z-10"
+              // style={{ backgroundColor: "#007856" }}
+            >
+              {currentStory.type === "text" && (
+                <div className="absolute top-4 right-4 z-50">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs flex items-center gap-1 cursor-pointer border-2 border-primary bg-background"
+                    onClick={handleRewriteWithBondChat}
+                    disabled={isRewritingWithBondChat}
+                  >
+                    {isRewritingWithBondChat ? (
+                      <div className="flex items-center gap-1">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent"></div>
+                        <span className="text-foreground border-primary">
+                          Rewriting...
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <img
+                          src="/bondchat.svg"
+                          alt="BondChat"
+                          className="w-4 h-4"
+                        />
+                        <div className="text-foreground">
+                          Re-write with{" "}
+                          <span className="grad font-bold">
+                            M&T AI Assistant{" "}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </Button>
+                  {rewriteError && (
+                    <p className="text-white font-bold text-xs mt-1">
+                      {rewriteError}
+                    </p>
+                  )}
+                </div>
               )}
-            </div>
-          )}
               {currentStory.type === "text" && (
                 <div className="w-full px-4">
                   {isRewritingWithBondChat ? (
@@ -799,7 +812,7 @@ const CreateStory = () => {
                       <div className="h-6 bg-[var(--secondary)] opacity-40 rounded mb-2 w-3/4"></div>
                       <div className="h-6 bg-[var(--secondary)] opacity-40 rounded mb-2 w-5/6"></div>
                       <div className="h-6 bg-[var(--secondary)] opacity-40 rounded w-2/3"></div>
-                  </div>
+                    </div>
                   ) : (
                     <textarea
                       ref={textareaRef}
@@ -830,7 +843,9 @@ const CreateStory = () => {
                     src={currentPreviewUrl}
                     alt="Story"
                     className="max-w-full object-contain"
-                    style={{ maxHeight: "calc(100% - 40px)" }} // Subtract space for buttons
+                    style={{
+                      maxHeight: "calc(100% - 40px)",
+                    }} // Subtract space for buttons
                   />
                 </div>
               )}
@@ -841,7 +856,9 @@ const CreateStory = () => {
                   <video
                     src={currentPreviewUrl}
                     className="max-w-full object-contain"
-                    style={{ maxHeight: "calc(100% - 40px)" }} // Subtract space for buttons
+                    style={{
+                      maxHeight: "calc(100% - 40px)",
+                    }} // Subtract space for buttons
                     controls
                   />
                 </div>

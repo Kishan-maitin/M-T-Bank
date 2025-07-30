@@ -11,7 +11,14 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { AlertTriangle, ArrowLeft, KeyRound, EyeOff, Eye, Loader2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  KeyRound,
+  EyeOff,
+  Eye,
+  Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
 import ResetPasswordDialog from "./ResetPasswordDialog";
 import { Input } from "@/components/ui/input";
@@ -39,15 +46,15 @@ const LogoutDeletePage: React.FC = () => {
 
     // Call the API to delete the account
     const result = await executeDeleteAccount(password);
-    
+
     if (result.success) {
       // Clear user data from localStorage and reset store
       dispatch(resetUser());
       localStorage.clear(); // Clear all localStorage items
-      
+
       setDeleteDialogOpen(false);
       toast.success("Account deleted successfully");
-      
+
       // Redirect to login page
       window.location.href = "/login";
     } else {
@@ -189,7 +196,9 @@ const LogoutDeletePage: React.FC = () => {
                 </Button>
               </div>
               {passwordError && (
-                <p className="text-sm text-foreground font-semibold">{passwordError}</p>
+                <p className="text-sm text-foreground font-semibold">
+                  {passwordError}
+                </p>
               )}
             </div>
 
@@ -202,8 +211,8 @@ const LogoutDeletePage: React.FC = () => {
               >
                 Cancel
               </Button>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={handleDeleteAccount}
                 disabled={isDeleting}
                 className="cursor-pointer"

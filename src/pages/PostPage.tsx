@@ -54,8 +54,8 @@ export default function CommentsPage() {
             like: 0,
             love: 0,
             haha: 0,
-            lulu: 0
-          }
+            lulu: 0,
+          },
         },
         ago_time: "",
         feedId: postId || "",
@@ -97,7 +97,7 @@ export default function CommentsPage() {
             love: profilePost.reactionDetails.types.love,
             haha: profilePost.reactionDetails.types.haha,
             lulu: profilePost.reactionDetails.types.lulu,
-          }
+          },
         },
         ago_time: new Date(profilePost.createdAt * 1000).toLocaleDateString(),
         feedId: postId || "",
@@ -442,22 +442,31 @@ export default function CommentsPage() {
   // Error state with user-friendly message
   if (error) {
     return (
-      <div className="flex flex-col">  
+      <div className="flex flex-col">
         <div className="h-[80vh] w-full flex flex-col items-center justify-center">
           <div className="text-center max-w-md px-4">
             <div className="mb-6 w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
-                <path d="M18 6 6 18M6 6l12 12"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-muted-foreground"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             </div>
             <h2 className="text-2xl font-semibold mb-2">
               {error.includes("not found") ? "Post Not Found" : "Error"}
             </h2>
-            <p className="text-muted-foreground mb-6">
-              {error}
-            </p>
-            <button 
-              onClick={() => navigate(-1)} 
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <button
+              onClick={() => navigate(-1)}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
             >
               Go Back
@@ -504,12 +513,16 @@ export default function CommentsPage() {
               onCommentClick={() => {}}
               onLikeClick={() => {}}
               onDelete={handlePostDelete}
-              initialReaction={post.reaction || { hasReacted: false, reactionType: null }}
+              initialReaction={
+                post.reaction || { hasReacted: false, reactionType: null }
+              }
               initialReactionCount={post.reactionCount || 0}
-              initialReactionDetails={post.reactionDetails || { 
-                total: post.reactionCount || 0,
-                types: { like: 0, love: 0, haha: 0, lulu: 0 }
-              }}
+              initialReactionDetails={
+                post.reactionDetails || {
+                  total: post.reactionCount || 0,
+                  types: { like: 0, love: 0, haha: 0, lulu: 0 },
+                }
+              }
             />
           )}
 
@@ -556,7 +569,7 @@ export default function CommentsPage() {
                 </Button>
               </div>
               {showEmojiPicker && (
-                <div 
+                <div
                   ref={emojiPickerRef}
                   className="absolute right-0 bottom-12 z-50"
                 >
@@ -576,10 +589,7 @@ export default function CommentsPage() {
           {error ? (
             <div className="p-4 text-center text-destructive">
               {error}.{" "}
-              <Button
-                variant="link"
-                onClick={() => window.location.reload()}
-              >
+              <Button variant="link" onClick={() => window.location.reload()}>
                 Try again
               </Button>
             </div>
@@ -592,9 +602,7 @@ export default function CommentsPage() {
               <div
                 key={`${comment.commentId}-${index}`}
                 ref={
-                  index === commentsData.length - 1
-                    ? lastCommentRef
-                    : undefined
+                  index === commentsData.length - 1 ? lastCommentRef : undefined
                 }
               >
                 <Comment
@@ -604,9 +612,7 @@ export default function CommentsPage() {
                     hasReplies: false,
                   }}
                   postId={postId}
-                  currentUserId={
-                    localStorage.getItem("userId") || undefined
-                  }
+                  currentUserId={localStorage.getItem("userId") || undefined}
                   postAuthorId={post.userId}
                   onCommentDeleted={(commentId) => {
                     setCommentsData((prev) =>

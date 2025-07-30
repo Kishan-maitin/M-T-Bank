@@ -27,8 +27,9 @@ const Settings = () => {
   const [searchParams] = useSearchParams();
 
   // Get user data from Redux store
-  const { username, email, avatar, privacyLevel, profilePic } =
-    useAppSelector((state) => state.currentUser);
+  const { username, email, avatar, privacyLevel, profilePic } = useAppSelector(
+    (state) => state.currentUser
+  );
 
   const handleSettingsClick = (page: SettingPage) => {
     dispatch(setSettingsActive(true));
@@ -176,15 +177,12 @@ const Settings = () => {
 
           <div className="flex justify-between w-full items-center">
             <div>
-              <h2 className="text-xl font-semibold">
-                {username}
-              </h2>
+              <h2 className="text-xl font-semibold">{username}</h2>
               <p className="text-muted-foreground">
                 {email || "No Email Available"}
               </p>
             </div>
           </div>
-
         </div>
       )}
 

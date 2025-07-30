@@ -34,10 +34,10 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
   const [isSharing, setIsSharing] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
+
   const [executeFetchFollowings] = useApiCall(fetchFollowings);
   const [executeStartMessage] = useApiCall(startMessage);
-  
+
   // Use socket context
   const { socket, isConnected } = useSocket();
 
@@ -67,7 +67,7 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
       setFilteredUsers(users);
     } else {
       const query = searchQuery.toLowerCase();
-      const filtered = users.filter(user => 
+      const filtered = users.filter((user) =>
         user.name.toLowerCase().includes(query)
       );
       setFilteredUsers(filtered);
@@ -75,14 +75,16 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
   }, [searchQuery, users]);
 
   const toggleUserSelection = (userId: string) => {
-    setSelectedUsers(prev => {
+    setSelectedUsers((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(userId)) {
         newSet.delete(userId);
       } else {
         // Check if we've reached the maximum limit
         if (newSet.size >= MAX_SHARE_USERS) {
-          toast.warning(`You can only share with up to ${MAX_SHARE_USERS} users at once`);
+          toast.warning(
+            `You can only share with up to ${MAX_SHARE_USERS} users at once`
+          );
           return prev;
         }
         newSet.add(userId);
@@ -96,44 +98,47 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
       toast.error("Please select at least one user to share with");
       return;
     }
-    
+
     if (!socket) {
       toast.error("Socket connection not available");
       return;
     }
-    
+
     if (!isConnected) {
       toast.error("Not connected to the chat server");
       return;
     }
-    
+
     setIsSharing(true);
     setErrorMessage(null);
     console.log("postData", postData);
-    
+
     try {
       const userId = localStorage.getItem("userId") || "";
       console.log("Starting share process for post:", postData._id);
-      
+
       // Process each selected user
       const results = await Promise.allSettled(
         Array.from(selectedUsers).map(async (receiverId) => {
           console.log(`Sharing post with user ID: ${receiverId}`);
-          
+
           // First, start or get the conversation with this user
-          const startChatResult = await executeStartMessage({ userId2: receiverId });
-          
+          const startChatResult = await executeStartMessage({
+            userId2: receiverId,
+          });
+
           if (startChatResult.success && startChatResult.data) {
             const chatId = startChatResult.data.chatRoom.chatRoomId;
             console.log(`Chat room ID: ${chatId}`);
-            
-            const currentUserParticipant = startChatResult.data.chatRoom.participants.find(
-              (p: ChatParticipant) => p.userId === userId
-            );
-            
+
+            const currentUserParticipant =
+              startChatResult.data.chatRoom.participants.find(
+                (p: ChatParticipant) => p.userId === userId
+              );
+
             const userName = currentUserParticipant?.name || "You";
             const userAvatar = currentUserParticipant?.profilePic || "";
-            
+
             // Create message data with the shared post content
             const messageData = {
               senderId: userId,
@@ -145,37 +150,37 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
               senderName: userName,
               senderAvatar: userAvatar,
             };
-            
+
             console.log("Joining chat room:", chatId);
             socket.emit("join", chatId);
-            
+
             // Wait a moment for join to complete
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
+            await new Promise((resolve) => setTimeout(resolve, 300));
+
             console.log("Sending message with post data");
             // Send the message
             socket.emit("sendMessage", messageData);
-            
+
             // Wait to ensure message is sent
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
+            await new Promise((resolve) => setTimeout(resolve, 300));
+
             // Leave the chat room
             console.log("Leaving chat room:", chatId);
             socket.emit("leave", chatId);
-            
+
             return receiverId;
           }
-          
+
           throw new Error(`Failed to start chat with user ${receiverId}`);
         })
       );
-      
+
       console.log("Share results:", results);
-      
+
       // Check for failures
-      const failures = results.filter(r => r.status === 'rejected');
+      const failures = results.filter((r) => r.status === "rejected");
       const successCount = results.length - failures.length;
-      
+
       if (failures.length > 0) {
         console.error("Some shares failed:", failures);
         if (successCount === 0) {
@@ -183,24 +188,29 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
           throw new Error("Failed to share post with any selected users");
         } else {
           // Some failed
-          toast.warning(`Successfully shared with ${successCount} of ${results.length} selected users`);
+          toast.warning(
+            `Successfully shared with ${successCount} of ${results.length} selected users`
+          );
         }
       } else {
         // All succeeded
-        const sharedUsers = filteredUsers.filter(user => selectedUsers.has(user.id));
-        const userNames = sharedUsers.map(user => user.name).join(", ");
+        const sharedUsers = filteredUsers.filter((user) =>
+          selectedUsers.has(user.id)
+        );
+        const userNames = sharedUsers.map((user) => user.name).join(", ");
         toast.success(`Post shared with ${userNames}`);
       }
     } catch (error: unknown) {
       console.error("Error sharing post:", error);
-      const errorMsg = error instanceof Error ? error.message : "Failed to share post";
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to share post";
       setErrorMessage(errorMsg);
       toast.error(errorMsg);
       return; // Don't close dialog on error
     } finally {
       setIsSharing(false);
     }
-    
+
     // Only close if no errors
     if (!errorMessage) {
       onClose();
@@ -213,10 +223,7 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
     <div className="space-y-6 flex flex-col h-[75vh]">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium cursor-pointer">
-          <ArrowLeft
-            className="h-4 w-4 mr-2 inline"
-            onClick={onClose}
-          />
+          <ArrowLeft className="h-4 w-4 mr-2 inline" onClick={onClose} />
           Share Post
         </h3>
       </div>
@@ -246,7 +253,8 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
           <div className="flex items-center justify-between py-2 px-3">
             {isSomeSelected && (
               <span className="text-sm text-muted-foreground font-medium">
-                {selectedUsers.size}/{MAX_SHARE_USERS} User{selectedUsers.size !== 1 ? 's' : ''} selected
+                {selectedUsers.size}/{MAX_SHARE_USERS} User
+                {selectedUsers.size !== 1 ? "s" : ""} selected
               </span>
             )}
           </div>
@@ -258,15 +266,21 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
                 onClick={() => toggleUserSelection(user.id)}
               >
                 <div className="flex items-center gap-3">
-                  <Checkbox 
+                  <Checkbox
                     checked={selectedUsers.has(user.id)}
                     onCheckedChange={() => toggleUserSelection(user.id)}
                     className="cursor-pointer data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                     onClick={(e) => e.stopPropagation()}
-                    disabled={selectedUsers.size >= MAX_SHARE_USERS && !selectedUsers.has(user.id)}
+                    disabled={
+                      selectedUsers.size >= MAX_SHARE_USERS &&
+                      !selectedUsers.has(user.id)
+                    }
                   />
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.profilePic || user.avatar} alt={user.name} />
+                    <AvatarImage
+                      src={user.profilePic || user.avatar}
+                      alt={user.name}
+                    />
                     <AvatarFallback>
                       {user.name.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
@@ -284,7 +298,11 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
             ))}
           </div>
           <div className="flex justify-end gap-2 pt-4">
-            <Button variant="outline" className="cursor-pointer" onClick={onClose}>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={onClose}
+            >
               Cancel
             </Button>
             <Button
@@ -318,4 +336,4 @@ const SharePostPage: React.FC<SharePostPageProps> = ({ postData, onClose }) => {
   );
 };
 
-export default SharePostPage; 
+export default SharePostPage;

@@ -133,17 +133,17 @@ export default function HomePage() {
   // Load more posts when page changes
   const loadMorePosts = useCallback(async () => {
     if (!hasMore || isLoading || isFetchingMore) return;
-    
+
     setIsFetchingMore(true);
-    
+
     try {
       const result = await executeFetchHomepageData(page);
-      
+
       if (result.success && result.data) {
         const { postsData } = result.data as HomepageResponse;
-        
+
         // Append new posts to existing posts
-        setPosts(prevPosts => [...prevPosts, ...postsData.posts]);
+        setPosts((prevPosts) => [...prevPosts, ...postsData.posts]);
         setHasMore(postsData.hasMore || false);
       }
     } catch (error) {
@@ -160,24 +160,24 @@ export default function HomePage() {
       observerRef.current.disconnect();
       observerRef.current = null;
     }
-    
+
     // Only set up observer if we have more content to load and we're not already loading
     if (!hasMore || isLoading || isFetchingMore || !loadMoreRef.current) return;
-    
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
         if (entry.isIntersecting && hasMore && !isLoading && !isFetchingMore) {
-          setPage(prevPage => prevPage + 1);
+          setPage((prevPage) => prevPage + 1);
         }
       },
       { threshold: 0.1, rootMargin: "100px" }
     );
-    
+
     if (loadMoreRef.current) {
       observerRef.current.observe(loadMoreRef.current);
     }
-    
+
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
@@ -310,7 +310,9 @@ export default function HomePage() {
 
   const handleCommentClick = (postId: string, post: HomePostData) => {
     if (post.isCommunity) {
-      navigate(`/community/${post.author}/${postId}`, { state: { post } });
+      navigate(`/community/${post.author}/${postId}`, {
+        state: { post },
+      });
     } else {
       navigate(`/post/${postId}`, { state: { post } });
     }
@@ -401,25 +403,32 @@ export default function HomePage() {
                 <div className="flex flex-col items-center space-y-1 mx-2 my-1">
                   <div className="relative w-16 h-16 rounded-full ring-2 ring-blue-500">
                     <img
-                      src={formattedSelfStory.profilePic || currentUser.profilePic || "/profile/avatars/1.png"}
+                      src={
+                        formattedSelfStory.profilePic ||
+                        currentUser.profilePic ||
+                        "/profile/avatars/1.png"
+                      }
                       alt="Your Story"
                       className="w-full h-full rounded-full object-cover p-[2px] bg-background cursor-pointer"
-                      onClick={() => navigate(`/story/${formattedSelfStory.userId}`, { 
-                        state: { 
-                          currentStory: {
-                            user: formattedSelfStory.user,
-                            userId: formattedSelfStory.userId,
-                            avatar: formattedSelfStory.avatar,
-                            profilePic: formattedSelfStory.profilePic,
-                            hasStory: formattedSelfStory.hasStory,
-                            stories: formattedSelfStory.stories,
-                            latestStoryTime: formattedSelfStory.latestStoryTime
+                      onClick={() =>
+                        navigate(`/story/${formattedSelfStory.userId}`, {
+                          state: {
+                            currentStory: {
+                              user: formattedSelfStory.user,
+                              userId: formattedSelfStory.userId,
+                              avatar: formattedSelfStory.avatar,
+                              profilePic: formattedSelfStory.profilePic,
+                              hasStory: formattedSelfStory.hasStory,
+                              stories: formattedSelfStory.stories,
+                              latestStoryTime:
+                                formattedSelfStory.latestStoryTime,
+                            },
+                            allStories: allFormattedStories,
+                            initialUserIndex: 0,
+                            preloaded: true,
                           },
-                          allStories: allFormattedStories,
-                          initialUserIndex: 0,
-                          preloaded: true
-                        }
-                      })}
+                        })
+                      }
                     />
                     <button
                       onClick={() => navigate("/create-story")}
@@ -455,7 +464,7 @@ export default function HomePage() {
             </div>
             {/* Other Stories */}
             {stories
-              .filter(story => story.stories && story.stories.length > 0)
+              .filter((story) => story.stories && story.stories.length > 0)
               .map((story, index) => (
                 <Story
                   key={`story-${story.userId || index}`}
@@ -487,7 +496,9 @@ export default function HomePage() {
                 <Post
                   user={post.name}
                   avatar={post.profilePic}
-                  userId={post.isCommunity ? post.communityId || "" : post.userId}
+                  userId={
+                    post.isCommunity ? post.communityId || "" : post.userId
+                  }
                   caption={processedPost.data.content}
                   isCommunity={post.isCommunity}
                   communityId={post.author}
@@ -508,17 +519,29 @@ export default function HomePage() {
                   onLikeClick={() => handleLikeClick(post._id)}
                   feedId={post.feedId}
                   onDelete={handlePostDelete}
-                  initialReaction={post.reaction || { hasReacted: false, reactionType: null }}
+                  initialReaction={
+                    post.reaction || {
+                      hasReacted: false,
+                      reactionType: null,
+                    }
+                  }
                   initialReactionCount={post.reactionCount || 0}
-                  initialReactionDetails={post.reactionDetails || { 
-                    total: post.reactionCount || 0,
-                    types: { like: 0, love: 0, haha: 0, lulu: 0 }
-                  }}
+                  initialReactionDetails={
+                    post.reactionDetails || {
+                      total: post.reactionCount || 0,
+                      types: {
+                        like: 0,
+                        love: 0,
+                        haha: 0,
+                        lulu: 0,
+                      },
+                    }
+                  }
                 />
               </div>
             );
           })}
-          
+
           {/* Load more indicator */}
           {hasMore && (
             <div ref={loadMoreRef} className="flex justify-center py-4">

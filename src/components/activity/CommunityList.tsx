@@ -23,7 +23,7 @@ const CommunityList = ({
   onSelectCommunity,
 }: CommunityListProps) => {
   const dispatch = useAppDispatch();
-  const activeChat = useAppSelector(state => state.chat.activeChat);
+  const activeChat = useAppSelector((state) => state.chat.activeChat);
 
   const handleCommunitySelect = (community: ChatItem) => {
     dispatch(setActiveChat(community));
@@ -41,25 +41,27 @@ const CommunityList = ({
       {communities.map((community) => {
         const communityWithDetails = community as CommunityItem;
         const isActive = activeChat?.id === community.id;
-        
+
         return (
           <div
             key={community.id}
             className={`flex items-center justify-between p-4 rounded-lg ${
-              isActive 
-                ? 'bg-primary/10 border-primary' 
-                : 'border-primary/20 bg-background hover:bg-primary/5'
+              isActive
+                ? "bg-primary/10 border-primary"
+                : "border-primary/20 bg-background hover:bg-primary/5"
             } border cursor-pointer transition-colors duration-200`}
             onClick={() => handleCommunitySelect(community)}
           >
             <div className="flex items-center gap-4 flex-1">
               <Avatar className="h-10 w-10 rounded-full border-2 border-primary/30">
-                <AvatarImage 
-                  src={community.avatar || "/placeholder.png"} 
-                  alt={community.name} 
-                  className="object-cover" 
+                <AvatarImage
+                  src={community.avatar || "/placeholder.png"}
+                  alt={community.name}
+                  className="object-cover"
                 />
-                <AvatarFallback className="rounded-full bg-primary/20 text-primary">{community.name[0]}</AvatarFallback>
+                <AvatarFallback className="rounded-full bg-primary/20 text-primary">
+                  {community.name[0]}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <h3 className="font-semibold text-primary">{community.name}</h3>
@@ -68,7 +70,10 @@ const CommunityList = ({
                 </p>
               </div>
               <div className="text-xs text-foreground/80 font-medium">
-                {communityWithDetails?.memberCount || community.participants.length || 0} Members
+                {communityWithDetails?.memberCount ||
+                  community.participants.length ||
+                  0}{" "}
+                Members
               </div>
             </div>
           </div>

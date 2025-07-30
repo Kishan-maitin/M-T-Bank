@@ -10,7 +10,7 @@ interface QuickSuggestionsProps {
 const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
   suggestions,
   loadingSuggestions,
-  onSuggestionClick
+  onSuggestionClick,
 }) => {
   if (suggestions.length === 0 && !loadingSuggestions) {
     return null;
@@ -19,8 +19,8 @@ const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
   return (
     <div className="">
       <div className="text-base text-muted-foreground mb-2 opacity-70 flex items-center gap-2">
-      <img src="/bondchat.svg" alt="" className="w-4 h-4"/>
-      <span className="grad font-bold">BondChat</span>
+        <img src="/bondchat.svg" alt="" className="w-4 h-4" />
+        <span className="grad font-bold">BondChat</span>
       </div>
       <div className="flex overflow-x-auto scrollbar-hide pb-2 -mx-2 px-2">
         <div className="flex gap-2 flex-nowrap">
@@ -47,4 +47,4 @@ const QuickSuggestions: React.FC<QuickSuggestionsProps> = ({
   );
 };
 
-export default QuickSuggestions; 
+export default QuickSuggestions;

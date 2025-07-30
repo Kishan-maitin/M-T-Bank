@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { SocketProvider } from "./context/SocketContext";
@@ -186,7 +186,7 @@ const AuthenticatedRoutes: React.FC = () => {
             path="*"
             element={
               // <Layout showSidebars={false}>
-                <NotFound />
+              <NotFound />
               // </Layout>
             }
           />

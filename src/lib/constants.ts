@@ -22,7 +22,7 @@ export const INITIAL_PROFILE_STATE = {
   image: null as File | null,
   avatar: null as string | null,
   communitiesSelected: [] as Community[],
-} as const; 
+} as const;
 
 export const GET_AUTH_HEADERS = () => ({
   token: localStorage.getItem("token") || "",

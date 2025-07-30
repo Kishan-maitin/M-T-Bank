@@ -1,7 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
-import { Trash2, Image, Smile, Video, Mic, ArrowLeft, ChevronDown } from "lucide-react";
+import {
+  Trash2,
+  Image,
+  Smile,
+  Video,
+  Mic,
+  ArrowLeft,
+  ChevronDown,
+} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import {
   createCommunityPost,
@@ -60,7 +68,9 @@ interface MediaFileWithUrl extends CroppedFile {
   previewUrl?: string;
 }
 
-const VideoPreview: React.FC<{ videoFile: File | string }> = ({ videoFile }) => {
+const VideoPreview: React.FC<{ videoFile: File | string }> = ({
+  videoFile,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoUrlRef = useRef<string | null>(null);
   const [videoId, setVideoId] = useState<string>("");
@@ -70,14 +80,17 @@ const VideoPreview: React.FC<{ videoFile: File | string }> = ({ videoFile }) => 
 
   useEffect(() => {
     // Check if videoFile is a string (URL) or a File object
-    const objectUrl = typeof videoFile === 'string' 
-      ? videoFile 
-      : URL.createObjectURL(videoFile);
-    
+    const objectUrl =
+      typeof videoFile === "string"
+        ? videoFile
+        : URL.createObjectURL(videoFile);
+
     videoUrlRef.current = objectUrl;
 
     // Generate a unique ID for this video
-    setVideoId(`preview-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+    setVideoId(
+      `preview-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    );
 
     const video = videoRef.current;
     if (!video) return;
@@ -95,7 +108,7 @@ const VideoPreview: React.FC<{ videoFile: File | string }> = ({ videoFile }) => 
 
     return () => {
       // Only revoke the object URL if we created it (i.e., videoFile is a File object)
-      if (typeof videoFile !== 'string' && videoUrlRef.current) {
+      if (typeof videoFile !== "string" && videoUrlRef.current) {
         URL.revokeObjectURL(videoUrlRef.current);
       }
       video.removeEventListener("loadeddata", handleLoadedData);
@@ -104,34 +117,34 @@ const VideoPreview: React.FC<{ videoFile: File | string }> = ({ videoFile }) => 
 
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsMuted(prev => !prev);
-    
+    setIsMuted((prev) => !prev);
+
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
     }
   };
 
   return (
-    <div 
-      className="w-full h-full relative flex items-center justify-center" 
+    <div
+      className="w-full h-full relative flex items-center justify-center"
       data-post-id={videoId}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
       {/* Add VideoObserver to handle auto-play/pause functionality */}
       {videoId && videoUrlRef.current && !isLoading && (
-        <VideoObserver 
-          feedId={videoId} 
+        <VideoObserver
+          feedId={videoId}
           media={[{ type: "video", url: videoUrlRef.current }]}
         />
       )}
-      
+
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
       )}
-      
+
       <video
         ref={videoRef}
         className="w-full h-full object-contain bg-black"
@@ -140,19 +153,43 @@ const VideoPreview: React.FC<{ videoFile: File | string }> = ({ videoFile }) => 
         autoPlay
         loop
       />
-      
-      <button 
-        className={`absolute bottom-4 right-4 p-2 bg-background/70 rounded-full hover:bg-background transition-colors cursor-pointer ${showControls ? 'opacity-100' : 'opacity-0'}`}
+
+      <button
+        className={`absolute bottom-4 right-4 p-2 bg-background/70 rounded-full hover:bg-background transition-colors cursor-pointer ${
+          showControls ? "opacity-100" : "opacity-0"
+        }`}
         onClick={toggleMute}
       >
         {isMuted ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-5 h-5"
+          >
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
             <line x1="23" y1="9" x2="17" y2="15" />
             <line x1="17" y1="9" x2="23" y2="15" />
           </svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-5 h-5"
+          >
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
@@ -316,12 +353,14 @@ const CreatePost = ({
   }, [hasUnsavedChanges]);
 
   // Get the current user's avatar from Redux store
-  const { avatar,  profilePic, username } = useAppSelector(
+  const { avatar, profilePic, username } = useAppSelector(
     (state) => state.currentUser
   );
 
   // Use the API call hook for the createPost function
-  const [executeCreatePost, isCreatingPost] = useApiCall(communityPost ? createCommunityPost : createPost);
+  const [executeCreatePost, isCreatingPost] = useApiCall(
+    communityPost ? createCommunityPost : createPost
+  );
   // Use the API call hook for the rewriteWithBondChat function
   const [executeRewriteWithBondChat, isRewritingWithBondChat] =
     useApiCall(rewriteWithBondChat);
@@ -329,22 +368,22 @@ const CreatePost = ({
   // Initialize media files and previews from props if they exist
   useEffect(() => {
     if (initialMediaFiles.length > 0) {
-      console.log('Received initialMediaFiles:', initialMediaFiles);
+      console.log("Received initialMediaFiles:", initialMediaFiles);
       setMediaFiles(initialMediaFiles);
-      
+
       // Create previews for the initial media files
-      const previews = initialMediaFiles.map(file => {
-        console.log('Creating preview for file:', file);
-        if (file.type.startsWith('video/')) {
+      const previews = initialMediaFiles.map((file) => {
+        console.log("Creating preview for file:", file);
+        if (file.type.startsWith("video/")) {
           console.log('Video file detected, using "video" as preview');
-          return 'video';
+          return "video";
         }
         // Only use previewUrl for initial media files, as they're not real File objects
-        console.log('Using previewUrl:', (file as MediaFileWithUrl).previewUrl);
-        return (file as MediaFileWithUrl).previewUrl || '';
+        console.log("Using previewUrl:", (file as MediaFileWithUrl).previewUrl);
+        return (file as MediaFileWithUrl).previewUrl || "";
       });
-      
-      console.log('Created previews:', previews);
+
+      console.log("Created previews:", previews);
       setMediaPreviews(previews);
     }
   }, [initialMediaFiles]);
@@ -578,7 +617,7 @@ const CreatePost = ({
   const handleRemoveMedia = (index: number) => {
     // If media is read-only, don't allow removal
     if (readOnlyMedia) return;
-    
+
     setMediaFiles((prev) => prev.filter((_, i) => i !== index));
     setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
 
@@ -611,7 +650,7 @@ const CreatePost = ({
     onDrop: (e: React.DragEvent, index: number) => void;
   }) => {
     const thumbnailId = `thumbnail-${index}`;
-    
+
     return (
       <div
         className={`h-16 w-16 rounded-md overflow-hidden cursor-pointer relative transition-all ${
@@ -645,7 +684,7 @@ const CreatePost = ({
   const handleRewriteWithBondChat = async () => {
     // Clear any previous error
     setRewriteError("");
-    
+
     // Only proceed if there's content to rewrite
     if (!content.trim()) {
       setRewriteError("Please add some text to rewrite");
@@ -831,7 +870,7 @@ const CreatePost = ({
               isCommunityPost: true,
               communityId: postData.communityId,
               isAnonymous: postData.isAnonymous,
-            })
+            }),
           };
 
           // Use default API call
@@ -856,9 +895,9 @@ const CreatePost = ({
           isNavigatingAfterSubmitRef.current = true;
           // Navigate appropriately (e.g., back to community page or home)
           if (communityPost && communityId) {
-             navigate(`/community/${communityId}`);
+            navigate(`/community/${communityId}`);
           } else {
-             navigate("/");
+            navigate("/");
           }
         }
       } catch (error) {
@@ -932,12 +971,16 @@ const CreatePost = ({
           variant="ghost"
           size="sm"
           className="text-[var(--foreground)] p-0 mr-2 cursor-pointer"
-          onClick={() => communityPost && communityId ? navigate(`/community/${communityId}`) : navigate("/")}
+          onClick={() =>
+            communityPost && communityId
+              ? navigate(`/community/${communityId}`)
+              : navigate("/")
+          }
         >
           <ArrowLeft size={20} />
         </Button>
       </div>
-      
+
       <div className="flex items-start gap-3 pb-4">
         {/* Conditional Avatar/Dropdown */}
         {communityPost ? (
@@ -945,42 +988,67 @@ const CreatePost = ({
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-2 cursor-pointer group">
                 <Avatar className="h-10 w-10">
-                  {postAs === 'user' ? (
-                    <AvatarImage src={profilePic || avatar} alt={username || "Profile"} />
+                  {postAs === "user" ? (
+                    <AvatarImage
+                      src={profilePic || avatar}
+                      alt={username || "Profile"}
+                    />
                   ) : (
                     <AvatarImage src="/profile/anonymous.png" alt="Anonymous" />
                   )}
-                   <AvatarFallback>
-                    {postAs === 'user' ? (username ? username[0].toUpperCase() : "U") : "A"}
-                   </AvatarFallback>
+                  <AvatarFallback>
+                    {postAs === "user"
+                      ? username
+                        ? username[0].toUpperCase()
+                        : "U"
+                      : "A"}
+                  </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium group-hover:text-muted-foreground">{postAs === 'user' ? (username || "User") : "Anonymous"}</span>
-                 <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <span className="text-sm font-medium group-hover:text-muted-foreground">
+                  {postAs === "user" ? username || "User" : "Anonymous"}
+                </span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => setPostAs('user')} className="cursor-pointer">
+              <DropdownMenuItem
+                onSelect={() => setPostAs("user")}
+                className="cursor-pointer"
+              >
                 <Avatar className="h-6 w-6 mr-2">
-                   <AvatarImage src={profilePic || avatar} alt={username || "Profile"} />
-                   <AvatarFallback>
+                  <AvatarImage
+                    src={profilePic || avatar}
+                    alt={username || "Profile"}
+                  />
+                  <AvatarFallback>
                     {username ? username[0].toUpperCase() : "U"}
-                   </AvatarFallback>
+                  </AvatarFallback>
                 </Avatar>
                 Post as {username || "Yourself"}
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setPostAs('anonymous')} className="cursor-pointer">
-                 <Avatar className="h-6 w-6 mr-2">
-                   <AvatarImage src="/profile/anonymous.png" alt="Anonymous" />
-                   <AvatarFallback>A</AvatarFallback>
-                 </Avatar>
-                 Post Anonymously
+              <DropdownMenuItem
+                onSelect={() => setPostAs("anonymous")}
+                className="cursor-pointer"
+              >
+                <Avatar className="h-6 w-6 mr-2">
+                  <AvatarImage src="/profile/anonymous.png" alt="Anonymous" />
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+                Post Anonymously
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
           // Original Static Avatar for non-community posts
           <Avatar className="h-10 w-10">
-            <AvatarImage src={isAnonymousEditing ? "/profile/anonymous.png" : profilePic || avatar} alt={username || "Profile"} />
+            <AvatarImage
+              src={
+                isAnonymousEditing
+                  ? "/profile/anonymous.png"
+                  : profilePic || avatar
+              }
+              alt={username || "Profile"}
+            />
             <AvatarFallback>
               {username ? username[0].toUpperCase() : "U"}
             </AvatarFallback>
@@ -1115,13 +1183,15 @@ const CreatePost = ({
                 <img src="/bondchat.svg" alt="BondChat" className="w-4 h-4" />
                 <div className="text-[var(--foreground)]">
                   Re-write with{" "}
-                  <span className="grad font-bold">BondChat </span>
+                  <span className="grad font-bold">M&T AI Assistant </span>
                 </div>
               </>
             )}
           </Button>
           {rewriteError && (
-            <p className="text-foreground font-bold text-xs mt-1">{rewriteError}</p>
+            <p className="text-foreground font-bold text-xs mt-1">
+              {rewriteError}
+            </p>
           )}
         </div>
       </div>
@@ -1210,19 +1280,23 @@ const CreatePost = ({
               <div className="relative">
                 {mediaFiles[activePreviewIndex]?.type.startsWith("video/") ? (
                   <div className="relative w-full h-full">
-                    <VideoPreview 
+                    <VideoPreview
                       videoFile={
                         // Check if we have a previewUrl first (for existing media)
-                        (mediaFiles[activePreviewIndex] as MediaFileWithUrl).previewUrl || 
+                        (mediaFiles[activePreviewIndex] as MediaFileWithUrl)
+                          .previewUrl ||
                         // Otherwise use the file object directly (for new uploads)
                         mediaFiles[activePreviewIndex]
-                      } 
+                      }
                     />
                   </div>
                 ) : (
                   <img
                     // Use previewUrl for existing media images
-                    src={(mediaFiles[activePreviewIndex] as MediaFileWithUrl).previewUrl || mediaPreviews[activePreviewIndex]}
+                    src={
+                      (mediaFiles[activePreviewIndex] as MediaFileWithUrl)
+                        .previewUrl || mediaPreviews[activePreviewIndex]
+                    }
                     alt="Active Preview"
                     className="w-full h-full object-contain max-h-[70vh] "
                   />
@@ -1239,7 +1313,6 @@ const CreatePost = ({
             </div>
           </div>
         )}
-
       </div>
 
       {/* Media Crop Modal */}

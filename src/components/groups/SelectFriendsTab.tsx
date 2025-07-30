@@ -183,7 +183,12 @@ const UserCard: React.FC<UserCardProps> = ({ user, isSelected, onToggle }) => (
       </Avatar>
       <div>
         <h3 className="font-medium">{user.name}</h3>
-        <TruncatedText text={user.bio} limit={50} showToggle={false} className="text-sm text-muted-foreground"/>
+        <TruncatedText
+          text={user.bio}
+          limit={50}
+          showToggle={false}
+          className="text-sm text-muted-foreground"
+        />
       </div>
     </div>
     <Button

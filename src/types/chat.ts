@@ -27,13 +27,13 @@ export interface ChatProps {
   showAvatar?: boolean;
 }
 
-export type ChatType = 'dm' | 'group' | 'community';
+export type ChatType = "dm" | "group" | "community";
 
 export interface ChatParticipant {
   userId: string;
   name: string;
   profilePic: string;
-  status?: 'active' | 'left';
+  status?: "active" | "left";
 }
 
 export interface Chat {

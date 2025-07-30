@@ -7,13 +7,13 @@ export function SidebarProfileSkeleton() {
       <div className="flex flex-col items-center">
         {/* Avatar skeleton */}
         <Skeleton className="w-20 h-20 rounded-full mb-2" />
-        
+
         {/* Username skeleton */}
         <Skeleton className="h-6 w-32 mb-2" />
-        
+
         {/* Bio skeleton */}
         <Skeleton className="h-4 w-48 mb-4" />
-        
+
         {/* Button skeleton */}
         <Skeleton className="h-9 w-full rounded-full" />
       </div>
@@ -26,7 +26,7 @@ export function SidebarPeopleSkeleton() {
     <Card className="p-6 border-2 overflow-y-auto max-h-[52vh]">
       {/* Header skeleton */}
       <Skeleton className="h-6 w-24 mb-6" />
-      
+
       {/* People list skeletons */}
       <div className="space-y-2">
         {Array.from({ length: 5 }).map((_, index) => (
@@ -38,4 +38,4 @@ export function SidebarPeopleSkeleton() {
       </div>
     </Card>
   );
-} 
+}

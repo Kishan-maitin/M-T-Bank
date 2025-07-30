@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -9,17 +8,14 @@ interface AuthGuardProps {
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (!userId) {
-      navigate('/login');
+      navigate("/login");
     }
-
-
   }, [navigate]);
 
   return <>{children}</>;
 };
 
-export default AuthGuard; 
+export default AuthGuard;

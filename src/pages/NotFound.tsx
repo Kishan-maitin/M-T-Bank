@@ -13,8 +13,8 @@ export default function NotFound() {
         <p className="text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
-        <Button 
-          onClick={() => navigate("/")} 
+        <Button
+          onClick={() => navigate("/")}
           className="mt-4 cursor-pointer"
           size="lg"
         >
@@ -24,4 +24,4 @@ export default function NotFound() {
       </div>
     </div>
   );
-} 
+}

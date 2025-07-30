@@ -1,7 +1,7 @@
-import { adminApiClient } from '../apiClient';
-import { 
-  CommunitiesResponse, 
-  CommunityResponse, 
+import { adminApiClient } from "../apiClient";
+import {
+  CommunitiesResponse,
+  CommunityResponse,
   CommunityJoinRequest,
   CommunityPostResponse,
   CommunityPostsResponse,
@@ -9,8 +9,8 @@ import {
   FetchCommunityPostsRequest,
   TransformedCommunityPost,
   ReactionResponse,
-  PaginatedCommunityPostsApiResponse
-} from '../apiTypes/communitiesTypes';
+  PaginatedCommunityPostsApiResponse,
+} from "../apiTypes/communitiesTypes";
 
 /**
  * Helper function to transform a community post to a standardized format
@@ -25,9 +25,9 @@ export const transformCommunityPost = (
   return {
     id: post._id,
     author: {
-      id: post.userId || '',
-      name: post.name || '',
-      profilePic: post.profilePic || '',
+      id: post.userId || "",
+      name: post.name || "",
+      profilePic: post.profilePic || "",
     },
     content: post.data.content,
     createdAt: post.createdAt,
@@ -45,8 +45,8 @@ export const transformCommunityPost = (
         like: 0,
         love: 0,
         haha: 0,
-        lulu: 0
-      }
+        lulu: 0,
+      },
     },
     communityId: communityId,
     isAnonymous: post.isAnonymous,
@@ -58,17 +58,19 @@ export const transformCommunityPost = (
  * Function to fetch all communities
  * @returns Promise with community response array
  */
-export const fetchCommunities = async (params?: FetchCommunitiesRequest): Promise<CommunityResponse[]> => {
+export const fetchCommunities = async (
+  params?: FetchCommunitiesRequest
+): Promise<CommunityResponse[]> => {
   const queryParams = new URLSearchParams();
-  
+
   if (params?.page) {
-    queryParams.append('page', params.page.toString());
+    queryParams.append("page", params.page.toString());
   }
   if (params?.limit) {
-    queryParams.append('limit', params.limit.toString());
+    queryParams.append("limit", params.limit.toString());
   }
-  
-  const url = `/communities/communityDetailsWithoutPostAndMembersData${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+  const url = `/communities/communityDetailsWithoutPostAndMembersData${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
   const response = await adminApiClient.get<CommunitiesResponse>(url);
   return response.data.communities;
 };
@@ -78,25 +80,24 @@ export const fetchCommunities = async (params?: FetchCommunitiesRequest): Promis
  * @param params Join community request params
  * @returns Promise with success and message
  */
-export const joinCommunity = async (params: CommunityJoinRequest): Promise<{ success: boolean; message?: string }> => {
-  const userId = localStorage.getItem('userId');
+export const joinCommunity = async (
+  params: CommunityJoinRequest
+): Promise<{ success: boolean; message?: string }> => {
+  const userId = localStorage.getItem("userId");
 
   if (!userId) {
-    throw new Error('User not authenticated');
+    throw new Error("User not authenticated");
   }
 
-  const response = await adminApiClient.post(
-    '/users/joincommunity',
-    {
-      communityIds: params.communityIds,
-      userId: userId,
-      action: params.action
-    }
-  );
-  
+  const response = await adminApiClient.post("/users/joincommunity", {
+    communityIds: params.communityIds,
+    userId: userId,
+    action: params.action,
+  });
+
   return {
     success: response.status === 200,
-    message: response.data.message
+    message: response.data.message,
   };
 };
 
@@ -105,15 +106,17 @@ export const joinCommunity = async (params: CommunityJoinRequest): Promise<{ suc
  * @param communityIds Array of community IDs to join
  * @returns Promise with success and message
  */
-export const joinMultipleCommunities = async (communityIds: string[]): Promise<{ success: boolean; message?: string }> => {
-  const userId = localStorage.getItem('userId');
-  if(!userId) {
-    throw new Error('User not authenticated');
+export const joinMultipleCommunities = async (
+  communityIds: string[]
+): Promise<{ success: boolean; message?: string }> => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    throw new Error("User not authenticated");
   }
   return joinCommunity({
     communityIds: communityIds,
     userId,
-    action: 'join'
+    action: "join",
   });
 };
 
@@ -122,7 +125,9 @@ export const joinMultipleCommunities = async (communityIds: string[]): Promise<{
  * @param communityId Community ID
  * @returns Promise with community response
  */
-export const fetchCommunityById = async (communityId: string): Promise<CommunityResponse> => {
+export const fetchCommunityById = async (
+  communityId: string
+): Promise<CommunityResponse> => {
   const response = await adminApiClient.get<CommunityResponse>(
     `/communities/${communityId}/communityDetailsWithoutPostAndMembersData`
   );
@@ -136,30 +141,32 @@ export const fetchCommunityById = async (communityId: string): Promise<Community
  * @returns Promise with transformed community posts array
  */
 export const fetchCommunityPosts = async (
-  communityId: string, 
-  params?: Omit<FetchCommunityPostsRequest, 'communityId'>
+  communityId: string,
+  params?: Omit<FetchCommunityPostsRequest, "communityId">
 ): Promise<TransformedCommunityPost[]> => {
   try {
     const queryParams = new URLSearchParams();
-    
+
     if (params?.page) {
-      queryParams.append('page', params.page.toString());
+      queryParams.append("page", params.page.toString());
     }
     if (params?.limit) {
-      queryParams.append('limit', params.limit.toString());
+      queryParams.append("limit", params.limit.toString());
     }
-    
-    const url = `/communities/${communityId}/post${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    const url = `/communities/${communityId}/post${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     const response = await adminApiClient.get<CommunityPostsResponse>(url);
-    
+
     if (!response.data.success) {
-      console.warn('API reported failure to fetch community posts');
+      console.warn("API reported failure to fetch community posts");
       return [];
     }
     // Transform posts to consistent format
-    return (response.data.posts || []).map(post => transformCommunityPost(post, communityId));
+    return (response.data.posts || []).map((post) =>
+      transformCommunityPost(post, communityId)
+    );
   } catch (error) {
-    console.error('Error fetching community posts:', error);
+    console.error("Error fetching community posts:", error);
     return [];
   }
 };
@@ -169,15 +176,18 @@ export const fetchCommunityPosts = async (
  * @param postId Post ID
  * @returns Promise with post details data
  */
-export const fetchPostDetails = async (postId: string): Promise<CommunityPostResponse> => {
-  const response = await adminApiClient.get<{ success: boolean; post: CommunityPostResponse }>(
-    `/posts/${postId}`
-  );
-  
+export const fetchPostDetails = async (
+  postId: string
+): Promise<CommunityPostResponse> => {
+  const response = await adminApiClient.get<{
+    success: boolean;
+    post: CommunityPostResponse;
+  }>(`/posts/${postId}`);
+
   if (!response.data.success) {
-    throw new Error('Failed to fetch post details');
+    throw new Error("Failed to fetch post details");
   }
-  
+
   return response.data.post;
 };
 
@@ -186,7 +196,7 @@ export const fetchPostDetails = async (postId: string): Promise<CommunityPostRes
  */
 interface LikePostRequest {
   postId: string;
-  reactionType: 'like' | 'love' | 'haha' | 'lulu';
+  reactionType: "like" | "love" | "haha" | "lulu";
 }
 
 /**
@@ -200,14 +210,14 @@ export const reactOnPost = async (
   params: LikePostRequest
 ): Promise<ReactionResponse> => {
   const url = `/communities/${communityId}/post/like`;
-  console.log("url:",url, "params:",params)
+  console.log("url:", url, "params:", params);
   const response = await adminApiClient.post<ReactionResponse>(url, {
     postId: params.postId,
-    reactionType: params.reactionType
+    reactionType: params.reactionType,
   });
-  
+
   if (!response.data.success) {
-    throw new Error('Failed to react post');
+    throw new Error("Failed to react post");
   }
   return response.data;
 };
@@ -231,16 +241,18 @@ export const commentOnPost = async (
   communityId: string,
   params: CommentOnPostRequest
 ): Promise<CommunityPostResponse> => {
-  
   const url = `/communities/${communityId}/post/comment`;
-  const response = await adminApiClient.post<{ success: boolean; post: CommunityPostResponse }>(url, {
+  const response = await adminApiClient.post<{
+    success: boolean;
+    post: CommunityPostResponse;
+  }>(url, {
     postId: params.postId,
     content: params.content,
-    isAnonymous: params.isAnonymous
+    isAnonymous: params.isAnonymous,
   });
-  
+
   if (!response.data.success) {
-    throw new Error('Failed to comment on post');
+    throw new Error("Failed to comment on post");
   }
   return response.data.post;
 };
@@ -264,14 +276,16 @@ export const deleteComment = async (
   params: DeleteCommentRequest
 ): Promise<{ success: boolean; message: string }> => {
   const url = `/communities/${communityId}/post/comment?postId=${params.postId}&commentId=${params.commentId}`;
-  const response = await adminApiClient.delete<{ success: boolean; message: string }>(url);
-  
+  const response = await adminApiClient.delete<{
+    success: boolean;
+    message: string;
+  }>(url);
+
   if (!response.data.success) {
-    throw new Error('Failed to delete comment');
+    throw new Error("Failed to delete comment");
   }
   return response.data;
 };
-
 
 /**
  * Function to delete a post from a community
@@ -279,10 +293,16 @@ export const deleteComment = async (
  * @param postId Post ID
  * @returns Promise with delete post response
  */
-export const deletePost = async (communityId: string, postId: string): Promise<{ success: boolean; message: string }> => {
+export const deletePost = async (
+  communityId: string,
+  postId: string
+): Promise<{ success: boolean; message: string }> => {
   const url = `/communities/${communityId}/post?postId=${postId}`;
-  const response = await adminApiClient.delete<{ success: boolean; message: string }>(url);
-  
+  const response = await adminApiClient.delete<{
+    success: boolean;
+    message: string;
+  }>(url);
+
   return response.data;
 };
 
@@ -294,18 +314,21 @@ export const deletePost = async (communityId: string, postId: string): Promise<{
  * @returns Promise with the edit post response
  */
 export const editCommunityPost = async (
-  communityId: string, 
+  communityId: string,
   postId: string,
   content: string
 ): Promise<{ success: boolean; message?: string }> => {
   const url = `/communities/${communityId}/post`;
-  const response = await adminApiClient.put<{ success: boolean; message?: string }>(url, {
+  const response = await adminApiClient.put<{
+    success: boolean;
+    message?: string;
+  }>(url, {
     content: content,
-    postId: postId
+    postId: postId,
   });
-  
+
   if (!response.data.success) {
-    throw new Error(response.data.message || 'Failed to edit community post');
+    throw new Error(response.data.message || "Failed to edit community post");
   }
   return response.data;
 };
@@ -352,25 +375,26 @@ export const fetchCommunityMembers = async (
 ): Promise<{ members: CommunityMember[]; hasMore: boolean }> => {
   try {
     const queryParams = new URLSearchParams();
-    
+
     if (params.page) {
-      queryParams.append('page', params.page.toString());
+      queryParams.append("page", params.page.toString());
     }
     if (params.limit) {
-      queryParams.append('limit', params.limit.toString());
+      queryParams.append("limit", params.limit.toString());
     }
-    
+
     const url = `/communities/${params.communityId}/membersOfCommunity?${queryParams.toString()}`;
-    const response = await adminApiClient.get<FetchCommunityMembersApiResponse>(url);
-    
+    const response =
+      await adminApiClient.get<FetchCommunityMembersApiResponse>(url);
+
     const responseData = response.data;
-    
+
     return {
       members: responseData.memberDetails || [],
       hasMore: responseData.pagination?.hasNextPage || false,
     };
   } catch (error) {
-    console.error('Error fetching community members:', error);
+    console.error("Error fetching community members:", error);
     return { members: [], hasMore: false };
   }
 };
@@ -390,18 +414,21 @@ export const fetchCommunityFeed = async (
       page: params.page.toString(),
       limit: params.limit.toString(),
     });
-    
+
     const url = `/communities/${communityId}/postWithPagination?${queryParams.toString()}`;
-    const response = await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
-    
+    const response =
+      await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
+
     const responseData = response.data;
-    
+
     return {
-      posts: (responseData.posts || []).map(post => transformCommunityPost(post, communityId)),
+      posts: (responseData.posts || []).map((post) =>
+        transformCommunityPost(post, communityId)
+      ),
       hasMore: responseData.pagination?.hasNextPage || false,
     };
   } catch (error) {
-    console.error('Error fetching community feed:', error);
+    console.error("Error fetching community feed:", error);
     return { posts: [], hasMore: false };
   }
 };
@@ -423,16 +450,19 @@ export const fetchCommunityMediaPosts = async (
     });
 
     const url = `/communities/${communityId}/postWithPaginationWithMedia?${queryParams.toString()}`;
-    const response = await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
-    
+    const response =
+      await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
+
     const responseData = response.data;
-    
+
     return {
-      posts: (responseData.posts || []).map(post => transformCommunityPost(post, communityId)),
+      posts: (responseData.posts || []).map((post) =>
+        transformCommunityPost(post, communityId)
+      ),
       hasMore: responseData.pagination?.hasNextPage || false,
     };
   } catch (error) {
-    console.error('Error fetching community media posts:', error);
+    console.error("Error fetching community media posts:", error);
     return { posts: [], hasMore: false };
   }
 };
@@ -454,16 +484,19 @@ export const fetchCommunityQuotePosts = async (
     });
 
     const url = `/communities/${communityId}/postWithPaginationWithoutMedia?${queryParams.toString()}`;
-    const response = await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
-    
+    const response =
+      await adminApiClient.get<PaginatedCommunityPostsApiResponse>(url);
+
     const responseData = response.data;
-    
+
     return {
-      posts: (responseData.posts || []).map(post => transformCommunityPost(post, communityId)),
+      posts: (responseData.posts || []).map((post) =>
+        transformCommunityPost(post, communityId)
+      ),
       hasMore: responseData.pagination?.hasNextPage || false,
     };
   } catch (error) {
-    console.error('Error fetching community quote posts:', error);
+    console.error("Error fetching community quote posts:", error);
     return { posts: [], hasMore: false };
   }
 };

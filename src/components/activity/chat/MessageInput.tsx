@@ -220,13 +220,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
   // Check if the shared post has media (image or video)
   const postMedia = React.useMemo(() => {
     if (!sharedPostData?.data?.media?.length) return null;
-    
+
     const media = sharedPostData.data.media[0];
     if (!media || !media.url || media.url.trim() === "") return null;
-    
+
     return {
       url: media.url,
-      type: media.type || "image" // Default to image if type is not specified
+      type: media.type || "image", // Default to image if type is not specified
     };
   }, [sharedPostData]);
 
@@ -254,8 +254,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
               </span>
               <div className="flex justify-items-center gap-2">
                 <span className="text-xs text-foreground line-clamp-1 flex-1">
-                  {isPostShare(replyToMessage.text) 
-                    ? "POST" 
+                  {isPostShare(replyToMessage.text)
+                    ? "POST"
                     : typeof replyToMessage.text === "string"
                       ? replyToMessage.text.length > 70
                         ? `${replyToMessage.text.substring(0, 70)}...`
@@ -266,29 +266,34 @@ const MessageInput: React.FC<MessageInputProps> = ({
                 {isPostShare(replyToMessage.text) && postMedia && (
                   <div className="h-8 w-8 overflow-hidden rounded-sm border border-border flex items-center justify-center bg-muted/30">
                     {postMedia.type === "video" ? (
-                      <video 
+                      <video
                         src={postMedia.url}
                         className="h-full w-full object-cover"
                         muted
                         onLoadStart={() => console.log("Video loading started")}
                         onError={(e) => {
-                          console.error("Failed to load post video:", postMedia.url);
-                          e.currentTarget.style.display = 'none';
+                          console.error(
+                            "Failed to load post video:",
+                            postMedia.url
+                          );
+                          e.currentTarget.style.display = "none";
                         }}
                       />
                     ) : (
-                      <img 
+                      <img
                         src={postMedia.url}
                         alt="Post"
                         className="h-full w-full object-cover"
                         onLoad={() => console.log("Image loaded successfully")}
                         onError={(e) => {
-                          console.error("Failed to load post image:", postMedia.url);
-                          e.currentTarget.style.display = 'none';
+                          console.error(
+                            "Failed to load post image:",
+                            postMedia.url
+                          );
+                          e.currentTarget.style.display = "none";
                         }}
                       />
-                    )
-                    }
+                    )}
                   </div>
                 )}
               </div>

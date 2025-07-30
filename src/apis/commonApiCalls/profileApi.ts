@@ -19,7 +19,6 @@ export const fetchUserProfile = async (
     },
   });
 
-  
   const userData = response.data.result[0];
   const isCurrentUser = currentUserId === userId;
 
@@ -132,14 +131,13 @@ export const updateUserProfile = async (
   if (profileData.image instanceof File) {
     formDataObj.append("image", profileData.image);
   }
-  
 
   // Make the API call
   const response = await formDataApiClient.put("/edit-profile", formDataObj);
 
   // Save apiToken to localStorage if it exists in the response
   if (response.data.apiToken) {
-    localStorage.setItem('token', response.data.apiToken);
+    localStorage.setItem("token", response.data.apiToken);
   }
 
   return {
@@ -209,49 +207,58 @@ export const fetchProfileById = async (
 };
 
 // Unfollow a user
-export const unfollowUser = async (otherId: string): Promise<{ success: boolean; message: string }> => {
+export const unfollowUser = async (
+  otherId: string
+): Promise<{ success: boolean; message: string }> => {
   const formData = new FormData();
-  formData.append('otherId', otherId);
-  
-  const response = await apiClient.post('/unfollow', formData);
-  
+  formData.append("otherId", otherId);
+
+  const response = await apiClient.post("/unfollow", formData);
+
   if (response.status === 200) {
     return {
       success: true,
-      message: response.data.message || 'Successfully unfollowed user',
+      message: response.data.message || "Successfully unfollowed user",
     };
   } else {
-    throw new Error(response.data.message || 'Failed to unfollow user');
+    throw new Error(response.data.message || "Failed to unfollow user");
   }
 };
 
 // Remove a follower
-export const removeFollower = async (otherId: string): Promise<{ success: boolean; message: string }> => {
+export const removeFollower = async (
+  otherId: string
+): Promise<{ success: boolean; message: string }> => {
   const formData = new FormData();
-  formData.append('otherId', otherId);
-  
-  const response = await apiClient.post('/follower/remove', formData);
-  
+  formData.append("otherId", otherId);
+
+  const response = await apiClient.post("/follower/remove", formData);
+
   if (response.status === 200) {
     return {
       success: true,
-      message: response.data.message || 'Successfully removed follower',
+      message: response.data.message || "Successfully removed follower",
     };
   } else {
-    throw new Error(response.data.message || 'Failed to remove follower');
+    throw new Error(response.data.message || "Failed to remove follower");
   }
 };
 
 // Delete user's profile picture
-export const deleteProfilePicture = async (): Promise<{ success: boolean; message: string }> => {
-  const response = await apiClient.delete('/profile-picture');
-  
+export const deleteProfilePicture = async (): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const response = await apiClient.delete("/profile-picture");
+
   if (response.status === 200) {
     return {
       success: true,
-      message: response.data.message || 'Successfully deleted profile picture',
+      message: response.data.message || "Successfully deleted profile picture",
     };
   } else {
-    throw new Error(response.data.message || 'Failed to delete profile picture');
+    throw new Error(
+      response.data.message || "Failed to delete profile picture"
+    );
   }
 };

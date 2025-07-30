@@ -91,13 +91,15 @@ const SentRequest = ({
           />
         </div>
 
-          <button
-            className="pr-4 text-foreground cursor-pointer"
-            onClick={handleCancel}
-            disabled={isPending}
-          >
-            <div className="text-sm border border-destructive hover:bg-destructive/20 rounded-3xl px-2 py-1">Cancel</div>
-          </button>
+        <button
+          className="pr-4 text-foreground cursor-pointer"
+          onClick={handleCancel}
+          disabled={isPending}
+        >
+          <div className="text-sm border border-destructive hover:bg-destructive/20 rounded-3xl px-2 py-1">
+            Cancel
+          </div>
+        </button>
       </div>
     </div>
   );

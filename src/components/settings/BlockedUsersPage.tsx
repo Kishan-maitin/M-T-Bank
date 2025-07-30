@@ -6,11 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserX, UserPlus, ArrowLeft, Loader2 } from "lucide-react";
 import UserSearchDialog from "@/components/common/UserSearchDialog";
 import { Person } from "@/apis/commonApiCalls/searchApi";
-import { 
-  unblockUser as unblockUserApi, 
+import {
+  unblockUser as unblockUserApi,
   blockUser as blockUserApi,
   getBlockedUsers,
-  BlockedUser
+  BlockedUser,
 } from "@/apis/commonApiCalls/activityApi";
 import { useApiCall } from "@/apis/globalCatchError";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ const BlockedUsersPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [unblockingUser, setUnblockingUser] = useState<string | null>(null);
-  
+
   const [executeUnblockUser] = useApiCall(unblockUserApi);
   const [executeBlockUser] = useApiCall(blockUserApi);
   const [executeGetBlockedUsers] = useApiCall(getBlockedUsers);
@@ -45,29 +45,31 @@ const BlockedUsersPage: React.FC = () => {
   const handleUnblock = async (userId: string) => {
     console.log("Unblocking user:", userId);
     setUnblockingUser(userId);
-    
+
     // Call the API to unblock the user
     const result = await executeUnblockUser(userId);
     console.log("Unblock API result:", result);
-    
+
     if (result.success) {
       // Update local state by filtering out the unblocked user
-      setBlockedUsers(prevUsers => prevUsers.filter(user => user.userId !== userId));
+      setBlockedUsers((prevUsers) =>
+        prevUsers.filter((user) => user.userId !== userId)
+      );
       toast.success("User unblocked successfully");
     } else {
       toast.error("Failed to unblock user");
     }
-    
+
     setUnblockingUser(null);
   };
 
   const handleBlock = async (user: Person) => {
     console.log("Attempting to block user:", user);
-    
+
     // Call the API to block the user
     const result = await executeBlockUser(user.id);
     console.log("Block API result:", result);
-    
+
     if (result.success) {
       // Refresh the list of blocked users after blocking
       fetchBlockedUsers();
@@ -75,15 +77,15 @@ const BlockedUsersPage: React.FC = () => {
     } else {
       toast.error(`Failed to block ${user.name}`);
     }
-    
+
     setDialogOpen(false);
   };
 
   // Check if a user is already blocked
   const isUserBlocked = (userId: string) => {
-    return blockedUsers.some(user => user.userId === userId);
+    return blockedUsers.some((user) => user.userId === userId);
   };
-  
+
   // Handle user selection in dialog
   const handleUserSelection = async (user: Person) => {
     if (isUserBlocked(user.id)) {

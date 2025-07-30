@@ -7,7 +7,10 @@ interface AllCommunitiesProps {
   isLoadingCommunities?: boolean;
 }
 
-const AllCommunities: React.FC<AllCommunitiesProps> = ({ communities, isLoadingCommunities }) => {
+const AllCommunities: React.FC<AllCommunitiesProps> = ({
+  communities,
+  isLoadingCommunities,
+}) => {
   const navigate = useNavigate();
   if (isLoadingCommunities) {
     return (
@@ -25,35 +28,34 @@ const AllCommunities: React.FC<AllCommunitiesProps> = ({ communities, isLoadingC
     );
   }
 
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       {communities.map((community) => (
-        <div 
+        <div
           key={community._id}
           className="relative rounded-xl bg-muted cursor-pointer hover:bg-accent transition-colors"
           onClick={() => navigate(`/community/${community._id}`)}
         >
           {/* Cover Image */}
           <div className="h-16 w-full rounded-t-xl overflow-hidden">
-            <img 
-              src={community.backgroundImage || '/profile/community/commbg.png'} 
-              alt="" 
+            <img
+              src={community.backgroundImage || "/profile/community/commbg.png"}
+              alt=""
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           {/* Profile Picture */}
           <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
             <div className="w-16 h-16 rounded-full border-4 border-background overflow-hidden">
-              <img 
-                src={community.profilePicture || '/profile/default-avatar.png'} 
-                alt="" 
+              <img
+                src={community.profilePicture || "/profile/default-avatar.png"}
+                alt=""
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
-          
+
           {/* Content */}
           <div className="pt-10 pb-4 px-4 text-center">
             <h3 className="text-base font-medium text-foreground">

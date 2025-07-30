@@ -1,4 +1,4 @@
-import { CommentData } from '../apis/apiTypes/response';
+import { CommentData } from "../apis/apiTypes/response";
 
 export interface CommentsProps {
   postAuthor: string;

@@ -3,12 +3,12 @@ import { useApiCall } from "@/apis/globalCatchError";
 import {
   acceptFriendRequest,
   rejectFriendRequest,
-  FollowRequest
+  FollowRequest,
 } from "@/apis/commonApiCalls/notificationsApi";
 import { TruncatedText } from "@/components/ui/TruncatedText";
 import { Link } from "react-router-dom";
 
-interface FriendRequestProps extends Omit<FollowRequest, 'profilePic'> {
+interface FriendRequestProps extends Omit<FollowRequest, "profilePic"> {
   onActionComplete: (
     requestId: string,
     success: boolean,
@@ -60,23 +60,37 @@ const FriendRequest = ({
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg">
       <Link to={`/profile/${_id}`}>
-      <div className="flex items-center gap-4">
-        <img
-          src={profilePic || avatar}
-          alt={name}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <div>
-          <h3 className="font-medium">{name}</h3>
-          <TruncatedText text={bio} limit={40} align="left" showToggle={false}/>
+        <div className="flex items-center gap-4">
+          <img
+            src={profilePic || avatar}
+            alt={name}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div>
+            <h3 className="font-medium">{name}</h3>
+            <TruncatedText
+              text={bio}
+              limit={40}
+              align="left"
+              showToggle={false}
+            />
+          </div>
         </div>
-      </div>
       </Link>
       <div className="flex gap-2">
-        <Button  className="cursor-pointer" onClick={handleAccept} disabled={isLoading}>
+        <Button
+          className="cursor-pointer"
+          onClick={handleAccept}
+          disabled={isLoading}
+        >
           Accept
         </Button>
-        <Button variant="outline" className="text-foreground border-destructive-foreground cursor-pointer" onClick={handleReject} disabled={isLoading}>
+        <Button
+          variant="outline"
+          className="text-foreground border-destructive-foreground cursor-pointer"
+          onClick={handleReject}
+          disabled={isLoading}
+        >
           Decline
         </Button>
       </div>

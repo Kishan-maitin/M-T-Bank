@@ -130,7 +130,7 @@ export const getPostDetails = async (
   if (!feedId) {
     throw new Error("Feed ID is required");
   }
-  
+
   try {
     const response = await apiClient.get<GetPostDetailsResponse>(
       `/get-post-details`,
@@ -144,7 +144,7 @@ export const getPostDetails = async (
     } else {
       throw new Error(response.data.message || "Failed to fetch post details");
     }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Check if it's a 403 unauthorized access error
     if (error.response && error.response.status === 403) {
@@ -152,7 +152,7 @@ export const getPostDetails = async (
       return {
         success: false,
         message: "Post not found or you don't have permission to view it",
-        notFound: true
+        notFound: true,
       };
     }
     // Rethrow other errors
@@ -165,9 +165,8 @@ export const getPostDetails = async (
  */
 export const getSuggestedUsers =
   async (): Promise<GetSuggestedUsersResponse> => {
-    const response = await apiClient.get<GetSuggestedUsersResponse>(
-      "/getAllUsers"
-    );
+    const response =
+      await apiClient.get<GetSuggestedUsersResponse>("/getAllUsers");
 
     if (response.status === 200) {
       return {

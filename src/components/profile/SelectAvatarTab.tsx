@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '@/store';
-import { setAvatar } from '@/store/createProfileSlice';
-import { useApiCall } from '@/apis/globalCatchError';
-import { fetchAvatars } from '@/apis/commonApiCalls/createProfileApi';
+import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "@/store";
+import { setAvatar } from "@/store/createProfileSlice";
+import { useApiCall } from "@/apis/globalCatchError";
+import { fetchAvatars } from "@/apis/commonApiCalls/createProfileApi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AvatarData {
@@ -18,9 +18,18 @@ interface AvatarGridProps {
   onAvatarSelect: (avatarUrl: string) => void;
 }
 
-const AvatarGrid: React.FC<AvatarGridProps> = ({ avatars, type, selectedAvatar, onAvatarSelect }) => {
+const AvatarGrid: React.FC<AvatarGridProps> = ({
+  avatars,
+  type,
+  selectedAvatar,
+  onAvatarSelect,
+}) => {
   if (avatars.length === 0) {
-    return <p className="text-center text-muted-foreground py-8">No {type} avatars available</p>;
+    return (
+      <p className="text-center text-muted-foreground py-8">
+        No {type} avatars available
+      </p>
+    );
   }
 
   return (
@@ -28,24 +37,32 @@ const AvatarGrid: React.FC<AvatarGridProps> = ({ avatars, type, selectedAvatar, 
       {avatars.map((avatarItem, index) => (
         <div
           key={`${type}-${index}-${avatarItem.url}`} // Enhanced key for more uniqueness
-          className={`relative cursor-pointer rounded-lg border-2 ${selectedAvatar === avatarItem.url
-            ? 'border-primary bg-muted'
-            : 'border-input hover:border-ring'
-            }`}
+          className={`relative cursor-pointer rounded-lg border-2 ${
+            selectedAvatar === avatarItem.url
+              ? "border-primary bg-muted"
+              : "border-input hover:border-ring"
+          }`}
           onClick={() => onAvatarSelect(avatarItem.url)}
         >
-
           <img
             src={avatarItem.url}
             alt={`${type} Avatar ${index + 1}`}
             className="h-full w-full mx-auto object-cover rounded-lg"
           />
 
-
           {selectedAvatar === avatarItem.url && (
             <div className="absolute -top-2 -right-2 h-6 w-6 bg-primary rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary-foreground" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 text-primary-foreground"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           )}
@@ -60,9 +77,8 @@ const SelectAvatarTab: React.FC = () => {
   const [femaleAvatars, setFemaleAvatars] = useState<AvatarData[]>([]);
   const [activeTab, setActiveTab] = useState<string>("female");
 
-  const { avatar } = useAppSelector(state => state.createProfile);
+  const { avatar } = useAppSelector((state) => state.createProfile);
   const dispatch = useAppDispatch();
-
 
   // Use our custom hook for API calls
   const [executeFetchAvatars, isLoadingAvatars] = useApiCall(fetchAvatars);
@@ -100,7 +116,7 @@ const SelectAvatarTab: React.FC = () => {
     };
 
     // Get userId from localStorage
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
 
     // Only try to fetch avatars if userId exists
     if (userId) {
@@ -122,8 +138,12 @@ const SelectAvatarTab: React.FC = () => {
       ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="female" className="cursor-pointer">Female</TabsTrigger>
-            <TabsTrigger value="male" className="cursor-pointer">Male</TabsTrigger>
+            <TabsTrigger value="female" className="cursor-pointer">
+              Female
+            </TabsTrigger>
+            <TabsTrigger value="male" className="cursor-pointer">
+              Male
+            </TabsTrigger>
           </TabsList>
 
           {/* Wrapper for scrollable content */}

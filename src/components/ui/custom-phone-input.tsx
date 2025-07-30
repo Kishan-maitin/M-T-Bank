@@ -36,7 +36,6 @@ const getFlagEmoji = (countryCode: string): string => {
   return String.fromCodePoint(...codePoints);
 };
 
-
 export interface Country {
   name: string;
   code: string;
@@ -49,34 +48,38 @@ const countryDataMap: { [key: string]: string } = countryCodes.customList(
   "{countryNameEn}|{countryCode}|{countryCallingCode}" // Store these details in the value string
 );
 
-const allCountries: Country[] = Object.keys(countryDataMap).map(key => {
+const allCountries: Country[] = Object.keys(countryDataMap)
+  .map((key) => {
     const valueString = countryDataMap[key];
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [name, _codeFromValue, callingCode] = valueString.split('|');
+    const [name, _codeFromValue, callingCode] = valueString.split("|");
     // 'key' is the countryCode from the map's keys.
     return {
-        name: name || 'Unknown',
-        code: key, // Use the key from the map as the definitive country code
-        callingCode: callingCode || '',
-        flag: getFlagEmoji(key), // Generate flag based on the key (country code)
+      name: name || "Unknown",
+      code: key, // Use the key from the map as the definitive country code
+      callingCode: callingCode || "",
+      flag: getFlagEmoji(key), // Generate flag based on the key (country code)
     };
-})
-.filter(country => country.callingCode && country.name !== 'Unknown' && country.code) // Ensure essential data exists
-.sort((a, b) => a.name.localeCompare(b.name));
+  })
+  .filter(
+    (country) =>
+      country.callingCode && country.name !== "Unknown" && country.code
+  ) // Ensure essential data exists
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 // Mimic IntlTelInput's selectedCountryData structure for easier integration
 export interface SimplifiedCountryData {
-    dialCode: string;
-    name: string;
-    iso2: string; // Renamed from 'code' to match typical usage if IntlTelInput implies this
+  dialCode: string;
+  name: string;
+  iso2: string; // Renamed from 'code' to match typical usage if IntlTelInput implies this
 }
 
 interface CustomPhoneInputProps {
   value?: string;
   onChange?: (
-    isValid: boolean, 
-    nationalNumber: string, 
-    countryData: SimplifiedCountryData, 
+    isValid: boolean,
+    nationalNumber: string,
+    countryData: SimplifiedCountryData,
     fullNumber: string
   ) => void;
   defaultCountryCode?: string; // ISO code e.g., "US"
@@ -101,23 +104,32 @@ export const CustomPhoneInput = React.forwardRef<
     // Helper to get initial country based on defaultCountryCode (ISO)
     const getInitialCountry = React.useCallback((isoCode: string): Country => {
       const upperIsoCode = isoCode.toUpperCase();
-      let country = allCountries.find(c => c.code.toUpperCase() === upperIsoCode);
+      let country = allCountries.find(
+        (c) => c.code.toUpperCase() === upperIsoCode
+      );
       if (!country) {
         // Fallback if the provided isoCode is not found (e.g. "US" if that was the input)
-        country = allCountries.find(c => c.code === "US");
+        country = allCountries.find((c) => c.code === "US");
       }
       return country || allCountries[0]; // Absolute fallback to the first country
     }, []); // allCountries is stable, so no dependency needed if defined outside component scope
 
-    const initialSelectedCountry = React.useMemo(() => getInitialCountry(defaultCountryCode), [defaultCountryCode, getInitialCountry]);
+    const initialSelectedCountry = React.useMemo(
+      () => getInitialCountry(defaultCountryCode),
+      [defaultCountryCode, getInitialCountry]
+    );
 
-    const [selectedCountry, setSelectedCountry] = React.useState<Country>(initialSelectedCountry);
+    const [selectedCountry, setSelectedCountry] = React.useState<Country>(
+      initialSelectedCountry
+    );
 
     // Initializer for nationalNumber state
     const getInitialNationalNumber = () => {
       return value ? value.replace(/\D/g, "") : "";
     };
-    const [nationalNumber, setNationalNumber] = React.useState<string>(getInitialNationalNumber);
+    const [nationalNumber, setNationalNumber] = React.useState<string>(
+      getInitialNationalNumber
+    );
 
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState("");
@@ -130,8 +142,10 @@ export const CustomPhoneInput = React.forwardRef<
       }
     }, [value, nationalNumber]); // Added nationalNumber to dependencies
 
-
-    const triggerOnChange = (currentNationalNum: string, countryToUse: Country) => {
+    const triggerOnChange = (
+      currentNationalNum: string,
+      countryToUse: Country
+    ) => {
       if (onChange && countryToUse) {
         const fullNum = `+${countryToUse.callingCode}${currentNationalNum}`;
         const countryData: SimplifiedCountryData = {
@@ -140,11 +154,13 @@ export const CustomPhoneInput = React.forwardRef<
           iso2: countryToUse.code,
         };
         // Assuming isValid is true for now, actual validation might be needed
-        onChange(true, currentNationalNum, countryData, fullNum); 
+        onChange(true, currentNationalNum, countryData, fullNum);
       }
     };
 
-    const handleNationalNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleNationalNumberChange = (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
       const newNationalNumber = e.target.value.replace(/\D/g, "");
       setNationalNumber(newNationalNumber);
       triggerOnChange(newNationalNumber, selectedCountry); // Use current selectedCountry from state
@@ -158,7 +174,7 @@ export const CustomPhoneInput = React.forwardRef<
       console.log("country", country);
       setSelectedCountry(country);
       // triggerOnChange will be called with the new country ensuring correct data is passed
-      triggerOnChange(nationalNumber, country); 
+      triggerOnChange(nationalNumber, country);
       setIsDropdownOpen(false);
       setSearchTerm("");
     };
@@ -206,7 +222,13 @@ export const CustomPhoneInput = React.forwardRef<
               />
               <CommandList>
                 <ScrollArea className="h-[250px]">
-                  <CommandEmpty className={cn(filteredCountries.length === 0 ? "py-6 text-center text-sm" : "hidden")}>
+                  <CommandEmpty
+                    className={cn(
+                      filteredCountries.length === 0
+                        ? "py-6 text-center text-sm"
+                        : "hidden"
+                    )}
+                  >
                     No country found.
                   </CommandEmpty>
                   <CommandGroup>
@@ -217,14 +239,14 @@ export const CustomPhoneInput = React.forwardRef<
                         onSelect={() => handleCountrySelect(country)}
                         className="text-sm max-w-[250px]"
                       >
-                       { selectedCountry?.code === country.code && <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                          )}
-                        />}
+                        {selectedCountry?.code === country.code && (
+                          <Check className={cn("mr-2 h-4 w-4")} />
+                        )}
                         <span className="mr-1 text-lg">{country.flag}</span>
                         <span className="flex-1 truncate">{country.name}</span>
-                        <span className="ml-1 text-muted-foreground">+{country.callingCode}</span>
+                        <span className="ml-1 text-muted-foreground">
+                          +{country.callingCode}
+                        </span>
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -266,4 +288,4 @@ export function PhoneInputDemo() {
     </div>
   );
 }
-*/ 
+*/

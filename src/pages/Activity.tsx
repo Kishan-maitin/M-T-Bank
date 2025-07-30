@@ -16,7 +16,14 @@ import {
   setLoading,
   transformAndSetChats,
 } from "@/store/chatSlice";
-import { Plus, UserPlus, MessageSquare, Users, Building2, ArrowLeft } from "lucide-react";
+import {
+  Plus,
+  UserPlus,
+  MessageSquare,
+  Users,
+  Building2,
+  ArrowLeft,
+} from "lucide-react";
 import { startMessage } from "@/apis/commonApiCalls/chatApi";
 import { ChatRoom } from "@/apis/apiTypes/response";
 import UserSearchDialog from "@/components/common/UserSearchDialog";
@@ -49,20 +56,23 @@ export default function Activity() {
   const [error, setError] = useState<string | null>(null);
   const [userCommunities, setUserCommunities] = useState<ChatItem[]>([]);
   const [activeTab, setActiveTab] = useState("chats");
-  const [suggestedCommunities, setSuggestedCommunities] = useState<BasicCommunity[]>([]);
-  const [suggestedCommunitiesLoaded, setSuggestedCommunitiesLoaded] = useState(false);
-  
+  const [suggestedCommunities, setSuggestedCommunities] = useState<
+    BasicCommunity[]
+  >([]);
+  const [suggestedCommunitiesLoaded, setSuggestedCommunitiesLoaded] =
+    useState(false);
+
   const dispatch = useAppDispatch();
-  const { filteredChats, isLoading: isLoadingChats } = useAppSelector((state) => state.chat);
+  const { filteredChats, isLoading: isLoadingChats } = useAppSelector(
+    (state) => state.chat
+  );
   const [executeFetchChats] = useApiCall(fetchChatRooms);
   const [executeStartMessage] = useApiCall(startMessage);
   // const [executeFetchUserCommunities] = useApiCall(fetchUserCommunities);
   const [executeFetchCommunities] = useApiCall(fetchCommunities);
-  
+
   // Combined page loading state
-  const pageLoading = 
-    isLoadingChats || 
-    !suggestedCommunitiesLoaded
+  const pageLoading = isLoadingChats || !suggestedCommunitiesLoaded;
 
   // Load chats data
   useEffect(() => {
@@ -111,45 +121,49 @@ export default function Activity() {
   //         participants: [], // Add empty participants array to satisfy ChatItem type
   //         members: community.members || []
   //       }));
-        
+
   //       setUserCommunities(communityItems);
   //     }
   //     setLoadingCommunities(false);
   //     setUserCommunitiesLoaded(true);
   //   };
-    
+
   //   loadUserCommunities();
   // }, []);
-  
+
   // Load suggested communities data
   useEffect(() => {
     const loadSuggestedCommunities = async () => {
       const result = await executeFetchCommunities();
       if (result.success && result.data) {
         setSuggestedCommunities(result.data as BasicCommunity[]);
-        const communityItems = result.data.map((community: CommunityResponse) => ({
-          id: community._id,
-          name: community.name,
-          avatar: community.profilePicture || "",
-          lastMessage: community.description || "No description",
-          description: community.description || "",
-          timestamp: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          updatedAt: new Date().toISOString(),
-          unread: false,
-          isJoined: community.isJoined || false,
-          type: "community" as const,
-          memberCount: community.memberCount || 0,
-          backgroundImage: community.backgroundImage || "",
-          participants: [], // Add empty participants array to satisfy ChatItem type
-        }));
-        setUserCommunities(communityItems.filter(community => community.isJoined));
+        const communityItems = result.data.map(
+          (community: CommunityResponse) => ({
+            id: community._id,
+            name: community.name,
+            avatar: community.profilePicture || "",
+            lastMessage: community.description || "No description",
+            description: community.description || "",
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            updatedAt: new Date().toISOString(),
+            unread: false,
+            isJoined: community.isJoined || false,
+            type: "community" as const,
+            memberCount: community.memberCount || 0,
+            backgroundImage: community.backgroundImage || "",
+            participants: [], // Add empty participants array to satisfy ChatItem type
+          })
+        );
+        setUserCommunities(
+          communityItems.filter((community) => community.isJoined)
+        );
       }
       setSuggestedCommunitiesLoaded(true);
     };
-    
+
     loadSuggestedCommunities();
   }, []);
 
@@ -217,21 +231,23 @@ export default function Activity() {
   };
 
   // Filter chats based on search query
-  const filteredDms = searchQuery 
-    ? filteredChats.dms.filter(chat => 
-        chat.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredDms = searchQuery
+    ? filteredChats.dms.filter((chat) =>
+        chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     : filteredChats.dms;
-    
-  const filteredGroups = searchQuery
-    ? filteredChats.groups.filter(group => 
-        group.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : filteredChats.groups;
-    
-  const filteredUserCommunities = searchQuery
-    ? userCommunities.filter(community => 
-        community.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : userCommunities;
 
+  const filteredGroups = searchQuery
+    ? filteredChats.groups.filter((group) =>
+        group.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : filteredChats.groups;
+
+  const filteredUserCommunities = searchQuery
+    ? userCommunities.filter((community) =>
+        community.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : userCommunities;
 
   return (
     <div className={`flex flex-col md:flex-row h-screen`}>
@@ -244,7 +260,10 @@ export default function Activity() {
         <div className={`p-6 w-full`}>
           {/* Header */}
           <div className="flex items-center justify-between mb-6 relative">
-            <Link to="/" className="absolute left-0 -ml-2 flex items-center text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              to="/"
+              className="absolute left-0 -ml-2 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            >
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <h1 className="text-3xl font-semibold ml-6">Activity</h1>
@@ -262,7 +281,10 @@ export default function Activity() {
                 onOpenChange={setDialogOpen}
                 onSelectUser={handleStartConversation}
                 triggerButton={
-                  <Button className="cursor-pointer rounded-full">
+                  <Button
+                    style={{ backgroundColor: "#007856" }}
+                    className="cursor-pointer rounded-full"
+                  >
                     <Plus className="h-4 w-4 -mr-1" />
                     Add
                   </Button>
@@ -273,7 +295,7 @@ export default function Activity() {
               />
             </div>
           </div>
-          
+
           {/* Suggested Communities Section */}
           <div className="mb-8">
             <h2 className="text-lg text-muted-foreground mb-4">
@@ -321,14 +343,15 @@ export default function Activity() {
 
           {/* Chat Interface or Tabs */}
           {!error && (
-            <Tabs 
-              defaultValue="chats" 
-              value={activeTab} 
-              onValueChange={setActiveTab} 
+            <Tabs
+              defaultValue="chats"
+              value={activeTab}
+              onValueChange={setActiveTab}
               className="w-full"
             >
               <TabsList className="bg-transparent gap-4 *:px-5 *:py-1.5 mb-4">
                 <TabsTrigger
+                  // style={{ backgroundColor: "#007856" }}
                   value="chats"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer"
                 >
@@ -348,15 +371,24 @@ export default function Activity() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="chats" className="min-h-[300px] relative mb-6">
+              <TabsContent
+                value="chats"
+                className="min-h-[300px] relative mb-6"
+              >
                 {filteredDms.length === 0 ? (
                   <EmptyState
                     icon={MessageSquare}
                     title="No Chats Yet"
-                    description={searchQuery ? `No chats matching "${searchQuery}"` : "Start a conversation to chat with friends"}
+                    description={
+                      searchQuery
+                        ? `No chats matching "${searchQuery}"`
+                        : "Start a conversation to chat with friends"
+                    }
                     actionLabel={searchQuery ? undefined : "Start Chat"}
                     actionIcon={searchQuery ? undefined : UserPlus}
-                    onAction={searchQuery ? undefined : () => setDialogOpen(true)}
+                    onAction={
+                      searchQuery ? undefined : () => setDialogOpen(true)
+                    }
                     className="my-8"
                   />
                 ) : (
@@ -373,7 +405,11 @@ export default function Activity() {
                   <EmptyState
                     icon={Users}
                     title="No Groups Yet"
-                    description={searchQuery ? `No groups matching "${searchQuery}"` : "Create or join a group to chat with multiple people"}
+                    description={
+                      searchQuery
+                        ? `No groups matching "${searchQuery}"`
+                        : "Create or join a group to chat with multiple people"
+                    }
                     actionLabel={searchQuery ? undefined : "Create Group"}
                     className="my-8"
                   />
@@ -386,12 +422,19 @@ export default function Activity() {
                 )}
               </TabsContent>
 
-              <TabsContent value="communities" className="min-h-[300px] relative mb-8">
+              <TabsContent
+                value="communities"
+                className="min-h-[300px] relative mb-8"
+              >
                 {filteredUserCommunities.length === 0 ? (
                   <EmptyState
                     icon={Building2}
                     title="No Communities Yet"
-                    description={searchQuery ? `No Communities matching "${searchQuery}"` : "Join a Community to connect with people who share your interests"}
+                    description={
+                      searchQuery
+                        ? `No Communities matching "${searchQuery}"`
+                        : "Join a Community to connect with people who share your interests"
+                    }
                     className="my-8"
                   />
                 ) : (

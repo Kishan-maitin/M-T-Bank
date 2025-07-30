@@ -12,7 +12,10 @@ import { SuggestedUser } from "@/apis/apiTypes/response";
 import SettingLayout from "./settings/SettingLayout";
 import LeftSidebar from "./auth/LeftSidebar";
 import { updateCurrentUser } from "@/store/currentUserSlice";
-import { SidebarProfileSkeleton, SidebarPeopleSkeleton } from "./skeletons/SidebarProfileSkeleton";
+import {
+  SidebarProfileSkeleton,
+  SidebarPeopleSkeleton,
+} from "./skeletons/SidebarProfileSkeleton";
 import { Toaster } from "./ui/sonner";
 import { useApiCall } from "@/apis/globalCatchError";
 import CommunityFeed from "./activity/CommunityFeed";
@@ -40,7 +43,8 @@ const Layout: React.FC<LayoutProps> = ({
   const currentUser = useAppSelector((state) => state.currentUser);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
-  const [fetchSuggestedUsers, isLoadingSuggested] = useApiCall(getSuggestedUsers);
+  const [fetchSuggestedUsers, isLoadingSuggested] =
+    useApiCall(getSuggestedUsers);
   const location = useLocation();
 
   const isUserReady = useMemo(() => {
@@ -49,8 +53,20 @@ const Layout: React.FC<LayoutProps> = ({
   }, [currentUser]);
 
   // Define paths accessible on mobile without the app download prompt
-  const publicMobilePaths = ['/login', '/signup', '/setup-profile', '/privacy', '/terms', '/forgot-password'];
-  const authNotAllowedPaths = ['/login', '/signup', '/setup-profile', '/forgot-password'];
+  const publicMobilePaths = [
+    "/login",
+    "/signup",
+    "/setup-profile",
+    "/privacy",
+    "/terms",
+    "/forgot-password",
+  ];
+  const authNotAllowedPaths = [
+    "/login",
+    "/signup",
+    "/setup-profile",
+    "/forgot-password",
+  ];
   const currentPath = location.pathname;
   const isPublicPath = publicMobilePaths.includes(currentPath);
   const isAuthPath = !isPublicPath;
@@ -76,24 +92,23 @@ const Layout: React.FC<LayoutProps> = ({
             following: result.data.following,
             isBlocked: result.data.isBlocked,
             avatarSrc: result.data.avatarSrc,
-
           })
         );
       }
       setIsLoadingProfile(false);
     };
-    if (isLoggedIn &&!currentUser.userId) {
+    if (isLoggedIn && !currentUser.userId) {
       loadCurrentUser();
     } else {
       setIsLoadingProfile(false);
     }
-
   }, [currentUserId, dispatch, currentUser, isLoggedIn]);
-
 
   useEffect(() => {
     if (isAuthPath && !isUserReady && !isLoadingProfile) {
-      console.log("navigating to setup profile because user is not ready and on auth path");
+      console.log(
+        "navigating to setup profile because user is not ready and on auth path"
+      );
       navigate("/setup-profile");
     }
   }, [isUserReady, isLoadingProfile]);
@@ -120,8 +135,8 @@ const Layout: React.FC<LayoutProps> = ({
 
   // Convert suggested users to format needed for sidebar
   const sidebarUsers = suggestedUsers
-    .filter(user => user._id !== currentUserId)
-    .map(user => ({
+    .filter((user) => user._id !== currentUserId)
+    .map((user) => ({
       id: user._id,
       username: user.name,
       avatarSrc: user.profilePic || user.avatar,
@@ -131,7 +146,6 @@ const Layout: React.FC<LayoutProps> = ({
     dispatch(setActiveChat(null));
   };
 
-
   useEffect(() => {
     if (isLoadingProfile) {
       return;
@@ -139,18 +153,23 @@ const Layout: React.FC<LayoutProps> = ({
     if (isLoggedIn && isAuthNotAllowedPath) {
       if (!isUserReady) {
         return;
-      }
-      else {
-        console.log("navigating to home because user is logged in and on auth not allowed path");
+      } else {
+        console.log(
+          "navigating to home because user is logged in and on auth not allowed path"
+        );
         navigate("/");
       }
     }
     if (!isLoggedIn && !isPublicPath) {
-      console.log("navigating to login because user is not logged in and not on public mobile path");
+      console.log(
+        "navigating to login because user is not logged in and not on public mobile path"
+      );
       navigate("/login");
     }
     if (!isLoggedIn && currentPath == "/setup-profile") {
-      console.log("navigating to login because user is not logged in and on setup profile");
+      console.log(
+        "navigating to login because user is not logged in and on setup profile"
+      );
       navigate("/login");
     }
   }, [isLoggedIn, isLoadingProfile, currentPath, isUserReady]);
@@ -171,7 +190,9 @@ const Layout: React.FC<LayoutProps> = ({
           <LogoLoader size="lg" opacity={0.8} />
         </div>
       ) : (
-        <div className={`flex-col overflow-hidden  w-screen overflow-x-hidden ${!isPublicPath ? 'hidden md:flex h-screen' : 'flex'}`}>
+        <div
+          className={`flex-col overflow-hidden  w-screen overflow-x-hidden ${!isPublicPath ? "hidden md:flex h-screen" : "flex"}`}
+        >
           <Toaster />
           {/* Navbar */}
           <Navbar />
@@ -196,7 +217,9 @@ const Layout: React.FC<LayoutProps> = ({
                 ) : activeChat ? (
                   <div className="min-w-2/5 max-w-2/5">
                     {activeChat.type === "community" ? (
-                      <CommunityFeed onBack={() => dispatch(setActiveChat(null))} />
+                      <CommunityFeed
+                        onBack={() => dispatch(setActiveChat(null))}
+                      />
                     ) : (
                       <ChatInterface
                         chatId={activeChat.id}
@@ -221,7 +244,9 @@ const Layout: React.FC<LayoutProps> = ({
                           <div className="flex flex-col items-center">
                             <Link to={`/profile/${currentUserId}`}>
                               <img
-                                src={currentUser?.profilePic || currentUser?.avatar}
+                                src={
+                                  currentUser?.profilePic || currentUser?.avatar
+                                }
                                 alt="Profile"
                                 className="w-20 h-20 rounded-full mb-2 border-2 border-sidebar-border object-cover"
                               />
@@ -260,9 +285,12 @@ const Layout: React.FC<LayoutProps> = ({
                             <SidebarPeopleSkeleton />
                           ) : sidebarUsers.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-6 text-justify">
-                              <p className="text-sidebar-foreground/70 mb-3">No suggested people found</p>
+                              <p className="text-sidebar-foreground/70 mb-3">
+                                No suggested people found
+                              </p>
                               <p className="text-sidebar-foreground/60 text-sm">
-                                Add interests to your profile to view suggested people in the settings page
+                                Add interests to your profile to view suggested
+                                people in the settings page
                               </p>
                             </div>
                           ) : (

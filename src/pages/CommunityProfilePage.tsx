@@ -15,7 +15,10 @@ import {
   fetchCommunityMediaPosts,
   fetchCommunityQuotePosts,
 } from "@/apis/commonApiCalls/communitiesApi";
-import { CommunityResponse, TransformedCommunityPost } from "@/apis/apiTypes/communitiesTypes";
+import {
+  CommunityResponse,
+  TransformedCommunityPost,
+} from "@/apis/apiTypes/communitiesTypes";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import CommunityMemberList from "@/components/CommunityMemberList";
@@ -24,7 +27,7 @@ import CommunityQuotes from "@/components/CommunityQuotes";
 import { TruncatedText } from "@/components/ui/TruncatedText";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-type PostType = 'feed' | 'media' | 'quotes';
+type PostType = "feed" | "media" | "quotes";
 
 const CommunityProfilePage = () => {
   const { communityId } = useParams<{ communityId: string }>();
@@ -34,12 +37,12 @@ const CommunityProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isUserMember, setIsUserMember] = useState(false);
   const [isMembershipLoading, setIsMembershipLoading] = useState(false);
-  
+
   const [members, setMembers] = useState<CommunityMember[]>([]);
   const [isLoadingMembers, setIsLoadingMembers] = useState(false);
   const [membersPage, setMembersPage] = useState(1);
   const [hasMoreMembers, setHasMoreMembers] = useState(true);
-  
+
   const [activeTab, setActiveTab] = useState("feed");
 
   const [feedPosts, setFeedPosts] = useState<TransformedCommunityPost[]>([]);
@@ -55,8 +58,12 @@ const CommunityProfilePage = () => {
   const [executeJoinCommunity] = useApiCall(joinCommunity);
   const [executeFetchCommunityById] = useApiCall(fetchCommunityById);
   const [executeFetchCommunityFeed] = useApiCall(fetchCommunityFeed);
-  const [executeFetchCommunityMediaPosts] = useApiCall(fetchCommunityMediaPosts);
-  const [executeFetchCommunityQuotePosts] = useApiCall(fetchCommunityQuotePosts);
+  const [executeFetchCommunityMediaPosts] = useApiCall(
+    fetchCommunityMediaPosts
+  );
+  const [executeFetchCommunityQuotePosts] = useApiCall(
+    fetchCommunityQuotePosts
+  );
   const [executeFetchCommunityMembers] = useApiCall(fetchCommunityMembers);
 
   // Fetch community details
@@ -80,43 +87,63 @@ const CommunityProfilePage = () => {
     loadCommunity();
   }, [communityId]);
 
-  const loadPosts = useCallback(async (type: PostType, page: number) => {
-    if (!communityId) return;
+  const loadPosts = useCallback(
+    async (type: PostType, page: number) => {
+      if (!communityId) return;
 
-    setPostsState(prev => ({ ...prev, [type]: { ...prev[type], isLoading: true } }));
+      setPostsState((prev) => ({
+        ...prev,
+        [type]: { ...prev[type], isLoading: true },
+      }));
 
-    let result;
-    const params = { page, limit: 9 };
+      let result;
+      const params = { page, limit: 9 };
 
-    if (type === 'feed') {
-      result = await executeFetchCommunityFeed(communityId, params);
-    } else if (type === 'media') {
-      result = await executeFetchCommunityMediaPosts(communityId, params);
-    } else {
-      result = await executeFetchCommunityQuotePosts(communityId, params);
-    }
-
-    if (result.success && result.data) {
-      const { posts: newPosts, hasMore } = result.data;
-      if (type === 'feed') {
-        setFeedPosts(prev => (page === 1 ? newPosts : [...prev, ...newPosts]));
-      } else if (type === 'media') {
-        setMediaPosts(prev => (page === 1 ? newPosts : [...prev, ...newPosts]));
+      if (type === "feed") {
+        result = await executeFetchCommunityFeed(communityId, params);
+      } else if (type === "media") {
+        result = await executeFetchCommunityMediaPosts(communityId, params);
       } else {
-        setQuotePosts(prev => (page === 1 ? newPosts : [...prev, ...newPosts]));
+        result = await executeFetchCommunityQuotePosts(communityId, params);
       }
-      setPostsState(prev => ({ ...prev, [type]: { page, hasMore, isLoading: false } }));
-    } else {
-      console.error(`Failed to load ${type} posts`);
-      setPostsState(prev => ({ ...prev, [type]: { ...prev[type], isLoading: false } }));
-    }
-  }, [communityId]);
+
+      if (result.success && result.data) {
+        const { posts: newPosts, hasMore } = result.data;
+        if (type === "feed") {
+          setFeedPosts((prev) =>
+            page === 1 ? newPosts : [...prev, ...newPosts]
+          );
+        } else if (type === "media") {
+          setMediaPosts((prev) =>
+            page === 1 ? newPosts : [...prev, ...newPosts]
+          );
+        } else {
+          setQuotePosts((prev) =>
+            page === 1 ? newPosts : [...prev, ...newPosts]
+          );
+        }
+        setPostsState((prev) => ({
+          ...prev,
+          [type]: { page, hasMore, isLoading: false },
+        }));
+      } else {
+        console.error(`Failed to load ${type} posts`);
+        setPostsState((prev) => ({
+          ...prev,
+          [type]: { ...prev[type], isLoading: false },
+        }));
+      }
+    },
+    [communityId]
+  );
 
   useEffect(() => {
-    if (activeTab === 'feed' && feedPosts.length === 0) loadPosts('feed', 1);
-    else if (activeTab === 'posts' && mediaPosts.length === 0) loadPosts('media', 1);
-    else if (activeTab === 'quotes' && quotePosts.length === 0) loadPosts('quotes', 1);
-    else if (activeTab === 'members' && members.length === 0) loadMembers(1);
+    if (activeTab === "feed" && feedPosts.length === 0) loadPosts("feed", 1);
+    else if (activeTab === "posts" && mediaPosts.length === 0)
+      loadPosts("media", 1);
+    else if (activeTab === "quotes" && quotePosts.length === 0)
+      loadPosts("quotes", 1);
+    else if (activeTab === "members" && members.length === 0) loadMembers(1);
   }, [activeTab, communityId]);
 
   const loadMorePosts = (type: PostType) => {
@@ -138,7 +165,9 @@ const CommunityProfilePage = () => {
 
     if (result.success && result.data) {
       const { members: newMembers, hasMore } = result.data;
-      setMembers((prev) => (page === 1 ? newMembers : [...prev, ...newMembers]));
+      setMembers((prev) =>
+        page === 1 ? newMembers : [...prev, ...newMembers]
+      );
       setHasMoreMembers(hasMore);
       setMembersPage(page);
     } else {
@@ -156,19 +185,19 @@ const CommunityProfilePage = () => {
   const lastFeedPostRef = useInfiniteScroll({
     isLoading: postsState.feed.isLoading,
     hasMore: postsState.feed.hasMore,
-    onLoadMore: () => loadMorePosts('feed'),
+    onLoadMore: () => loadMorePosts("feed"),
   });
 
   const lastMediaPostRef = useInfiniteScroll({
     isLoading: postsState.media.isLoading,
     hasMore: postsState.media.hasMore,
-    onLoadMore: () => loadMorePosts('media'),
+    onLoadMore: () => loadMorePosts("media"),
   });
 
   const lastQuotePostRef = useInfiniteScroll({
     isLoading: postsState.quotes.isLoading,
     hasMore: postsState.quotes.hasMore,
-    onLoadMore: () => loadMorePosts('quotes'),
+    onLoadMore: () => loadMorePosts("quotes"),
   });
 
   const lastMemberRef = useInfiniteScroll({
@@ -233,7 +262,7 @@ const CommunityProfilePage = () => {
     }
     setIsMembershipLoading(false);
   };
-  
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -260,12 +289,14 @@ const CommunityProfilePage = () => {
     );
   }
 
-  const renderPostList = <P extends { posts: TransformedCommunityPost[]; communityId: string }>(
+  const renderPostList = <
+    P extends { posts: TransformedCommunityPost[]; communityId: string },
+  >(
     type: PostType,
     posts: TransformedCommunityPost[],
     lastElementRef: (node: HTMLDivElement | null) => void,
     Component: React.ComponentType<P>,
-    componentProps: Omit<P, 'posts'>
+    componentProps: Omit<P, "posts">
   ) => {
     const { isLoading, hasMore } = postsState[type];
     const allProps = { ...componentProps, posts } as P;
@@ -292,7 +323,6 @@ const CommunityProfilePage = () => {
       </div>
     );
   };
-
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -376,7 +406,6 @@ const CommunityProfilePage = () => {
                 ) : null}
                 Leave
               </Button>
-
             </div>
           ) : (
             <Button
@@ -394,36 +423,62 @@ const CommunityProfilePage = () => {
       </div>
 
       <div className="flex-1 mt-8">
-        <Tabs 
-          defaultValue="feed" 
+        <Tabs
+          defaultValue="feed"
           className="w-full"
           onValueChange={(value) => setActiveTab(value)}
         >
           <TabsList className="grid w-full grid-cols-4 bg-background/30 rounded-lg backdrop-blur-sm mb-4 *:rounded-md *:m-1 *:data-[state=active]:bg-accent *:data-[state=active]:text-foreground *:text-muted-foreground">
-            <TabsTrigger value="feed" className="cursor-pointer">News Feed</TabsTrigger>
-            <TabsTrigger value="posts" className="cursor-pointer">Recent</TabsTrigger>
-            <TabsTrigger value="quotes" className="cursor-pointer">Comments</TabsTrigger>
-            <TabsTrigger value="members" className="cursor-pointer">Members</TabsTrigger>
+            <TabsTrigger value="feed" className="cursor-pointer">
+              News Feed
+            </TabsTrigger>
+            <TabsTrigger value="posts" className="cursor-pointer">
+              Recent
+            </TabsTrigger>
+            <TabsTrigger value="quotes" className="cursor-pointer">
+              Comments
+            </TabsTrigger>
+            <TabsTrigger value="members" className="cursor-pointer">
+              Members
+            </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="feed" className="p-4">
-            {renderPostList('feed', feedPosts, lastFeedPostRef, CommunityQuotes, {
-              showMediaPosts: true,
-              communityId: communityId || ''
-            })}
+            {renderPostList(
+              "feed",
+              feedPosts,
+              lastFeedPostRef,
+              CommunityQuotes,
+              {
+                showMediaPosts: true,
+                communityId: communityId || "",
+              }
+            )}
           </TabsContent>
 
           <TabsContent value="posts" className="p-4">
-            {renderPostList('media', mediaPosts, lastMediaPostRef, CommunityPosts, {
-              communityId: communityId || ''
-            })}
+            {renderPostList(
+              "media",
+              mediaPosts,
+              lastMediaPostRef,
+              CommunityPosts,
+              {
+                communityId: communityId || "",
+              }
+            )}
           </TabsContent>
 
           <TabsContent value="quotes" className="p-4">
-            {renderPostList('quotes', quotePosts, lastQuotePostRef, CommunityQuotes, {
-              showMediaPosts: false,
-              communityId: communityId || ''
-            })}
+            {renderPostList(
+              "quotes",
+              quotePosts,
+              lastQuotePostRef,
+              CommunityQuotes,
+              {
+                showMediaPosts: false,
+                communityId: communityId || "",
+              }
+            )}
           </TabsContent>
 
           <TabsContent value="members" className="p-4">

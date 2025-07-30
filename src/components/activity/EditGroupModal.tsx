@@ -61,8 +61,8 @@ export function EditGroupModal({
   // Process the file - store as File and create preview URL
   const processFile = (file: File) => {
     // Store the file object directly
-    setFormData(prev => ({ ...prev, image: file }));
-    
+    setFormData((prev) => ({ ...prev, image: file }));
+
     // Create a preview URL for display
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -86,7 +86,7 @@ export function EditGroupModal({
       image: formData.image,
       groupName: formData.groupName,
     });
-    
+
     if (result.success) {
       toast.success("Group updated successfully");
       onGroupUpdated();
@@ -104,7 +104,10 @@ export function EditGroupModal({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex justify-center mb-4">
-            <div className="relative cursor-pointer" onClick={handleAvatarClick}>
+            <div
+              className="relative cursor-pointer"
+              onClick={handleAvatarClick}
+            >
               <Avatar className="h-24 w-24">
                 <AvatarImage src={previewUrl} alt={formData.groupName} />
                 <AvatarFallback className="bg-primary-foreground">
@@ -114,16 +117,16 @@ export function EditGroupModal({
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 hover:opacity-100 transition-opacity">
                 <Upload className="h-6 w-6 text-white" />
               </div>
-              <input 
-                type="file" 
+              <input
+                type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                accept="image/*" 
-                className="hidden" 
+                accept="image/*"
+                className="hidden"
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="groupName">Group Name</Label>
             <Input
@@ -156,4 +159,4 @@ export function EditGroupModal({
       </DialogContent>
     </Dialog>
   );
-} 
+}

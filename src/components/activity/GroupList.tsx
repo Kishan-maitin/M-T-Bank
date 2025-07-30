@@ -30,12 +30,12 @@ const GroupList = ({ groups, isLoading, onSelectGroup }: GroupListProps) => {
 
   const getUserStatusInGroup = (group: ChatItem): string | undefined => {
     if (!currentUserId) return undefined;
-    
+
     // Find the current user in the group participants
     const currentUserParticipant = group.participants.find(
       (participant) => participant.userId === currentUserId
     );
-    
+
     return currentUserParticipant?.status;
   };
 
@@ -46,16 +46,16 @@ const GroupList = ({ groups, isLoading, onSelectGroup }: GroupListProps) => {
     return [...groups].sort((a, b) => {
       const statusA = getUserStatusInGroup(a);
       const statusB = getUserStatusInGroup(b);
-      
+
       const isLeftA = statusA === "left";
       const isLeftB = statusB === "left";
-      
+
       if (isLeftA && !isLeftB) {
         return 1; // A goes after B
       } else if (!isLeftA && isLeftB) {
         return -1; // A goes before B
       }
-      
+
       // If both have the same left status, keep original order
       return 0;
     });
@@ -70,11 +70,11 @@ const GroupList = ({ groups, isLoading, onSelectGroup }: GroupListProps) => {
       {sortedGroups.map((group) => {
         const userStatus = getUserStatusInGroup(group);
         const hasLeftGroup = userStatus === "left";
-        
+
         return (
           <div
             key={group.id}
-            className={`flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer ${hasLeftGroup ? 'opacity-80' : ''}`}
+            className={`flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer ${hasLeftGroup ? "opacity-80" : ""}`}
             onClick={() => handleGroupSelect(group)}
           >
             <div className="flex items-center gap-3">
@@ -82,14 +82,16 @@ const GroupList = ({ groups, isLoading, onSelectGroup }: GroupListProps) => {
                 <img
                   src={group.avatar || "/activity/group.svg"}
                   alt={group.name}
-                  className={`w-full h-full object-cover ${!group.avatar ? 'theme-svg p-2' : ''}`}
+                  className={`w-full h-full object-cover ${!group.avatar ? "theme-svg p-2" : ""}`}
                 />
               </div>
               <div>
                 <h3 className="font-medium">{group.name}</h3>
                 <p className="text-sm text-muted-foreground">
                   {hasLeftGroup ? (
-                    <span className="text-destructive-foreground font-medium">Left</span>
+                    <span className="text-destructive-foreground font-medium">
+                      Left
+                    </span>
                   ) : (
                     group.lastMessage
                   )}

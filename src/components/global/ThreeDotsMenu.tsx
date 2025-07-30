@@ -5,7 +5,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Share2, Flag, Trash, UserX, Settings, Pencil } from "lucide-react";
+import {
+  MoreHorizontal,
+  Share2,
+  Flag,
+  Trash,
+  UserX,
+  Settings,
+  Pencil,
+} from "lucide-react";
 import { ReactNode } from "react";
 
 export interface MenuItemProps {
@@ -61,9 +69,9 @@ export default function ThreeDotsMenu({ items }: ThreeDotsMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {items.map((item, index) => (
-          <DropdownMenuItem 
+          <DropdownMenuItem
             key={`menu-item-${index}`}
-            onClick={item.onClick} 
+            onClick={item.onClick}
             className={`cursor-pointer ${item.className || ""}`}
           >
             {item.icon} {item.label}
@@ -72,4 +80,4 @@ export default function ThreeDotsMenu({ items }: ThreeDotsMenuProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

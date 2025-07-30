@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 interface OTPFormProps {
   onVerify: (otp: string) => void;
@@ -7,8 +7,8 @@ interface OTPFormProps {
   onResendOTP: () => void;
 }
 
-const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
-  const [otp, setOtp] = useState('');
+const OTPForm: React.FC<OTPFormProps> = ({ onVerify, onResendOTP }) => {
+  const [otp, setOtp] = useState("");
   const [, setShowOTP] = useState(true);
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(60);
@@ -47,7 +47,7 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
     setCanResend(false);
     setCountdown(60);
     setShowOTP(true);
-    
+
     // Reset the resend timer
     const resendTimer = setInterval(() => {
       setCountdown((prev) => {
@@ -59,7 +59,7 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
         return prev - 1;
       });
     }, 1000);
-    
+
     // Reset the OTP display timer
     setTimeout(() => {
       setShowOTP(false);
@@ -70,7 +70,12 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
     <div className="relative">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="otp" className="block text-sm font-medium text-foreground">OTP</label>
+          <label
+            htmlFor="otp"
+            className="block text-sm font-medium text-foreground"
+          >
+            OTP
+          </label>
           <input
             type="text"
             id="otp"
@@ -81,7 +86,7 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
             required
           />
         </div>
-        
+
         <Button
           type="submit"
           className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
@@ -89,7 +94,7 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
           Verify
         </Button>
       </form>
-      
+
       <div className="mt-4 text-center">
         <Button
           type="button"
@@ -101,7 +106,7 @@ const OTPForm: React.FC<OTPFormProps> = ({ onVerify,  onResendOTP }) => {
           {canResend ? "Resend OTP" : `Resend OTP in ${countdown}s`}
         </Button>
       </div>
-      
+
       {/* <div className="flex justify-center absolute left-0 right-0 text-center mt-4" style={{ top: "calc(76%)" }}>
         {showOTP && (
           <p className="text-foreground font-bold border-1 px-4 border-primary rounded-full text-xl w-fit p-2">

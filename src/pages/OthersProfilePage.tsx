@@ -6,7 +6,7 @@ export default function OthersProfilePage() {
   const userData = {
     userId: "user123", // Add a userId for the profile
     username: "Others Profile",
-    email: "",  // We might not show email for other profiles
+    email: "", // We might not show email for other profiles
     bio: "This is a sample bio for demonstration purposes.", // Added bio
     followers: 20034,
     following: 3987,
@@ -16,7 +16,7 @@ export default function OthersProfilePage() {
   };
 
   return (
-    <Profile 
+    <Profile
       userId={userData.userId}
       username={userData.username}
       // email={userData.email}
@@ -28,4 +28,4 @@ export default function OthersProfilePage() {
       isCurrentUser={userData.isCurrentUser}
     />
   );
-} 
+}

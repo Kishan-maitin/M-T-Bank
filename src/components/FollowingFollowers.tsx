@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { fetchFollowingList, fetchFollowersList, unfollowUser, removeFollower } from "@/apis/commonApiCalls/profileApi";
+import {
+  fetchFollowingList,
+  fetchFollowersList,
+  unfollowUser,
+  removeFollower,
+} from "@/apis/commonApiCalls/profileApi";
 import { FollowingFollowerUser } from "@/apis/apiTypes/profileTypes";
 import { useApiCall } from "@/apis/globalCatchError";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -21,14 +26,20 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "following";
-  
+
   const [following, setFollowing] = useState<FollowingFollowerUser[]>([]);
   const [followers, setFollowers] = useState<FollowingFollowerUser[]>([]);
-  const [unfollowingUserId, setUnfollowingUserId] = useState<string | null>(null);
-  const [removingFollowerId, setRemovingFollowerId] = useState<string | null>(null);
-  
-  const [executeFetchFollowing, isLoadingFollowing] = useApiCall(fetchFollowingList);
-  const [executeFetchFollowers, isLoadingFollowers] = useApiCall(fetchFollowersList);
+  const [unfollowingUserId, setUnfollowingUserId] = useState<string | null>(
+    null
+  );
+  const [removingFollowerId, setRemovingFollowerId] = useState<string | null>(
+    null
+  );
+
+  const [executeFetchFollowing, isLoadingFollowing] =
+    useApiCall(fetchFollowingList);
+  const [executeFetchFollowers, isLoadingFollowers] =
+    useApiCall(fetchFollowersList);
   const [executeUnfollow] = useApiCall(unfollowUser);
   const [executeRemoveFollower] = useApiCall(removeFollower);
 
@@ -36,7 +47,7 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
     const loadData = async () => {
       const [followingResult, followersResult] = await Promise.all([
         executeFetchFollowing(),
-        executeFetchFollowers()
+        executeFetchFollowers(),
       ]);
 
       if (followingResult.success && followingResult.data) {
@@ -59,7 +70,7 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
     const result = await executeUnfollow(userId);
     if (result.success) {
       // Remove the unfollowed user from the following list
-      setFollowing(following.filter(user => user._id !== userId));
+      setFollowing(following.filter((user) => user._id !== userId));
       toast.success("Successfully unfollowed user");
     }
     setUnfollowingUserId(null);
@@ -70,34 +81,46 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
     const result = await executeRemoveFollower(userId);
     if (result.success) {
       // Remove the user from the followers list
-      setFollowers(followers.filter(user => user._id !== userId));
+      setFollowers(followers.filter((user) => user._id !== userId));
       toast.success("Successfully removed follower");
     }
     setRemovingFollowerId(null);
   };
 
   const renderLoading = () => (
-    <div className={cn(
-      "flex justify-center items-center",
-      sidebar ? "min-h-[100px]" : "min-h-[200px]"
-    )}>
-      <Loader2 className={cn(
-        "animate-spin text-primary",
-        sidebar ? "h-5 w-5" : "h-8 w-8"
-      )} />
+    <div
+      className={cn(
+        "flex justify-center items-center",
+        sidebar ? "min-h-[100px]" : "min-h-[200px]"
+      )}
+    >
+      <Loader2
+        className={cn(
+          "animate-spin text-primary",
+          sidebar ? "h-5 w-5" : "h-8 w-8"
+        )}
+      />
     </div>
   );
 
   const renderEmptyState = () => (
-    <div className={cn(
-      "text-center text-muted-foreground",
-      sidebar ? "py-3" : "py-8"
-    )}>
+    <div
+      className={cn(
+        "text-center text-muted-foreground",
+        sidebar ? "py-3" : "py-8"
+      )}
+    >
       No Users Found
     </div>
   );
 
-  const FollowingList = ({ users, isLoading }: { users: FollowingFollowerUser[], isLoading: boolean }) => {
+  const FollowingList = ({
+    users,
+    isLoading,
+  }: {
+    users: FollowingFollowerUser[];
+    isLoading: boolean;
+  }) => {
     if (isLoading) {
       return renderLoading();
     }
@@ -117,41 +140,51 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
               sidebar && "shadow-none"
             )}
           >
-            <div className={cn(
-              "flex items-center",
-              sidebar ? "p-2" : "p-4"
-            )}>
-              <div 
-                className="flex items-center gap-2 flex-1 cursor-pointer" 
+            <div className={cn("flex items-center", sidebar ? "p-2" : "p-4")}>
+              <div
+                className="flex items-center gap-2 flex-1 cursor-pointer"
                 onClick={() => handleUserClick(user._id)}
               >
-                <Avatar className={cn(
-                  "border-2 border-border/50",
-                  sidebar ? "h-8 w-8" : "h-12 w-12"
-                )}>
-                  <AvatarImage src={user.profilePic || user.avatar} alt={user.name} />
+                <Avatar
+                  className={cn(
+                    "border-2 border-border/50",
+                    sidebar ? "h-8 w-8" : "h-12 w-12"
+                  )}
+                >
+                  <AvatarImage
+                    src={user.profilePic || user.avatar}
+                    alt={user.name}
+                  />
                   <AvatarFallback className="bg-primary/5 text-primary font-medium">
                     {user.name[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col min-w-0">
-                  <span className={cn(
-                    "font-medium text-foreground truncate",
-                    sidebar && "text-sm"
-                  )}>{sidebar ? user.name.length > 20 ? `${user.name.substring(0, 16)}...` : user.name : user.name}</span>
+                  <span
+                    className={cn(
+                      "font-medium text-foreground truncate",
+                      sidebar && "text-sm"
+                    )}
+                  >
+                    {sidebar
+                      ? user.name.length > 20
+                        ? `${user.name.substring(0, 16)}...`
+                        : user.name
+                      : user.name}
+                  </span>
                   {!sidebar && (
-                    <TruncatedText 
-                      text={user.bio} 
+                    <TruncatedText
+                      text={user.bio}
                       limit={50}
-                      className="text-sm text-muted-foreground" 
+                      className="text-sm text-muted-foreground"
                       buttonClassName="text-primary text-xs ml-1 cursor-pointer hover:underline"
                       showToggle={false}
                     />
                   )}
                 </div>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size={sidebar ? "sm" : "sm"}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -160,13 +193,18 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
                 disabled={unfollowingUserId === user._id}
                 className={cn(
                   "justify-center cursor-pointer",
-                  sidebar ? "min-w-[60px] text-xs py-1 px-2 h-7" : "min-w-[80px]"
+                  sidebar
+                    ? "min-w-[60px] text-xs py-1 px-2 h-7"
+                    : "min-w-[80px]"
                 )}
               >
                 {unfollowingUserId === user._id ? (
-                  <><Loader2 className="h-3 w-3 animate-spin mr-1" /> {sidebar ? 'Un...' : 'Unfollowing'}</>
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin mr-1" />{" "}
+                    {sidebar ? "Un..." : "Unfollowing"}
+                  </>
                 ) : (
-                  'Unfollow'
+                  "Unfollow"
                 )}
               </Button>
             </div>
@@ -176,7 +214,13 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
     );
   };
 
-  const FollowersList = ({ users, isLoading }: { users: FollowingFollowerUser[], isLoading: boolean }) => {
+  const FollowersList = ({
+    users,
+    isLoading,
+  }: {
+    users: FollowingFollowerUser[];
+    isLoading: boolean;
+  }) => {
     if (isLoading) {
       return renderLoading();
     }
@@ -196,41 +240,51 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
               sidebar && "shadow-none"
             )}
           >
-            <div className={cn(
-              "flex items-center",
-              sidebar ? "p-2" : "p-4"
-            )}>
-              <div 
-                className="flex items-center gap-2 flex-1 cursor-pointer" 
+            <div className={cn("flex items-center", sidebar ? "p-2" : "p-4")}>
+              <div
+                className="flex items-center gap-2 flex-1 cursor-pointer"
                 onClick={() => handleUserClick(user._id)}
               >
-                <Avatar className={cn(
-                  "border-2 border-border/50",
-                  sidebar ? "h-8 w-8" : "h-12 w-12"
-                )}>
-                  <AvatarImage src={user.profilePic || user.avatar} alt={user.name} />
+                <Avatar
+                  className={cn(
+                    "border-2 border-border/50",
+                    sidebar ? "h-8 w-8" : "h-12 w-12"
+                  )}
+                >
+                  <AvatarImage
+                    src={user.profilePic || user.avatar}
+                    alt={user.name}
+                  />
                   <AvatarFallback className="bg-primary/5 text-primary font-medium">
                     {user.name[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col min-w-0">
-                  <span className={cn(
-                    "font-medium text-foreground truncate",
-                    sidebar && "text-sm"
-                  )}>{sidebar ? user.name.length > 20 ? `${user.name.substring(0, 20)}...` : user.name : user.name}</span>
+                  <span
+                    className={cn(
+                      "font-medium text-foreground truncate",
+                      sidebar && "text-sm"
+                    )}
+                  >
+                    {sidebar
+                      ? user.name.length > 20
+                        ? `${user.name.substring(0, 20)}...`
+                        : user.name
+                      : user.name}
+                  </span>
                   {!sidebar && (
-                    <TruncatedText 
-                      text={user.bio} 
+                    <TruncatedText
+                      text={user.bio}
                       limit={50}
-                      className="text-sm text-muted-foreground" 
+                      className="text-sm text-muted-foreground"
                       buttonClassName="text-primary text-xs ml-1 cursor-pointer hover:underline"
                       showToggle={false}
                     />
                   )}
                 </div>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size={sidebar ? "sm" : "sm"}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -239,13 +293,18 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
                 disabled={removingFollowerId === user._id}
                 className={cn(
                   "justify-center cursor-pointer",
-                  sidebar ? "min-w-[60px] text-xs py-1 px-2 h-7" : "min-w-[80px]"
+                  sidebar
+                    ? "min-w-[60px] text-xs py-1 px-2 h-7"
+                    : "min-w-[80px]"
                 )}
               >
                 {removingFollowerId === user._id ? (
-                  <><Loader2 className="h-3 w-3 animate-spin mr-1" /> {sidebar ? 'Rem...' : 'Removing'}</>
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin mr-1" />{" "}
+                    {sidebar ? "Rem..." : "Removing"}
+                  </>
                 ) : (
-                  'Remove'
+                  "Remove"
                 )}
               </Button>
             </div>
@@ -256,9 +315,11 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
   };
 
   return (
-    <div className={cn(
-      sidebar ? "mx-auto w-full" : "container max-w-2xl mx-auto py-4 px-4"
-    )}>
+    <div
+      className={cn(
+        sidebar ? "mx-auto w-full" : "container max-w-2xl mx-auto py-4 px-4"
+      )}
+    >
       {!sidebar && (
         <Button
           variant="ghost"
@@ -271,12 +332,15 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
         </Button>
       )}
       <Tabs defaultValue={initialTab} className="w-full">
-        <TabsList className={cn(
-          "grid w-full grid-cols-2",
-          sidebar ? "mb-3" : "mb-6"
-        )}>
-          <TabsTrigger value="following" className="cursor-pointer">Following</TabsTrigger>
-          <TabsTrigger value="followers" className="cursor-pointer">Followers</TabsTrigger>
+        <TabsList
+          className={cn("grid w-full grid-cols-2", sidebar ? "mb-3" : "mb-6")}
+        >
+          <TabsTrigger value="following" className="cursor-pointer">
+            Following
+          </TabsTrigger>
+          <TabsTrigger value="followers" className="cursor-pointer">
+            Followers
+          </TabsTrigger>
         </TabsList>
 
         <AnimatePresence mode="wait">
@@ -309,4 +373,4 @@ const FollowingFollowers = ({ sidebar = false }: FollowingFollowersProps) => {
   );
 };
 
-export default FollowingFollowers; 
+export default FollowingFollowers;

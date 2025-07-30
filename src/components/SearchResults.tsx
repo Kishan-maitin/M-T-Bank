@@ -22,7 +22,11 @@ const SearchResults = ({ person }: Props) => {
     >
       <div className="flex items-center gap-3">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={person.profilePic || person.avatar} alt={person.name} className="h-12 w-12 rounded-full object-cover"/>
+          <AvatarImage
+            src={person.profilePic || person.avatar}
+            alt={person.name}
+            className="h-12 w-12 rounded-full object-cover"
+          />
           <AvatarFallback className="bg-primary/5 text-primary font-medium">
             {person.name[0]?.toUpperCase() || "U"}
           </AvatarFallback>
@@ -30,7 +34,7 @@ const SearchResults = ({ person }: Props) => {
         <div>
           <h3 className="font-medium">{person.name}</h3>
           <TruncatedText
-            text={person.bio} 
+            text={person.bio}
             limit={65}
             className="text-sm text-muted-foreground"
             showToggle={false}
@@ -39,9 +43,9 @@ const SearchResults = ({ person }: Props) => {
         </div>
       </div>
       <div className="flex gap-2 ">
-        <Button 
-          variant="outline" 
-          className="text-foreground border-primary cursor-pointer" 
+        <Button
+          variant="outline"
+          className="text-foreground border-primary cursor-pointer"
           onClick={() => handleProfileClick(person.id)}
         >
           View Profile

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface TruncatedListProps<T> {
   items: T[];
@@ -12,7 +12,7 @@ interface TruncatedListProps<T> {
 
 /**
  * A component that shows a list of items with "show more/less" functionality
- * 
+ *
  * @param items - The array of items to display
  * @param limit - Maximum number of items to show before truncation
  * @param renderItem - Function to render each item
@@ -28,36 +28,36 @@ export function TruncatedList<T>({
   emptyMessage = "No items to display",
   className = "",
   itemsContainerClassName = "",
-  buttonClassName = "text-foreground text-xs mt-2 cursor-pointer hover:underline font-bold"
+  buttonClassName = "text-foreground text-xs mt-2 cursor-pointer hover:underline font-bold",
 }: TruncatedListProps<T>) {
   const [showAll, setShowAll] = useState(false);
-  
+
   // If no items, show empty message
   if (!items || items.length === 0) {
     return <div className={className}>{emptyMessage}</div>;
   }
-  
+
   // Check if truncation is needed
   const needsTruncation = items.length > limit;
-  
+
   // The items to display (either all or limited)
   const displayItems = showAll ? items : items.slice(0, limit);
-  
+
   return (
     <div className={`flex flex-col items-center ${className}`}>
       <div className={itemsContainerClassName}>
         {displayItems.map((item, index) => renderItem(item, index))}
       </div>
-      
+
       {needsTruncation && (
-        <button 
+        <button
           type="button"
           onClick={() => setShowAll(!showAll)}
           className={buttonClassName}
         >
-          {showAll ? 'Show Less' : `Show ${items.length - limit} More+`}
+          {showAll ? "Show Less" : `Show ${items.length - limit} More+`}
         </button>
       )}
     </div>
   );
-} 
+}

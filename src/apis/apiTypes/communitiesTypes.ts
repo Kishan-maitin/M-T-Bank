@@ -1,4 +1,4 @@
-import { ProfilePostData, CommentData } from './response';
+import { ProfilePostData, CommentData } from "./response";
 
 // Community Member Types
 export interface MemberDetail {
@@ -27,14 +27,18 @@ export interface ReactionUserDetail {
   userDetails: UserDetails; // Reuse the UserDetails interface
 }
 
-export type ReactionResponse = { success: boolean; reactionDetails: ReactionDetails, 
-  reaction: {hasReacted: boolean, reactionType: string} }
+export type ReactionResponse = {
+  success: boolean;
+  reactionDetails: ReactionDetails;
+  reaction: { hasReacted: boolean; reactionType: string };
+};
 
 // Reaction types
 export interface ReactionDetails {
   total: number;
   reactions: ReactionUserDetail[]; // Array of specific reactions with user details
-  types: { // Added back: Counts of each reaction type
+  types: {
+    // Added back: Counts of each reaction type
     like?: number;
     love?: number;
     haha?: number;
@@ -79,7 +83,7 @@ export interface CommunityResponse {
 export interface CommunityJoinRequest {
   communityIds: string[] | string;
   userId: string;
-  action: 'join' | 'remove';
+  action: "join" | "remove";
 }
 
 // Community Post types
@@ -253,7 +257,7 @@ export interface PostDetailsData {
 }
 
 // Define an extended CommentData interface that includes additional fields
-export interface ExtendedCommentData extends Omit<CommentData, 'agoTime'> {
+export interface ExtendedCommentData extends Omit<CommentData, "agoTime"> {
   _id: string;
   content?: string;
   likeCount?: number;

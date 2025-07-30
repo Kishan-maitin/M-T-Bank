@@ -53,7 +53,7 @@ export function ProfilePictureUploadModal({
   // Process the file - store as File and create preview URL
   const processFile = (file: File) => {
     setSelectedFile(file);
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target && e.target.result) {
@@ -70,7 +70,7 @@ export function ProfilePictureUploadModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedFile) {
       toast.error("Please select an image");
       return;
@@ -85,14 +85,16 @@ export function ProfilePictureUploadModal({
     };
 
     const result = await executeUpdateProfile(profileData);
-    
+
     if (result.success && result.data) {
       toast.success("Profile picture updated successfully");
       if (result.data.user?.profilePic) {
-        dispatch(updateCurrentUser({ 
-          profilePic: result.data.user.profilePic,
-          avatar: result.data.user.profilePic
-        }));
+        dispatch(
+          updateCurrentUser({
+            profilePic: result.data.user.profilePic,
+            avatar: result.data.user.profilePic,
+          })
+        );
       }
       onClose();
     } else {
@@ -108,7 +110,7 @@ export function ProfilePictureUploadModal({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col items-center space-y-4">
-            <div 
+            <div
               className="relative cursor-pointer"
               onClick={handleAvatarClick}
             >
@@ -137,12 +139,10 @@ export function ProfilePictureUploadModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">
-              Save Changes
-            </Button>
+            <Button type="submit">Save Changes</Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
   );
-} 
+}

@@ -46,17 +46,19 @@ export const createGroup = createSlice({
     addFriend: (state, action) => {
       const friend = action.payload;
       // Check if the friend is already selected
-      if (!state.selectedFriends.some(f => f._id === friend._id)) {
+      if (!state.selectedFriends.some((f) => f._id === friend._id)) {
         state.selectedFriends.push(friend);
       }
     },
     removeFriend: (state, action) => {
       const friendId = action.payload;
-      state.selectedFriends = state.selectedFriends.filter(friend => friend._id !== friendId);
+      state.selectedFriends = state.selectedFriends.filter(
+        (friend) => friend._id !== friendId
+      );
     },
     resetGroupState: () => {
       return initialState;
-    }
+    },
   },
 });
 

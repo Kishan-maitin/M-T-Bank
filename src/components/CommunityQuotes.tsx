@@ -9,23 +9,23 @@ interface CommunityQuotesProps {
   showMediaPosts: boolean;
 }
 
-const CommunityQuotes: React.FC<CommunityQuotesProps> = ({ 
+const CommunityQuotes: React.FC<CommunityQuotesProps> = ({
   posts,
   communityId,
-  showMediaPosts
+  showMediaPosts,
 }) => {
   const navigate = useNavigate();
-  const currentUserId = localStorage.getItem('userId') || '';
+  const currentUserId = localStorage.getItem("userId") || "";
   const [localPosts, setLocalPosts] = useState<TransformedCommunityPost[]>([]);
 
   useEffect(() => {
     const filtered = showMediaPosts
       ? posts
-      : posts.filter(post => {
+      : posts.filter((post) => {
           const media = post?.media || [];
           return media.length === 0;
         });
-    
+
     const sorted = [...filtered].sort((a, b) => {
       const timestampA = a.createdAt || 0;
       const timestampB = b.createdAt || 0;
@@ -33,14 +33,14 @@ const CommunityQuotes: React.FC<CommunityQuotesProps> = ({
     });
 
     setLocalPosts(sorted);
-
   }, [posts, showMediaPosts]);
-  
 
   //we will change this to delete the post from the database
   const handlePostDeleted = (deletedPostId: string) => {
     // console.log("deletedPostId:",deletedPostId)
-    setLocalPosts(prevPosts => prevPosts.filter(p => p.id.toString() !== deletedPostId));
+    setLocalPosts((prevPosts) =>
+      prevPosts.filter((p) => p.id.toString() !== deletedPostId)
+    );
   };
 
   if (localPosts.length === 0) {
@@ -59,42 +59,43 @@ const CommunityQuotes: React.FC<CommunityQuotesProps> = ({
         const isOwner = authorId === currentUserId;
 
         const handleCommentNavigation = () => {
-            navigate(`/community/${communityId}/${postIdStr}`, { 
-                state: { post }
-            });
+          navigate(`/community/${communityId}/${postIdStr}`, {
+            state: { post },
+          });
         };
 
         const postProps = {
-            user: post.author?.name || "",
-            userId: authorId,
-            avatar: post.author?.profilePic || "",
-            caption: post.content || "",
-            media: post.media || [],
-            comments: post.stats?.commentCount || 0,
-            datePosted: post.createdAt || 0,
-            agoTimeString: post.ago_time || "",
-            isOwner: isOwner,
-            feedId: postIdStr,
-            onDelete: handlePostDeleted,
-            isCommunity: true,
-            isAnonymous: post.isAnonymous || false,
-            isCommunityAdmin: post.isAdmin || false,
-            communityId: communityId,
-            initialReaction: {
-                hasReacted: post.stats?.hasReacted || false,
-                reactionType: post.stats?.reactionType || null
-            },
-            initialReactionCount: post.stats?.reactionCount || 0,
-            initialReactionDetails: post.reactionDetails || { total: 0, types: { like: 0, love: 0, haha: 0, lulu: 0 } },
-            onCommentClick: handleCommentNavigation,
+          user: post.author?.name || "",
+          userId: authorId,
+          avatar: post.author?.profilePic || "",
+          caption: post.content || "",
+          media: post.media || [],
+          comments: post.stats?.commentCount || 0,
+          datePosted: post.createdAt || 0,
+          agoTimeString: post.ago_time || "",
+          isOwner: isOwner,
+          feedId: postIdStr,
+          onDelete: handlePostDeleted,
+          isCommunity: true,
+          isAnonymous: post.isAnonymous || false,
+          isCommunityAdmin: post.isAdmin || false,
+          communityId: communityId,
+          initialReaction: {
+            hasReacted: post.stats?.hasReacted || false,
+            reactionType: post.stats?.reactionType || null,
+          },
+          initialReactionCount: post.stats?.reactionCount || 0,
+          initialReactionDetails: post.reactionDetails || {
+            total: 0,
+            types: { like: 0, love: 0, haha: 0, lulu: 0 },
+          },
+          onCommentClick: handleCommentNavigation,
         };
 
-        return (
-          <Post key={postIdStr} {...postProps} />
-        );
+        return <Post key={postIdStr} {...postProps} />;
       })}
     </div>
   );
 };
 
-export default CommunityQuotes; 
+export default CommunityQuotes;

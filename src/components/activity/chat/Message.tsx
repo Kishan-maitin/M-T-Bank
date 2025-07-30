@@ -2,7 +2,12 @@ import React, { useRef, useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { Message as MessageType, Reaction } from "@/store/chatSlice";
-import { isPostShare, parsePostShare, isStoryReply, parseStoryReply } from "@/utils/messageUtils";
+import {
+  isPostShare,
+  parsePostShare,
+  isStoryReply,
+  parseStoryReply,
+} from "@/utils/messageUtils";
 import { CornerUpLeft, Image, Video } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 
@@ -91,7 +96,7 @@ const Message: React.FC<MessageProps> = ({
   // Parse replied-to post data if it's a post share
   const repliedPostData = React.useMemo(() => {
     if (!repliedToMessage || !isPostShare(repliedToMessage.text)) return null;
-    
+
     try {
       return parsePostShare(repliedToMessage.text as string);
     } catch (error) {
@@ -103,13 +108,13 @@ const Message: React.FC<MessageProps> = ({
   // Check if the replied post has media
   const repliedPostMedia = React.useMemo(() => {
     if (!repliedPostData?.data?.media?.length) return null;
-    
+
     const media = repliedPostData.data.media[0];
     if (!media || !media.url || media.url.trim() === "") return null;
-    
+
     return {
       url: media.url,
-      type: media.type || "image" // Default to image if type is not specified
+      type: media.type || "image", // Default to image if type is not specified
     };
   }, [repliedPostData]);
 
@@ -139,7 +144,7 @@ const Message: React.FC<MessageProps> = ({
   }, [message.reactions, userId]);
 
   useEffect(() => {
-    console.log("message", message)
+    console.log("message", message);
     // Check if the message is a post share or story reply
     if (isPostShare(message.text)) {
       try {
@@ -147,7 +152,7 @@ const Message: React.FC<MessageProps> = ({
         console.log("Parsed shared post:", parsedPost);
         setSharedPost(parsedPost);
         setStoryReply(null);
-        
+
         // Reset media states when post changes
         setMediaLoaded(false);
         setMediaError(false);
@@ -162,7 +167,7 @@ const Message: React.FC<MessageProps> = ({
         console.log("Parsed story reply:", parsedStory);
         setStoryReply(parsedStory);
         setSharedPost(null);
-        
+
         // Reset media states when story changes
         setMediaLoaded(false);
         setMediaError(false);
@@ -180,13 +185,13 @@ const Message: React.FC<MessageProps> = ({
   // Get post media details (image or video)
   const postMedia = React.useMemo(() => {
     if (!sharedPost?.data?.media?.length) return null;
-    
+
     const media = sharedPost.data.media[0];
     if (!media || !media.url || media.url.trim() === "") return null;
-    
+
     return {
       url: media.url,
-      type: media.type || "image" // Default to image if type is not specified
+      type: media.type || "image", // Default to image if type is not specified
     };
   }, [sharedPost]);
 
@@ -437,27 +442,32 @@ const Message: React.FC<MessageProps> = ({
                               ? repliedToMessage.text
                               : "Shared content"}
                       </div>
-                      
+
                       {/* Show media thumbnail for replied post or story if available */}
-                      {(isPostShare(repliedToMessage.text) || isStoryReply(repliedToMessage.text)) && (
+                      {(isPostShare(repliedToMessage.text) ||
+                        isStoryReply(repliedToMessage.text)) && (
                         <div className="h-5 w-5 overflow-hidden rounded-sm flex items-center justify-center bg-muted/30">
-                          {isPostShare(repliedToMessage.text) && repliedPostMedia ? (
+                          {isPostShare(repliedToMessage.text) &&
+                          repliedPostMedia ? (
                             repliedPostMedia.type === "video" ? (
-                              <video 
+                              <video
                                 src={repliedPostMedia.url}
                                 className="h-full w-full object-cover"
                                 muted
                               />
                             ) : (
-                              <img 
+                              <img
                                 src={repliedPostMedia.url}
                                 alt="Post"
                                 className="h-full w-full object-cover"
                               />
                             )
                           ) : isStoryReply(repliedToMessage.text) ? (
-                            <img 
-                              src={JSON.parse(repliedToMessage.text as string).entity.url}
+                            <img
+                              src={
+                                JSON.parse(repliedToMessage.text as string)
+                                  .entity.url
+                              }
                               alt="Story"
                               className="h-full w-full object-cover"
                             />
@@ -487,13 +497,19 @@ const Message: React.FC<MessageProps> = ({
                         {/* Loading indicator */}
                         {!mediaLoaded && !isVideo && (
                           <div className="absolute inset-0 flex items-center justify-center z-10">
-                            <Image size={24} className="text-muted-foreground animate-pulse" />
+                            <Image
+                              size={24}
+                              className="text-muted-foreground animate-pulse"
+                            />
                           </div>
                         )}
-                        
+
                         {isVideoLoading && (
                           <div className="absolute inset-0 flex items-center justify-center z-10">
-                            <Video size={24} className="text-muted-foreground animate-pulse" />
+                            <Video
+                              size={24}
+                              className="text-muted-foreground animate-pulse"
+                            />
                           </div>
                         )}
 
@@ -502,13 +518,18 @@ const Message: React.FC<MessageProps> = ({
                           <img
                             src={postMedia.url}
                             alt="Shared post"
-                            className={`w-full h-full object-cover transition-opacity duration-200 ${mediaLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            className={`w-full h-full object-cover transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
                             onLoad={() => {
-                              console.log("Shared post image loaded successfully");
+                              console.log(
+                                "Shared post image loaded successfully"
+                              );
                               setMediaLoaded(true);
                             }}
                             onError={(e) => {
-                              console.error("Failed to load shared post image:", postMedia.url);
+                              console.error(
+                                "Failed to load shared post image:",
+                                postMedia.url
+                              );
                               setMediaError(true);
                               e.currentTarget.style.display = "none";
                             }}
@@ -527,7 +548,10 @@ const Message: React.FC<MessageProps> = ({
                               setMediaLoaded(true);
                             }}
                             onError={(e) => {
-                              console.error("Failed to load shared post video:", postMedia.url);
+                              console.error(
+                                "Failed to load shared post video:",
+                                postMedia.url
+                              );
                               setMediaError(true);
                               setIsVideoLoading(false);
                               e.currentTarget.style.display = "none";
@@ -538,7 +562,7 @@ const Message: React.FC<MessageProps> = ({
                     )}
 
                     {/* Fallback for media error */}
-                    {(hasMedia && mediaError) && (
+                    {hasMedia && mediaError && (
                       <div className="w-full h-[80px] overflow-hidden bg-muted/30 flex items-center justify-center">
                         {isVideo ? (
                           <Video size={24} className="text-muted-foreground" />
@@ -571,20 +595,26 @@ const Message: React.FC<MessageProps> = ({
                     {/* Loading indicator */}
                     {!mediaLoaded && (
                       <div className="absolute inset-0 flex items-center justify-center z-10">
-                        <Image size={24} className="text-muted-foreground animate-pulse" />
+                        <Image
+                          size={24}
+                          className="text-muted-foreground animate-pulse"
+                        />
                       </div>
                     )}
 
                     <img
                       src={storyReply.entity.url}
                       alt="Story"
-                      className={`w-[400px] h-full object-cover transition-opacity duration-200 ${mediaLoaded ? 'opacity-100' : 'opacity-0'}`}
+                      className={`w-[400px] h-full object-cover transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
                       onLoad={() => {
                         console.log("Story image loaded successfully");
                         setMediaLoaded(true);
                       }}
                       onError={(e) => {
-                        console.error("Failed to load story image:", storyReply.entity.url);
+                        console.error(
+                          "Failed to load story image:",
+                          storyReply.entity.url
+                        );
                         setMediaError(true);
                         e.currentTarget.style.display = "none";
                       }}
@@ -593,9 +623,7 @@ const Message: React.FC<MessageProps> = ({
 
                   {/* Story reply content */}
                   <div className="p-2">
-                    <p className="text-xs font-medium mb-1">
-                      Replied to story 
-                    </p>
+                    <p className="text-xs font-medium mb-1">Replied to story</p>
                     <p className="text-sm">
                       {JSON.parse(message.text as string).content}
                     </p>

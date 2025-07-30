@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import {  TransformedCommunityPost } from "../apis/apiTypes/communitiesTypes";
+import { TransformedCommunityPost } from "../apis/apiTypes/communitiesTypes";
 import { POST_IMAGE } from "../constants/posts";
 import VideoThumbnail from "./common/VideoThumbnail";
 
@@ -11,11 +11,14 @@ interface CommunityPostsProps {
   communityId: string;
 }
 
-const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, communityId }) => {
+const CommunityPosts: React.FC<CommunityPostsProps> = ({
+  posts,
+  communityId,
+}) => {
   const navigate = useNavigate();
-  
+
   // Filter posts to only include those with media
-  const postsWithMedia = posts.filter(post => {
+  const postsWithMedia = posts.filter((post) => {
     return post.media && post.media.length > 0;
   });
 
@@ -24,7 +27,7 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, communityId }) =
     // Get timestamps for both posts
     const aTimestamp = a.createdAt || 0;
     const bTimestamp = b.createdAt || 0;
-    
+
     // Sort in descending order (newest first)
     return bTimestamp - aTimestamp;
   });
@@ -49,13 +52,13 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, communityId }) =
             key={postId.toString()}
             className="aspect-square border overflow-hidden rounded-3xl m-1 cursor-pointer relative group"
             onClick={() => {
-              navigate(`/community/${communityId}/${postId}`, { 
-                state: { 
+              navigate(`/community/${communityId}/${postId}`, {
+                state: {
                   post: {
                     ...post,
-                    communityId: communityId
-                  } 
-                } 
+                    communityId: communityId,
+                  },
+                },
               });
             }}
             data-post-id={postId.toString()} // Add data attribute for custom event handling
@@ -82,4 +85,4 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, communityId }) =
   );
 };
 
-export default CommunityPosts; 
+export default CommunityPosts;

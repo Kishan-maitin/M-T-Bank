@@ -38,15 +38,15 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
     phoneNumber: "",
     countryCode: "+1",
     password: "",
-    oldPassword: ""
+    oldPassword: "",
   });
   const [executeResetPassword] = useApiCall(resetPassword);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -58,9 +58,9 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
       phoneNumber: formData.phoneNumber,
       countryCode: formData.countryCode,
       oldPassword: formData.oldPassword,
-      password: formData.password
+      password: formData.password,
     });
-    
+
     if (success) {
       toast.success("Password reset successfully");
       onOpenChange(false);
@@ -68,10 +68,10 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
         phoneNumber: "",
         countryCode: "+1",
         password: "",
-        oldPassword: ""
+        oldPassword: "",
       });
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -185,7 +185,11 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="ml-2 cursor-pointer">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="ml-2 cursor-pointer"
+            >
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
@@ -198,4 +202,4 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   );
 };
 
-export default ResetPasswordDialog; 
+export default ResetPasswordDialog;

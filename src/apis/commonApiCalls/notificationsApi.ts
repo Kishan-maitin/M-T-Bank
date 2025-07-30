@@ -45,9 +45,7 @@ export const fetchFollowRequests = async (
 };
 
 export const fetchSentRequests = async (): Promise<FollowRequestsResponse> => {
-  const response = await apiClient.get<FollowRequestsResponse>(
-    "/sentRequests"
-  );
+  const response = await apiClient.get<FollowRequestsResponse>("/sentRequests");
 
   if (response.status === 200) {
     return response.data;
@@ -95,15 +93,16 @@ export const rejectFriendRequest = async (
 export const markNotificationAsSeen = async (
   notificationId: string
 ): Promise<ApiResponse> => {
-  const response = await apiClient.post<ApiResponse>(
-    "/mark-as-seen",
-    { notificationId }
-  );
+  const response = await apiClient.post<ApiResponse>("/mark-as-seen", {
+    notificationId,
+  });
 
   if (response.status === 200) {
     return response.data;
   } else {
-    throw new Error(response.data.message || "Failed to mark notification as seen");
+    throw new Error(
+      response.data.message || "Failed to mark notification as seen"
+    );
   }
 };
 
@@ -129,11 +128,17 @@ export const clearAllNotifications = async (): Promise<ApiResponse> => {
   if (response.status === 200) {
     return response.data;
   } else {
-    throw new Error(response.data.message || "Failed to clear all notifications");
+    throw new Error(
+      response.data.message || "Failed to clear all notifications"
+    );
   }
 };
 
-export const deleteSentRequest = async (requestId: string): Promise<ApiResponse> => {
-  const response = await apiClient.delete<ApiResponse>(`/sentRequest/${requestId}`);
+export const deleteSentRequest = async (
+  requestId: string
+): Promise<ApiResponse> => {
+  const response = await apiClient.delete<ApiResponse>(
+    `/sentRequest/${requestId}`
+  );
   return response.data;
 };

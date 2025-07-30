@@ -43,30 +43,30 @@
 }
 
 @keyframes heart-burst {
-    0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0);
-    }
-    25% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.4);
-    }
-    50% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    75% {
-        opacity: 0.5;
-        transform: translate(-50%, -50%) scale(1.1) translateY(-5px);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(1) translateY(-10px);
-    }
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  75% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1.1) translateY(-5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1) translateY(-10px);
+  }
 }
 
 .animate-heart-burst {
-    animation: heart-burst 1s ease-out forwards;
+  animation: heart-burst 1s ease-out forwards;
 }
 
 :root {
@@ -88,11 +88,11 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #7400A5 ;
+  --primary: #007856;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: #EDEDED;
+  --muted: #ededed;
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
@@ -109,7 +109,6 @@
   --radius: 0.625rem;
 }
 
-
 body {
   margin: 0;
   display: flex;
@@ -119,9 +118,8 @@ body {
   width: 100%;
 }
 
-
 .league-font {
-  font-family: 'League Spartan', sans-serif;
+  font-family: "League Spartan", sans-serif;
 }
 
 .dark {
@@ -131,7 +129,7 @@ body {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: #7400A5;
+  --primary: #007856;
   --primary-foreground: #eee;
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -149,7 +147,6 @@ body {
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-
 }
 
 @theme inline {
@@ -193,13 +190,20 @@ body {
 }
 
 .dark .grad {
-  background: linear-gradient(to top right, #3B01B7, #5E00FF, #BA19EB, #DD0CC8);
+  background: linear-gradient(to top right, #3b01b7, #5e00ff, #ba19eb, #dd0cc8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .grad {
-  background: linear-gradient(to top right, #3B01B7, #5E00FF, #BA19EB, #DD0CC8);
+  background: linear-gradient(
+    145.52deg,
+    #82b235 3.74%,
+    #347e49 18%,
+    #357e49 43.08%,
+    #297256 70.62%,
+    #23644c 98.16%
+  );
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -229,25 +233,26 @@ svg.theme-svg path {
   fill: currentColor;
 }
 
-.app-scrollbar, * {
+.app-scrollbar,
+* {
   @apply scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent;
   @apply focus-visible:outline-none;
-
 }
 
-.app-scrollbar::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
-  width: 8px;  /* Vertical scrollbar width */
+.app-scrollbar::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  width: 8px; /* Vertical scrollbar width */
   height: 8px; /* Horizontal scrollbar height */
 }
 
 /* Hide scrollbar but allow scrolling */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none; /* Chrome, Safari and Opera */
 }
 
 /* Fix for date input calendar icon in light/dark themes */
@@ -259,5 +264,3 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .dark input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(var(--foreground-invert, 0));
 }
-
-

@@ -30,18 +30,18 @@ const SetupProfile: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentTab = location.hash.replace("#", "") || "personal";
   const navigate = useNavigate();
-  
+
   // Validation state for different tabs
   const [personalInfoValid, setPersonalInfoValid] = useState(false);
   const [skillsInterestsValid, setSkillsInterestsValid] = useState(false);
-  
+
   // Track validated tabs
   const [validatedTabs, setValidatedTabs] = useState<string[]>([]);
-  
+
   // Update validated tabs when validation status changes
   useEffect(() => {
     const newValidatedTabs = [...validatedTabs];
-    
+
     // Handle "personal" tab validation
     if (personalInfoValid) {
       if (!newValidatedTabs.includes("personal")) {
@@ -53,7 +53,7 @@ const SetupProfile: React.FC = () => {
         newValidatedTabs.splice(personalIndex, 1);
       }
     }
-    
+
     // Handle "skills" tab validation
     if (skillsInterestsValid) {
       if (!newValidatedTabs.includes("skills")) {
@@ -65,7 +65,7 @@ const SetupProfile: React.FC = () => {
         newValidatedTabs.splice(skillsIndex, 1);
       }
     }
-    
+
     setValidatedTabs(newValidatedTabs);
   }, [personalInfoValid, skillsInterestsValid]);
 
@@ -79,8 +79,8 @@ const SetupProfile: React.FC = () => {
     avatar,
     image,
     communitiesSelected,
-    referralCode
-  } = useAppSelector(state => state.createProfile);
+    referralCode,
+  } = useAppSelector((state) => state.createProfile);
 
   // Use our custom hooks for API calls
   const [executeSubmit] = useApiCall(submitProfile);
@@ -95,9 +95,9 @@ const SetupProfile: React.FC = () => {
       navigate("#personal"); // Navigate to the personal info tab
       return;
     }
-    
+
     //delete referral code from session storage
-    sessionStorage.removeItem('referralCode');
+    sessionStorage.removeItem("referralCode");
 
     // First submit the profile
     const result = await executeSubmit({
@@ -111,22 +111,23 @@ const SetupProfile: React.FC = () => {
       avatar: avatar || undefined,
       generateToken: "1",
     });
-    
+
     if (result.success && result.data) {
-      
       // Now set the password
       const passwordResult = await executeSetPassword({
-        password
+        password,
       });
-      
+
       if (passwordResult.success) {
         // Join selected communities if any are selected
         if (communitiesSelected.length > 0) {
           // Extract community IDs from the selected communities
-          const communityIds = communitiesSelected.map(community => community.id);
-          
+          const communityIds = communitiesSelected.map(
+            (community) => community.id
+          );
+
           const joinResult = await executeJoinCommunities(communityIds);
-          
+
           if (joinResult.success) {
             console.log("Successfully joined communities");
           } else {
@@ -134,50 +135,54 @@ const SetupProfile: React.FC = () => {
           }
         }
 
-        dispatch(updateCurrentUser({
-          userId: result.data.userDetails._id,
-          username: result.data.userDetails.name,
-          nickname: result.data.userDetails.nickName,
-          email: result.data.userDetails.email,
-          avatar: result.data.userDetails.avatar,
-          profilePic: result.data.userDetails.profilePic,
-          bio: result.data.userDetails.bio,
-          interests: result.data.userDetails.interests,
-        }));
-        
+        dispatch(
+          updateCurrentUser({
+            userId: result.data.userDetails._id,
+            username: result.data.userDetails.name,
+            nickname: result.data.userDetails.nickName,
+            email: result.data.userDetails.email,
+            avatar: result.data.userDetails.avatar,
+            profilePic: result.data.userDetails.profilePic,
+            bio: result.data.userDetails.bio,
+            interests: result.data.userDetails.interests,
+          })
+        );
+
         // Navigate to home page regardless of community join status
-        navigate('/');
+        navigate("/");
       }
     }
   };
 
   const handleNext = () => {
     const currentIndex = tabs.findIndex((tab) => tab.id === currentTab);
-    
+
     // If on the last tab (communities), submit the form instead of navigating
     if (currentIndex === tabs.length - 1) {
       handleSubmit();
       return;
     }
-    
+
     const nextTabIndex = currentIndex + 1;
     const nextTabId = tabs[nextTabIndex].id;
-    
+
     // Only validate for tabs that require validation
     if (VALIDATED_TABS.includes(currentTab)) {
       // Current tab requires validation - check if it's validated
       if (!validatedTabs.includes(currentTab)) {
-        toast.error("Please complete all required fields in this tab before proceeding.");
+        toast.error(
+          "Please complete all required fields in this tab before proceeding."
+        );
         return;
       }
-      
+
       // If next tab is "skills" and "personal" is not validated, don't allow navigation
       if (nextTabId === "skills" && !validatedTabs.includes("personal")) {
         toast.error("Please complete the Personal Information tab first.");
         navigate("#personal");
         return;
       }
-    } 
+    }
     // Otherwise, allow navigation to the next tab
     navigate(`#${nextTabId}`);
   };
@@ -190,43 +195,45 @@ const SetupProfile: React.FC = () => {
       navigate(-1);
     }
   };
-  
+
   // Custom function to check if a tab is accessible
   const isTabAccessible = (tabId: string) => {
     // Current tab is always accessible
     if (tabId === currentTab) return true;
-    
+
     // Get tab indices
     const currentIndex = tabs.findIndex((tab) => tab.id === currentTab);
     const targetIndex = tabs.findIndex((tab) => tab.id === tabId);
-    
+
     // Previous tabs are always accessible
     if (targetIndex < currentIndex) return true;
-    
+
     // Only validate the specific tabs we care about
     if (tabId === "skills") {
       // Skills tab requires Personal Info tab to be validated
       return validatedTabs.includes("personal");
     }
-    
+
     // For all other tabs, only require completion of the validated tabs
     if (tabId === "avatar" || tabId === "photos" || tabId === "communities") {
-      return validatedTabs.includes("personal") && validatedTabs.includes("skills");
+      return (
+        validatedTabs.includes("personal") && validatedTabs.includes("skills")
+      );
     }
-    
+
     return true;
   };
-  
+
   const handleTabChange = (tabId: string) => {
     navigate(`#${tabId}`);
   };
 
   // Check if we're on the last tab
   const isLastTab = currentTab === tabs[tabs.length - 1].id;
-  
+
   // Determine if the Next button should be disabled based on the current tab
-  const isNextDisabled = 
-    (currentTab === "personal" && !personalInfoValid) || 
+  const isNextDisabled =
+    (currentTab === "personal" && !personalInfoValid) ||
     (currentTab === "skills" && !skillsInterestsValid);
 
   return (
@@ -248,8 +255,12 @@ const SetupProfile: React.FC = () => {
         }}
       >
         {/* Render tab content */}
-        {currentTab === "personal" && <PersonalInfoTab onValidationChange={setPersonalInfoValid} />}
-        {currentTab === "skills" && <SkillsInterestsTab onValidationChange={setSkillsInterestsValid} />}
+        {currentTab === "personal" && (
+          <PersonalInfoTab onValidationChange={setPersonalInfoValid} />
+        )}
+        {currentTab === "skills" && (
+          <SkillsInterestsTab onValidationChange={setSkillsInterestsValid} />
+        )}
         {currentTab === "avatar" && <SelectAvatarTab />}
         {currentTab === "photos" && <CoverProfilePhotosTab />}
         {currentTab === "communities" && <SelectCommunitiesTab />}

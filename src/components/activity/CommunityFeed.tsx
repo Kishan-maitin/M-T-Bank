@@ -57,11 +57,8 @@ const CommunityFeed = ({ onBack }: CommunityFeedProps) => {
   }
 
   return (
-    <CommunityPostFeed
-      activeCommunityChatItem={activeChat}
-      onBack={onBack}
-    />
+    <CommunityPostFeed activeCommunityChatItem={activeChat} onBack={onBack} />
   );
 };
 
-export default CommunityFeed; 
+export default CommunityFeed;

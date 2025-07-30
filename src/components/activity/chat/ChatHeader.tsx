@@ -22,7 +22,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   participantsCount,
   onClose,
   onProfileClick,
-  menuItems
+  menuItems,
 }) => {
   return (
     <div className="flex items-center justify-between p-4 border-b">
@@ -45,10 +45,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
               {chatType === "dm" ? (
                 name?.[0]
               ) : (
-                <img 
-                  src="/activity/group.svg" 
-                  alt="Group" 
-                  className="theme-svg w-full h-full p-2" 
+                <img
+                  src="/activity/group.svg"
+                  alt="Group"
+                  className="theme-svg w-full h-full p-2"
                 />
               )}
             </AvatarFallback>

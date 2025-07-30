@@ -16,14 +16,14 @@ export function PostSkeleton() {
         {/* Three dots menu skeleton */}
         <Skeleton className="h-8 w-8 rounded-full" />
       </div>
-      
+
       <CardContent>
         {/* Caption skeleton */}
         <Skeleton className="h-4 w-full max-w-[300px] mb-4" />
-        
+
         {/* Image skeleton */}
         <Skeleton className="w-full h-[300px] rounded-lg mb-4" />
-        
+
         {/* Actions skeleton */}
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-3">
@@ -38,4 +38,4 @@ export function PostSkeleton() {
       </CardContent>
     </Card>
   );
-} 
+}

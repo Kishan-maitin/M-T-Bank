@@ -12,7 +12,6 @@ import { ArrowLeft } from "lucide-react";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import { toast } from "sonner";
 
-
 const Signup: React.FC = () => {
   const [showOTP, setShowOTP] = useState(false);
   const [phone, setPhone] = useState("");
@@ -25,18 +24,15 @@ const Signup: React.FC = () => {
 
   // Handle referral code from URL
   useEffect(() => {
-    const referralCode = searchParams.get('referral');
+    const referralCode = searchParams.get("referral");
     if (referralCode) {
-      sessionStorage.setItem('referralCode', referralCode);
+      sessionStorage.setItem("referralCode", referralCode);
     }
   }, [searchParams]);
 
   // Use our custom hooks for API calls
   const [executeSendOTP, isSendingOTP] = useApiCall(sendOTP);
   const [executeVerifyOTP, isVerifyingOTP] = useApiCall(verifyOTP);
-
-
-
 
   interface CountryData {
     dialCode?: string;
@@ -117,8 +113,7 @@ const Signup: React.FC = () => {
       //   dispatch(updateCurrentUser(userData.data));
       // }
       navigate("/setup-profile");
-    }
-    else{
+    } else {
       toast.error("Invalid OTP");
     }
   };
@@ -146,7 +141,7 @@ const Signup: React.FC = () => {
         }
         subtitle={
           <>
-            Sign up for your <span className="grad font-bold">BondBridge</span>{" "}
+            Sign up for your <span className="grad font-bold">M&T Bank</span>{" "}
             journey today!
           </>
         }
@@ -239,6 +234,7 @@ const Signup: React.FC = () => {
 
             <button
               type="submit"
+              style={{ backgroundColor: "#007856" }}
               className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer"
               disabled={isSendingOTP}
             >
@@ -249,14 +245,20 @@ const Signup: React.FC = () => {
               <div className="flex justify-center pt-4">
                 {/* <p className="text-md text-center text-muted-foreground">Get the app:</p> */}
                 <div className="flex justify-center gap-4">
-                  <Link to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162" className="">
+                  <Link
+                    to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162"
+                    className=""
+                  >
                     <img
                       src="/assets/stores/appstore.svg"
                       alt="Download on App Store"
                       className="w-40"
                     />
                   </Link>
-                  <Link to="https://play.google.com/store/apps/details?id=com.bondbridge.bondbridgeonline" className="">
+                  <Link
+                    to="https://play.google.com/store/apps/details?id=com.bondbridge.bondbridgeonline"
+                    className=""
+                  >
                     <img
                       src="/assets/stores/googleplay.svg"
                       alt="Get it on Google Play"

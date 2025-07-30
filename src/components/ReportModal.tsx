@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiCall } from "@/apis/globalCatchError";
@@ -13,29 +18,33 @@ interface ReportModalProps {
   reporterId: string;
 }
 
-export function ReportModal({ isOpen, onClose, postId, reporterId }: ReportModalProps) {
-  const [description, setDescription] = useState('');
+export function ReportModal({
+  isOpen,
+  onClose,
+  postId,
+  reporterId,
+}: ReportModalProps) {
+  const [description, setDescription] = useState("");
   const [executeReport, isReporting] = useApiCall(reportPost);
 
   const handleSubmit = async () => {
     if (!description.trim()) {
-      toast.error('Please provide a description for your report');
+      toast.error("Please provide a description for your report");
       return;
     }
 
     const result = await executeReport({
       postId,
       reporterId,
-      description: description.trim()
+      description: description.trim(),
     });
 
     if (result.success) {
-      toast.success('Report submitted successfully');
+      toast.success("Report submitted successfully");
       onClose();
-      setDescription('');
-    }
-    else {
-      toast.error('Failed to report post');
+      setDescription("");
+    } else {
+      toast.error("Failed to report post");
     }
   };
 
@@ -57,18 +66,22 @@ export function ReportModal({ isOpen, onClose, postId, reporterId }: ReportModal
           </div>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose} className="cursor-pointer">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="cursor-pointer"
+          >
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleSubmit}
             disabled={isReporting}
             className="cursor-pointer"
           >
-            {isReporting ? 'Submitting...' : 'Report'}
+            {isReporting ? "Submitting..." : "Report"}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}
