@@ -147,7 +147,10 @@ const LeftSidebar: React.FC = () => {
             >
               <img src="/bondchat-glow-3.svg" alt="" className="w-6 h-6" />
               {/* <span className="grad font-bold [text-shadow:_0_0_20px_rgba(79,70,229,0.8),_0_0_40px_rgba(79,70,229,0.6),_0_0_50px_rgba(79,70,229,0.4)]">BondChat</span> */}
-              <span className="font-bold text-foreground">
+              <span
+                className="font-bold text-foreground"
+                style={{ color: "#007856" }}
+              >
                 M&T AI Assistant
               </span>
             </Link>
