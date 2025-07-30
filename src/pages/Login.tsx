@@ -232,8 +232,13 @@ const Login: React.FC = () => {
     <>
       <AuthLayout
         title={
-          <div className="text-nowrap">
-            Welcome Back, Your <br /> Friends Are Waiting
+          <div
+            className="text-wrap"
+            style={{
+              fontSize: "36px",
+            }}
+          >
+            Welcome to MMT Bank Community Engagement Platform
           </div>
         }
         subtitle="Log in to unlock a world of endless possibilities"
