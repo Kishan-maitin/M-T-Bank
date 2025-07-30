@@ -8,9 +8,9 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <a href="/" className="flex items-center gap-2">
               <div>
-                <img src="/mt_logo.png" alt="Bond Bridge" className="h-8" />
+                <img src="/logo.png" alt="Bond Bridge" className="h-8" />
               </div>
-              <h2 className="text-2xl font-extrabold grad">Bank</h2>
+              {/* <h2 className="text-2xl font-extrabold grad">Bank</h2> */}
             </a>
           </div>
 
