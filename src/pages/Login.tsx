@@ -238,7 +238,7 @@ const Login: React.FC = () => {
               fontSize: "36px",
             }}
           >
-            Welcome to MMT Bank <br />
+            Welcome to <span className="grad font-bold">M&T Bank</span> <br />
             Community Engagement Platform
           </div>
         }
