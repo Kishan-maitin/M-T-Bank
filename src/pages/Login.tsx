@@ -239,7 +239,7 @@ const Login: React.FC = () => {
             }}
           >
             Welcome to <span className="grad font-bold">M&T Bank</span> <br />
-            Community Engagement Platform
+            <p className="mt-2">Community Engagement Platform</p>
           </div>
         }
         subtitle="Log in to unlock a world of endless possibilities"
