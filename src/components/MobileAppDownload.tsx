@@ -25,7 +25,7 @@ const MobileAppDownload: React.FC = () => {
         </p>
 
         {/* App store buttons */}
-        <div className="flex flex-row justify-center items-center gap-4">
+        {/* <div className="flex flex-row justify-center items-center gap-4">
           <Link
             to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162"
             className="transform transition-all hover:scale-105"
@@ -46,7 +46,7 @@ const MobileAppDownload: React.FC = () => {
               className="h-40 sm:h-40"
             />
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

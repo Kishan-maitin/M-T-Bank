@@ -238,7 +238,8 @@ const Login: React.FC = () => {
               fontSize: "36px",
             }}
           >
-            Welcome to MMT Bank Community Engagement Platform
+            Welcome to MMT Bank <br />
+            Community Engagement Platform
           </div>
         }
         subtitle="Log in to unlock a world of endless possibilities"
@@ -337,7 +338,7 @@ const Login: React.FC = () => {
           <div className="flex flex-col items-center justify-center gap-1">
             <div className="flex justify-center pt-4">
               {/* <p className="text-md text-center text-muted-foreground">Get the app:</p> */}
-              <div className="flex justify-center gap-4">
+              {/* <div className="flex justify-center gap-4">
                 <Link
                   to="https://apps.apple.com/in/app/bondbridge-ai/id6745119162"
                   className=""
@@ -358,7 +359,7 @@ const Login: React.FC = () => {
                     className="w-40"
                   />
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </form>

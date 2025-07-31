@@ -15,9 +15,9 @@ const LogoLoader: React.FC<LogoLoaderProps> = ({
 }) => {
   // Map size to actual dimensions
   const sizeMap = {
-    sm: "w-12 h-12",
-    md: "w-18 h-18",
-    lg: "w-24 h-24",
+    sm: "w-40 h-8",
+    md: "w-40 h-16",
+    lg: "w-48 h-16",
   };
 
   // Convert opacity value to appropriate Tailwind class
